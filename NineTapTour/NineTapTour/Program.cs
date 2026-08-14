@@ -1,12 +1,13 @@
-﻿using NineTapTour.Forms;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using NineTapTour.Database;
+using NineTapTour.Core.Data;
+using NineTapTour.Forms;
+using NineTapTour.Startup;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NineTapTour
@@ -24,7 +25,35 @@ namespace NineTapTour
 
             SetUpGlobalExceptionHandling();
 
-            Application.Run(new FrmMain());
+            IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile("appsettings.Development.json", optional: true)
+                .Build();
+
+            ServiceCollection services = new();
+            services.AddNineTapTourServices(configuration);
+
+            using ServiceProvider provider = services.BuildServiceProvider(new ServiceProviderOptions
+            {
+                ValidateOnBuild = true,
+                ValidateScopes = true,
+            });
+
+            MigrateDatabase(provider);
+
+            Application.Run(provider.GetRequiredService<FrmMain>());
+        }
+
+        /// <summary>
+        /// Applies any pending EF Core migrations before any form opens so a
+        /// schema problem fails fast instead of surfacing mid workflow.
+        /// </summary>
+        private static void MigrateDatabase(IServiceProvider provider)
+        {
+            var dbFactory = provider.GetRequiredService<IDbContextFactory<NineTapDb>>();
+            using NineTapDb db = dbFactory.CreateDbContext();
+            db.Database.Migrate();
         }
 
         private static void SetUpGlobalExceptionHandling()

@@ -1,11 +1,14 @@
+﻿using NineTapTour.Core.Export;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using ClosedXML.Excel;
-using NineTapTour.Calculations;
+using NineTapTour.Core.Calculations;
 using NineTapTour.Database;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
+using NineTapTour.Core.Repositories;
 
 namespace NineTapTour.Forms;
 
@@ -58,14 +61,20 @@ public partial class FrmReports : Form
     /// </summary>
     string currentReportTitle = "";
 
-    public FrmReports()
+    private readonly IMemberRepository memberRepository;
+    private readonly IReportsRepository reportsRepository;
+
+    public FrmReports(IMemberRepository memberRepository, IReportsRepository reportsRepository)
     {
+        this.memberRepository = memberRepository;
+        this.reportsRepository = reportsRepository;
+
         InitializeComponent();
     }
 
     private void FrmReports_Load(object sender, EventArgs e)
     {
-        List<int> years = ReportsDB.GetTournamentYears();
+        List<int> years = reportsRepository.GetTournamentYears();
         foreach (int year in years)
         {
             cmbYear.Items.Add(year);
@@ -73,7 +82,7 @@ public partial class FrmReports : Form
             cmbYearTo.Items.Add(year);
         }
 
-        List<Member> members = MemberDB.GetMemberList()
+        List<Member> members = memberRepository.GetMemberList()
             .OrderBy(m => m.LastName)
             .ThenBy(m => m.FirstName)
             .ToList();
@@ -143,7 +152,7 @@ public partial class FrmReports : Form
         List<ReportGameEntry> entries;
         try
         {
-            entries = ReportsDB.GetReportEntries(startYear, endYear, memberNumber);
+            entries = reportsRepository.GetReportEntries(startYear, endYear, memberNumber);
         }
         catch (Exception ex)
         {

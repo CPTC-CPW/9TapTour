@@ -1,16 +1,23 @@
 ﻿using NineTapTour.Database;
+using NineTapTour.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
-using NineTapTour.Models;
+using Microsoft.EntityFrameworkCore;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
+using NineTapTour.Core.Repositories;
 
 namespace NineTapTour.Forms;
 
 public partial class FrmSearch : Form
 {
+    private readonly IMemberRepository memberRepository;
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
+
     bool isChecked = false;
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -19,8 +26,11 @@ public partial class FrmSearch : Form
     /// <summary>
     /// Opens the "Search" form.
     /// </summary>
-    public FrmSearch()
+    public FrmSearch(IMemberRepository memberRepository, IDbContextFactory<NineTapDb> dbFactory)
     {
+        this.memberRepository = memberRepository;
+        this.dbFactory = dbFactory;
+
         InitializeComponent();
     }
 
@@ -34,7 +44,7 @@ public partial class FrmSearch : Form
 
         List<Member> memList = [];
 
-        using (NineTapDb db = new())
+        using (NineTapDb db = dbFactory.CreateDbContext())
         {
             var query = from m in db.Members
                         select m;
@@ -146,7 +156,7 @@ public partial class FrmSearch : Form
     private void FillGrid()
     {
         dtagrdResults.DataSource = null;
-        List<Member> memList = MemberDB.GetMemberList();
+        List<Member> memList = memberRepository.GetMemberList();
         dtagrdResults.DataSource = memList;
         AdvancedViewCheck();
     }

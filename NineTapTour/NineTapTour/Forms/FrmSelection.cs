@@ -1,5 +1,7 @@
 ﻿using NineTapTour.Database;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
+using NineTapTour.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,15 +17,19 @@ namespace NineTapTour.Forms
     public partial class FrmSelection : Form
     {
         public Tournament selectedTournament;
-        public FrmSelection()
+        private readonly ITournamentRepository tournamentRepository;
+
+        public FrmSelection(ITournamentRepository tournamentRepository)
         {
+            this.tournamentRepository = tournamentRepository;
+
             InitializeComponent();
             PopulateTournamentCbo();
         }
 
         public void PopulateTournamentCbo()
         {
-            List<Tournament> allTournaments = TournamentDB.GetTournamentList();
+            List<Tournament> allTournaments = tournamentRepository.GetTournamentList();
             cbxTournaments.DataSource = allTournaments;
             cbxTournaments.DisplayMember = nameof(Tournament.TourneyNameDate);
         }

@@ -1,10 +1,13 @@
-﻿using System;
+﻿using NineTapTour.Core.Export;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using NineTapTour.Database;
-using NineTapTour.Models;
-using static NineTapTour.Database.ReportHelper;
+using NineTapTour.Helpers;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
+using static NineTapTour.Core.Calculations.ReportHelper;
 using ClosedXML.Excel;
 
 namespace NineTapTour.Forms;
@@ -12,7 +15,7 @@ namespace NineTapTour.Forms;
 public partial class FrmMemberScoresReports : Form
 {
     // the members and their scores
-    List<Models.MemberScores> temp;
+    List<MemberScores> temp;
     // used in the print class to print the date and location
     readonly Tournament selectedTournament;
 
@@ -50,7 +53,7 @@ public partial class FrmMemberScoresReports : Form
                 printDues = true;
             }
 
-            temp = Calculations.TournamentCalculations.MakeTopMembersByPlacementList(temp, numMembers, selectedTournament.Doubles);
+            temp = Core.Calculations.TournamentCalculations.MakeTopMembersByPlacementList(temp, numMembers, selectedTournament.Doubles);
             // print( go to print class )
             int? manualCutoffLine = null;
             if(int.TryParse(txtCutoffLine.Text, out int result))
@@ -93,7 +96,7 @@ public partial class FrmMemberScoresReports : Form
             {
                 printDues = true;
             }
-            temp = Calculations.TournamentCalculations.MakeTopMembersByPlacementList(temp, numMembers, selectedTournament.Doubles); // results of inquiry
+            temp = Core.Calculations.TournamentCalculations.MakeTopMembersByPlacementList(temp, numMembers, selectedTournament.Doubles); // results of inquiry
             ExportToExcel(); // Exports to excel file
 
             this.Close();

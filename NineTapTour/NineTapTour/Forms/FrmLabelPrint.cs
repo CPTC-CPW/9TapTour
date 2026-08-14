@@ -5,24 +5,31 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Windows.Forms;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
+using NineTapTour.Core.Printing;
+using NineTapTour.Core.Repositories;
 
 namespace NineTapTour.Forms;
 
 public partial class FrmLabelPrint : Form
 {
+    private readonly IMemberRepository memberRepository;
+
     List<Member> AllMems;
     List<Member> ActiveMems;
     List<Member> Labels;
 
-    public FrmLabelPrint()
+    public FrmLabelPrint(IMemberRepository memberRepository)
     {
+        this.memberRepository = memberRepository;
+
         InitializeComponent();
     }
 
     private void FrmLabelPrint_Load(object sender, EventArgs e)
-    {         
-        AllMems = MemberDB.GetMemberList();
+    {
+        AllMems = memberRepository.GetMemberList();
         ActiveMems = [];
         Labels = [];
 
@@ -166,11 +173,12 @@ public partial class FrmLabelPrint : Form
                 offsetX = 540;
             offsetY = (i / 3) * 100;
 
-            graphic.DrawString(memberLabel[i-start].FirstName.ToString() + " " + memberLabel[i - start].LastName.ToString(), font, dBrush, startX + offsetX, startY + offsetY);
+            LabelContent label = PrintContentBuilder.BuildLabelLines(memberLabel[i - start]);
+            graphic.DrawString(label.NameLine, font, dBrush, startX + offsetX, startY + offsetY);
             offsetY += 16;
-            graphic.DrawString(memberLabel[i - start].Street, font, dBrush, startX + offsetX, startY + offsetY);
+            graphic.DrawString(label.StreetLine, font, dBrush, startX + offsetX, startY + offsetY);
             offsetY += 16;
-            graphic.DrawString(memberLabel[i - start].City + ", " + memberLabel[i - start].State + " " + memberLabel[i - start].PostalCode, font, dBrush, startX + offsetX, startY + offsetY);
+            graphic.DrawString(label.CityStateZipLine, font, dBrush, startX + offsetX, startY + offsetY);
         }
     }
     #endregion

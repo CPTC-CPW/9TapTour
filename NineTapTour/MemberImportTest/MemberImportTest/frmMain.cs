@@ -3,11 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using ClosedXML.Excel;
-using NineTapTour.Database;
-using NineTapTour.Forms;
-using NineTapTour.Models;
-using System.Drawing;
+using NineTapTour.Core.Import;
+using NineTapTour.Core.Repositories;
+using NineTapTour.Core.Entities;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -19,8 +17,19 @@ public partial class FrmMain : Form
     private Button btnConvertXls;
     private TextBox txtStatus;
 
-    public FrmMain()
+    private readonly IMemberRepository memberRepository;
+    private readonly IPlayerHistoryRepository playerHistoryRepository;
+    private readonly IMemberHistoryImportService memberHistoryImportService;
+
+    public FrmMain(
+        IMemberRepository memberRepository,
+        IPlayerHistoryRepository playerHistoryRepository,
+        IMemberHistoryImportService memberHistoryImportService)
     {
+        this.memberRepository = memberRepository;
+        this.playerHistoryRepository = playerHistoryRepository;
+        this.memberHistoryImportService = memberHistoryImportService;
+
         InitializeComponent();
         InitializeConvertXlsControls();
     }
@@ -333,9 +342,9 @@ public partial class FrmMain : Form
         int persisted = 0;
         for (int j = 0; j < validMembers.Count; j++)
         {
-            if (!NineTapTour.Database.MemberDB.MemberExists(validMembers[j]))
+            if (!memberRepository.MemberExists(validMembers[j]))
             {
-                NineTapTour.Database.MemberDB.AddOrUpdateMember(validMembers[j]);
+                memberRepository.AddOrUpdateMember(validMembers[j]);
                 persisted++;
             }
         }
@@ -378,300 +387,28 @@ public partial class FrmMain : Form
             DialogResult result = fbd.ShowDialog();
             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
             {
-                string[] files = Directory.GetFiles(fbd.SelectedPath);
-                List<ExcelRow> participantHistory = GetAllExcelData(files);
+                memberHistoryImportService.ImportFolder(fbd.SelectedPath, new TextBoxProgress(txtProgress));
             }
         }
         btn_FinalizeData.Enabled = true;
     }
 
-    private List<ExcelRow> GetAllExcelData(string[] files)
-    {
-        List<ExcelRow> rows = [];
-        for (int i = 0; i < files.Length; i++)
-        {
-            // If the file is not an excel file, skip it
-            if (!FileHelper.IsValidExcelExtension(Path.GetExtension(files[i])))
-            {
-                continue;
-            }
-            txtProgress.AppendText($"Processing: {Path.GetFileName(files[i])}\r\n");
-            // PERFORMANCE FIX: Accumulate results instead of overwriting
-            rows.AddRange(ProcessExcelFile(files[i]));
-        }
-        return rows;
-    }
-
     /// <summary>
-    /// This will process the actual excel files and impport the info needed from the files to the program
-    /// /// NOTE: This is currently set up for the old format. New format has not yet been implemented.
+    /// Reports import progress synchronously into a multiline text box so the
+    /// text appears in the same order the service produces it.
     /// </summary>
-    /// <param name="PathAndFileName"></param>
-    /// <returns></returns>
-    private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
+    private sealed class TextBoxProgress : IProgress<string>
     {
-        txtProgress.AppendText($"Current File Being Processed: {Path.GetFileName(PathAndFileName)}\r\n");
+        private readonly TextBox target;
 
-        List<ExcelRow> returnMe = new List<ExcelRow>();
-        char[] splitters = new[] { '/', '-' };
-
-        // Create a single DbContext for the entire file import
-        using (var db = new NineTapDb())
+        public TextBoxProgress(TextBox target)
         {
-            using (var workbook = new XLWorkbook(PathAndFileName))
-            {
-                // Extract player information ONCE from the first worksheet that has it
-                string[] PlayerFinalFirstAndMiddle = new[] { "", "" };
-                string playerLastName = "";
-                int playerOrgAVG = -1;
-                int playerNumberAsInt = 0;
-
-                bool playerInfoExtracted = false;
-
-                // Find and extract player information from first worksheet with data
-                foreach (var ws in workbook.Worksheets)
-                {
-                    if (!playerInfoExtracted)
-                    {
-                        ExtractPlayerInfoFromWorksheet(ws, ref PlayerFinalFirstAndMiddle, ref playerLastName,
-                            ref playerOrgAVG, ref playerNumberAsInt, PathAndFileName, splitters);
-
-                        if (playerNumberAsInt > 0)
-                        {
-                            playerInfoExtracted = true;
-                        }
-                    }
-                }
-
-                // If we couldn't extract player info, abort
-                if (!playerInfoExtracted || playerNumberAsInt <= 0)
-                {
-                    throw new ArgumentException($"  ERROR: Could not extract valid player information from {Path.GetFileName(PathAndFileName)}\r\n");
-                }
-
-                // Load existing tournaments once for the entire workbook
-                List<Tournament> existingTournaments = TournamentDB.GetTournamentList(db);
-
-                // PERFORMANCE: Look up member once per file instead of per row
-                var member = MemberDB.GetMember(playerNumberAsInt, db);
-                if (member == null || member.IsActive != true)
-                {
-                    txtProgress.AppendText($"  WARNING: Member #{playerNumberAsInt} not found or inactive. Skipping file.\r\n");
-                    return returnMe;
-                }
-
-                // Now process each worksheet with the extracted player info
-                foreach (var ws in workbook.Worksheets)
-                {
-                    const int GameDataLastRow = 46;
-                    const int GameDataStartRow = 3;
-
-                    // PERFORMANCE: Track participant counts per tournament to avoid repeated DB queries
-                    Dictionary<int, int> tournamentSquadCounts = new Dictionary<int, int>();
-
-                    for (int row = GameDataStartRow; row <= GameDataLastRow; row++)
-                    {
-                        ExcelRow temp = new();
-
-                        // Populate excel row with reused player data
-                        temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
-                        temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
-                        temp.PlayerLastName = playerLastName;
-                        temp.PlayerOrginalAVG = playerOrgAVG;
-                        temp.PlayerNumber = playerNumberAsInt;
-
-                        try { temp.GameTotal = ws.Cell(row, 1).GetValue<int>(); } catch { temp.GameTotal = -1; }
-                        try { temp.Date = ws.Cell(row, 2).GetDateTime(); } catch { temp.Date = new DateTime(); }
-                        try { temp.Game1 = ws.Cell(row, 3).GetValue<int>(); } catch { temp.Game1 = -1; }
-                        try { temp.Game2 = ws.Cell(row, 4).GetValue<int>(); } catch { temp.Game2 = -1; }
-                        try { temp.Game3 = ws.Cell(row, 5).GetValue<int>(); } catch { temp.Game3 = -1; }
-                        try { temp.Game4 = ws.Cell(row, 6).GetValue<int>(); } catch { temp.Game4 = -1; }
-                        try { temp.Total = ws.Cell(row, 7).GetValue<int>(); } catch { temp.Total = -1; }
-
-                        if (temp.GameTotal == -1)
-                        {
-                            // No game data in this row; skip it
-                            continue;
-                        }
-
-                        try { temp.AverageOfRow = ws.Cell(row, 8).GetValue<double>(); } catch { temp.AverageOfRow = -1; }
-                        try { temp.TrueAverage = ws.Cell(row, 9).GetValue<double>(); } catch { temp.TrueAverage = -1; }
-                        try { temp.AVG = ws.Cell(row, 10).GetValue<int>(); } catch { temp.AVG = -1; }
-                        try { temp.HandyCap = ws.Cell(row, 11).GetValue<int>(); } catch { temp.HandyCap = -1; }
-                        try { temp.Bonus = ws.Cell(row, 12).GetValue<int>(); } catch { temp.Bonus = -1; }
-                        temp.FinPPHG = ws.Cell(row, 14).GetString();
-                        try { if (!string.IsNullOrEmpty(temp.FinPPHG)) { temp.Cash = ws.Cell(row, 15).GetValue<double>(); } else { temp.Cash = 0; } } catch { temp.Cash = 0; }
-                        temp.Notes = ws.Cell(row, 16).GetString();
-
-                        DateTime rowDate = temp.Date.Date;
-                        if (rowDate == DateTime.MinValue)
-                        {
-                            // Invalid date; skip this row
-                            continue;
-                        }
-
-                        Tournament tourn = existingTournaments.FirstOrDefault(t => t.Date.Date == rowDate);
-                        if (tourn == null)
-                        {
-                            tourn = new Tournament()
-                            {
-                                Date = rowDate,
-                                Location = "Imported",
-                                Event = $"Imported Tourney - {rowDate}",
-                                Notes = string.Empty,
-                                Sponsors = string.Empty,
-                                Squads = 4,
-                                Doubles = false,
-                                ThreeOutOf4 = false,
-                                IsOnlyThreeGames = false,
-                            };
-
-                            TournamentDB.AddTournament(tourn, db);
-                            existingTournaments.Add(tourn);
-                        }
-
-                        // There are some cases where an entire entry will be all null games
-                        // this is due to tournament conditions such as invalid lane oilings.
-                        // The tournament is valid but none of the scores are counted due to inflated numbers.
-                        Game game = new Game()
-                        {
-                            Game1 = temp.Game1 > -1 ? temp.Game1 : null,
-                            Game2 = temp.Game2 > -1 ? temp.Game2 : null,
-                            Game3 = temp.Game3 > -1 ? temp.Game3 : null,
-                            Game4 = temp.Game4 > -1 ? temp.Game4 : null,
-                            TotalScore = temp.Total > -1 ? temp.Total : null,
-                            Handicap = temp.HandyCap > -1 ? temp.HandyCap : 0,
-                            Bonus = temp.Bonus > -1 ? temp.Bonus : 0,
-                            MoneyWon = Convert.ToDecimal(temp.Cash),
-                            Notes = temp.Notes,
-                            IsComp = !string.IsNullOrWhiteSpace(temp.FinPPHG),
-                            IsFinalized = true,
-                            UseGame1 = temp.Game1 > -1 ? true : false,
-                            UseGame2 = temp.Game2 > -1 ? true : false,
-                            UseGame3 = temp.Game3 > -1 ? true : false,
-                            UseGame4 = temp.Game4 > -1 ? true : false,
-
-                            AdjustedAvg = temp.AVG,
-                            KeepAdjustedAvg = true,
-                            LeagueAverage = temp.TrueAverage,
-                            HandicapTotal = temp.HandyCap,
-                            // Place standing has many variations like (4th, 17th tie, 9thHM, and more)
-                            // PlaceStanding = Convert.ToInt32(temp.FinPPHG),
-                        };
-
-                        GameDB.AddOrUpdateGame(game, db);
-
-                        // Squad numbering is 1-based per player per tournament within this import run.
-                        // Always start from 1 for the first entry read, regardless of any existing DB records.
-                        int squadNumber;
-                        if (!tournamentSquadCounts.ContainsKey(tourn.Id))
-                        {
-                            tournamentSquadCounts[tourn.Id] = 0;
-                        }
-                        tournamentSquadCounts[tourn.Id]++;
-                        squadNumber = tournamentSquadCounts[tourn.Id];
-
-                        Participant participant = new Participant()
-                        {
-                            Squad = squadNumber,
-                            Member = member,
-                            Game = game,
-                            Tournament = tourn
-                        };
-
-                        TournamentDB.AddMemberToTournament(participant, db);
-
-                        returnMe.Add(temp);
-                    }
-                }
-
-                db.SaveChanges();
-                txtProgress.AppendText($"  File complete: {returnMe.Count} records saved.\r\n");
-                return returnMe;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Extracts player information (name, number, average) from the first worksheet with valid data.
-    /// Used once per workbook and reused for all sheets.
-    /// </summary>
-    private void ExtractPlayerInfoFromWorksheet(IXLWorksheet ws, ref string[] PlayerFinalFirstAndMiddle,
-        ref string playerLastName, ref int playerOrgAVG, ref int playerNumberAsInt,
-        string PathAndFileName, char[] splitters)
-    {
-        string firstAndMiddle = "";
-
-        // Parse header for player name
-        string playerFullName = ws.Cell(1, 2).GetString();
-        if (!string.IsNullOrWhiteSpace(playerFullName))
-        {
-            if (playerFullName.Contains(','))
-            {
-                playerLastName = playerFullName[..playerFullName.IndexOf(',')];
-                firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
-            }
-            else if (playerFullName.Contains('.'))
-            {
-                playerLastName = playerFullName[..playerFullName.IndexOf('.')];
-                try
-                {
-                    firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    int firstSpaceIndex = playerFullName.IndexOf(' ');
-                    firstAndMiddle = firstSpaceIndex > -1 ? playerFullName[..firstSpaceIndex] : playerFullName;
-                }
-            }
+            this.target = target;
         }
 
-        string[] first0middle1 = firstAndMiddle.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        for (int i = 0; i < Math.Min(first0middle1.Length, PlayerFinalFirstAndMiddle.Length); i++)
+        public void Report(string value)
         {
-            PlayerFinalFirstAndMiddle[i] = first0middle1[i];
-        }
-
-        try
-        {
-            playerOrgAVG = ws.Cell(1, 10).GetValue<int>();
-        }
-        catch (Exception)
-        {
-            string orgString = ws.Cell(1, 10).GetString();
-            string[] afterSplit = orgString.Split('-', '*', 'L');
-            if (afterSplit.Length > 0 && int.TryParse(afterSplit[0], out int val))
-                playerOrgAVG = val;
-            else
-                playerOrgAVG = -1;
-        }
-
-        string playerNumber = ws.Cell(1, 14).GetString();
-        if (playerNumber == null)
-        {
-            playerNumberAsInt = 0;
-            return;
-        }
-
-        playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);
-
-        string[] playerNumberAfterSplit;
-        int.TryParse(playerNumber, out playerNumberAsInt);
-        if (playerNumberAsInt != 0)
-        {
-            playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty));
-        }
-        else if (playerNumberAsInt == 0)
-        {
-            for (int i = 0; i < splitters.Length; i++)
-            {
-                try
-                {
-                    playerNumberAfterSplit = playerNumber.Split(splitters[i]);
-                    playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
-                }
-                catch { }
-            }
+            target.AppendText(value);
         }
     }
 
@@ -684,7 +421,7 @@ public partial class FrmMain : Form
         // Update validMembers in memory with latest history values
         for (int i = 0; i < validMembers.Count; i++)
         {
-            List<PlayerHistoryViewModel> list = PlayerHistoryDB.GetLastFiveTournaments(validMembers[i].Number);
+            List<PlayerHistoryViewModel> list = playerHistoryRepository.GetLastFiveTournaments(validMembers[i].Number);
             if (list.Count > 0)
             {
                 validMembers[i].Average = list[0].AVG; // set new avg to last bowled adjusted avg
@@ -710,12 +447,12 @@ public partial class FrmMain : Form
         lblFinalizeStatus.Refresh();
     }
 
-    private static void UpdateMembers(List<Member> members)
+    private void UpdateMembers(List<Member> members)
     {
         for (int i = 0; i < members.Count; i++)
         {
             // Use AddOrUpdate to ensure existing members get their averages/bonus updated
-            MemberDB.AddOrUpdateMember(members[i]);
+            memberRepository.AddOrUpdateMember(members[i]);
         }
     }
 

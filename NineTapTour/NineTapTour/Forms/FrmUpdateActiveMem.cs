@@ -1,24 +1,33 @@
 ﻿using NineTapTour.Database;
+using NineTapTour.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
+using NineTapTour.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Forms;
 
 public partial class FrmUpdateActiveMem : Form
 {
+    private readonly IMemberRepository memberRepository;
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
+
     DateTime targetDate;
     readonly List<Member> InActiveList;
     readonly List<Member> AllMembers;
-    public FrmUpdateActiveMem()
+    public FrmUpdateActiveMem(IMemberRepository memberRepository, IDbContextFactory<NineTapDb> dbFactory)
     {
+        this.memberRepository = memberRepository;
+        this.dbFactory = dbFactory;
+
         InitializeComponent();
         dateTimePicker1.Value = DateTime.Today.AddDays(-180);
         targetDate = dateTimePicker1.Value;
-        InActiveList = MemberDB.GetMemberList();
-        AllMembers = MemberDB.GetMemberList();
+        InActiveList = memberRepository.GetMemberList();
+        AllMembers = memberRepository.GetMemberList();
         UpdateList();
     }
 
@@ -53,7 +62,7 @@ public partial class FrmUpdateActiveMem : Form
             return;
         }
 
-        var db = new NineTapDb();
+        var db = dbFactory.CreateDbContext();
         if (MessageBox.Show("Update the selected Members to inactive?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
         {
           

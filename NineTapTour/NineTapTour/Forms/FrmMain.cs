@@ -1,68 +1,64 @@
-﻿using NineTapTour.Database;
+﻿using NineTapTour.Core.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using NineTapTour.Database;
+using NineTapTour.Services;
 using System;
 using System.Windows.Forms;
 using System.Drawing;
-using NineTapTour.Models;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
+using NineTapTour.Core.Data;
+using NineTapTour.Core.Services;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 
 namespace NineTapTour.Forms;
 
 public partial class FrmMain : Form
 {
+    private readonly IFormNavigator navigator;
+    private readonly IFormFactory formFactory;
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
+    private readonly ITournamentSession session;
+    private readonly IDatabaseMaintenanceService databaseMaintenance;
+    private readonly IFileDialogService fileDialogService;
+    private readonly IMessageService messageService;
+
     /// <summary>
     /// Keeps track of the currently active menu item on the menu strip.
     /// </summary>
     public ToolStripMenuItem ActiveItem;
-    
+
     /// <summary>
-    /// Opens Main form 
+    /// Opens Main form
     /// Retrieves information from the database in order.
     /// </summary>
-    public FrmMain()
+    public FrmMain(IFormNavigator navigator, IFormFactory formFactory, IDbContextFactory<NineTapDb> dbFactory, ITournamentSession session,
+        IDatabaseMaintenanceService databaseMaintenance, IFileDialogService fileDialogService, IMessageService messageService)
     {
+        this.navigator = navigator;
+        this.session = session;
+        this.formFactory = formFactory;
+        this.dbFactory = dbFactory;
+        this.databaseMaintenance = databaseMaintenance;
+        this.fileDialogService = fileDialogService;
+        this.messageService = messageService;
+
         InitializeComponent();
 
         // Set initial size of the application to the maximum size of the screen's working area and maximize the window
         Size = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
         WindowState = FormWindowState.Maximized;
 
-        // Run migrations on startup
-        var migrator = new NineTapDb().Database.GetService<IMigrator>();
-        migrator.Migrate();
-        
-        var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
-        OpenOrDisplayForm(ref mainMenu);
+        navigator.RegisterMdiParent(this);
 
         //sets the first item of the menu bar to the active item and highlights it.
         ActiveItem = (ToolStripMenuItem)menMain.Items[0];
         ActiveItem.BackColor = SystemColors.ActiveCaption;
     }
 
-    /// <summary>
-    /// Opens/Displays the specified form. Ensures the form is on top when selected.
-    /// </summary>
-    /// <typeparam name="T">forms that have already been opened(?)</typeparam>
-    /// <param name="form">forms that haven't been opened yet(?)</param>
-    public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
+    protected override void OnLoad(EventArgs e)
     {
-        if (form != null)
-        {   
-            form.BringToFront();
-            form.Activate();   
-        }
-        else
-        {
-            form = new T
-            {
-                MdiParent = this,
-            };
-        }
-        form.WindowState = FormWindowState.Maximized;
-        form.ControlBox = false;
-        form.MinimizeBox = false;
-        form.MaximizeBox = false;
-        form.Show();
+        base.OnLoad(e);
+        navigator.ShowSingleton<FrmMainMenu>();
     }
 
     /// <summary>
@@ -94,8 +90,7 @@ public partial class FrmMain : Form
     /// </summary>
     public void AboutToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var aboutForm = Application.OpenForms["FrmAbout"] as FrmAbout;
-        OpenOrDisplayForm(ref aboutForm);
+        navigator.ShowSingleton<FrmAbout>();
     }
 
     /// <summary>
@@ -103,19 +98,17 @@ public partial class FrmMain : Form
     /// </summary>
     public void MainMenuToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        if (FrmMemberScoresHelpers.unsavedBowlerData)
+        if (session.HasUnsavedBowlerData)
         {
             DialogResult result = MessageBox.Show("You have unsaved bowler data, are you sure you want to switch screens?", "Unsaved Data", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (result == DialogResult.No)
             {
                 return;
             }
-            FrmMemberScoresHelpers.unsavedBowlerData = false;
+            session.HasUnsavedBowlerData = false;
         }
 
-        var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
-
-        OpenOrDisplayForm(ref mainMenu);
+        navigator.ShowSingleton<FrmMainMenu>();
     }
 
     /// <summary>
@@ -123,17 +116,16 @@ public partial class FrmMain : Form
     /// </summary>
     public void MemberDataToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        if (FrmMemberScoresHelpers.unsavedBowlerData)
+        if (session.HasUnsavedBowlerData)
         {
             DialogResult result = MessageBox.Show("You have unsaved bowler data, are you sure you want to switch screens?", "Unsaved Data", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (result == DialogResult.No)
             {
                 return;
             }
-            FrmMemberScoresHelpers.unsavedBowlerData = false;
+            session.HasUnsavedBowlerData = false;
         }
-        var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
-        OpenOrDisplayForm(ref newfrmMemberData);
+        navigator.ShowSingleton<FrmMemberData>();
     }
 
     /// <summary>
@@ -141,8 +133,7 @@ public partial class FrmMain : Form
     /// </summary>
     public void TournamentToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as FrmMemberScores;
-        OpenOrDisplayForm(ref newfrmMemberScores);     
+        navigator.ShowSingleton<FrmMemberScores>();
     }
 
     /// <summary>
@@ -150,46 +141,60 @@ public partial class FrmMain : Form
     /// </summary>
     public void ReportsToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        if (FrmMemberScoresHelpers.unsavedBowlerData)
+        if (session.HasUnsavedBowlerData)
         {
             DialogResult result = MessageBox.Show("You have unsaved bowler data, are you sure you want to switch screens?", "Unsaved Data", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (result == DialogResult.No)
             {
                 return;
             }
-            FrmMemberScoresHelpers.unsavedBowlerData = false;
+            session.HasUnsavedBowlerData = false;
         }
 
-        var frmReports = Application.OpenForms["FrmReports"] as FrmReports;
-        OpenOrDisplayForm(ref frmReports);
+        navigator.ShowSingleton<FrmReports>();
     }
 
     private void UpdateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-        var UpdatefrmActiveMem = new FrmUpdateActiveMem();          
-        UpdatefrmActiveMem.Show();
+        var updateFrmActiveMem = formFactory.Create<FrmUpdateActiveMem>();
+        updateFrmActiveMem.Show();
     }
 
     private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        DatabaseManagement.BackupDatabase();
+        string backupPath = fileDialogService.PickSaveFile(
+            "Backup file |*.bak", ".bak", databaseMaintenance.CreateBackupName(),
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+        if (backupPath == null)
+        {
+            return;
+        }
+
+        databaseMaintenance.BackupTo(backupPath);
+        messageService.ShowInfo("Backup successful");
     }
 
     private void RestoreDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
     {
         if (MessageBox.Show("Restoring the database will restart the application.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
         {
-            if (DatabaseManagement.RestoreDatabase())
+            string backupPath = fileDialogService.PickOpenFile(
+                "Backup file |*.bak", ".bak",
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+            if (backupPath == null)
             {
-                MessageBox.Show("Database successfully restored from backup!");
-                Application.Restart();
+                return;
             }
+
+            databaseMaintenance.RestoreFrom(backupPath);
+            messageService.ShowInfo("Database successfully restored from backup!");
+            Application.Restart();
         }
     }
     
     private void LabelPrintToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        FrmLabelPrint labelsToPrint = new();
+        FrmLabelPrint labelsToPrint = formFactory.Create<FrmLabelPrint>();
         labelsToPrint.ShowDialog();
     }
 }

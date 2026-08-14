@@ -1,11 +1,13 @@
 ﻿using NineTapTour.Database;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
+using NineTapTour.Core.Repositories;
+using NineTapTour.Core.Services;
 
 namespace NineTapTour.Forms;
 
@@ -15,8 +17,14 @@ namespace NineTapTour.Forms;
 public partial class FrmTournamentStats : Form
 {
 
-    public FrmTournamentStats()
+    private readonly ITournamentSession session;
+    private readonly IStatsService statsService;
+
+    public FrmTournamentStats(ITournamentSession session, IStatsService statsService)
     {
+        this.session = session;
+        this.statsService = statsService;
+
         InitializeComponent();
     }
 
@@ -32,59 +40,15 @@ public partial class FrmTournamentStats : Form
     /// <param name="e"></param>
     public void TournamentStats_Load(object sender, EventArgs e)
     {
-        if (!FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4)
-        {
-            Tournament selectedTournament = FrmMemberScoresHelpers.selectedTournament;
-            lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
+        Tournament selectedTournament = session.SelectedTournament;
+        lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
-            // Grabs a list of TournamentStatsList from the database
-            List<TournamentStatsList> statsList = TournamentStatsListDB.GetTournamentStatsList(selectedTournament.Id);
-            
-            // Send to form
-            dgvTournamentStats.DataSource = BuildDataTable(statsList);
-        }
-        else
-        {
-            Tournament selectedTournament = FrmMemberScoresHelpers.selectedTournament;
-            lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
+        // Grabs a list of TournamentStatsList from the database; the service picks
+        // the 3-out-of-4 variant of the query when the tournament calls for it (M7.5)
+        List<TournamentStatsList> statsList = statsService.GetTournamentStats(selectedTournament.Id, selectedTournament.ThreeOutOf4);
 
-            List<TournamentStatsList> statsList = TournamentStatsListDB.Get3OutOf4TournamentStatsList(selectedTournament.Id);
-
-            // send to form
-            dgvTournamentStats.DataSource = BuildDataTable(statsList);
-        }
-    }
-
-    /// <summary>
-    /// This method sorts scores and removes the lowest if 4 scores are present
-    /// It returns  a list with the 3 highest scores listOfValidScores
-    /// </summary>
-    /// <param name="scores"></param>  
-    public static List<int> GetTop3OutOf4(List<int?> scores)
-    {
-        List<int> listOfValidScores = [];
-        for (int i = 0; i < scores.Count; i++)
-        {
-            if (scores[i].HasValue)
-                listOfValidScores.Add(scores[i].Value);
-        }
-
-        //after sorting I want to get rid of lowest score  
-        listOfValidScores.Sort();
-        if (listOfValidScores.Count == 4)
-            listOfValidScores.Remove(listOfValidScores[0]);
-
-        listOfValidScores.Reverse();
-        return listOfValidScores;
-    }
-
-    /// <summary>
-    /// GetConnection() returns a connection string to the database within the quotes.
-    /// </summary>
-    /// <returns>Database ConnectionString</returns>
-    public static string GetConnection()
-    {
-        return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
+        // Send to form
+        dgvTournamentStats.DataSource = BuildDataTable(statsList);
     }
 
     /// <summary>

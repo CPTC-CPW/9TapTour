@@ -9,7 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Linq;
 using NineTapTour.Database;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
+using NineTapTour.Core.Repositories;
+using NineTapTour.Core.Services;
 using NineTapTour.Helpers;
 
 namespace NineTapTour.Forms
@@ -20,11 +23,16 @@ namespace NineTapTour.Forms
         private readonly int memId;
         private readonly int memNum;
         private readonly string memName;
+        private readonly IPlayerHistoryRepository playerHistoryRepository;
+        private readonly IStatsService statsService;
         readonly List<PlayerHistoryViewModel> ph;
 
 
-        public FrmStats(int memberId, string memberName, Member currentMem)
+        public FrmStats(int memberId, string memberName, Member currentMem, IPlayerHistoryRepository playerHistoryRepository, IStatsService statsService)
         {
+            this.playerHistoryRepository = playerHistoryRepository;
+            this.statsService = statsService;
+
             InitializeComponent();
             this.memId = memberId;
             this.memNum = currentMem.Number;
@@ -93,265 +101,35 @@ namespace NineTapTour.Forms
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
-            ph = PlayerHistoryDB.GetMemberPlayerHistory(memNum);
-        }
-
-        struct statHolder
-        {
-            public statHolder(DateTime Date,
-                                string Location,
-                                int Squad,
-                                int Id,
-                                string FirstName,
-                                string LastName,
-                                int? Game1,
-                                int? Game2,
-                                int? Game3,
-                                int? Game4,
-                                int? Handicap,
-                                int? Bonus)
-            {
-                this.Date = Date;
-                this.Location = Location;
-                this.Squad = Squad;
-                this.Id = Id;
-                this.FirstName = FirstName;
-                this.LastName = LastName;
-                this.Game1 = Game1;
-                this.Game2 = Game2;
-                this.Game3 = Game3;
-                this.Game4 = Game4;
-
-                ScratchTotal = ((Game1.HasValue ? Game1 : 0) + (Game2.HasValue ? Game2 : 0) + (Game3.HasValue ? Game3 : 0) + (Game4.HasValue ? Game4 : 0));
-
-                GameTotal = (((Game1.HasValue ? Game1 : 0) + (Handicap + Bonus)) + ((Game2.HasValue ? Game2 : 0) + (Handicap + Bonus)) + ((Game3.HasValue ? Game3 : 0) + (Handicap + Bonus)) + ((Game4.HasValue ? Game4 : 0) + (Handicap + Bonus)));
-
-                AvgPerGame = ((Game1.HasValue ? Game1 : 0) + (Game2.HasValue ? Game2 : 0) + (Game3.HasValue ? Game3 : 0) + (Game4.HasValue ? Game4 : 0));
-
-                int div = ((Game1.HasValue ? 1 : 0) + (Game2.HasValue ? 1 : 0) + (Game3.HasValue ? 1 : 0) + (Game4.HasValue ? 1 : 0));
-
-                if (div != 0)
-                {
-                    AvgPerGame /= div;
-                }
-
-                this.Handicap = Handicap;
-                this.Bonus = Bonus;
-            }
-
-            public DateTime Date;
-            public string Location;
-            public int Squad;
-            public int Id;
-            public string FirstName;
-            public string LastName;
-            public int? Game1;
-            public int? Game2;
-            public int? Game3;
-            public int? Game4;
-            public int? ScratchTotal;
-            public int? GameTotal;
-            public int? AvgPerGame;
-            public int? Handicap;
-            public int? Bonus;
+            ph = playerHistoryRepository.GetMemberPlayerHistory(memNum);
         }
 
         /// <summary>
-        /// Populates the stats page for the member selected
+        /// Populates the stats page for the member selected.
+        /// The query and math live in StatsService (M7.5); this only formats the results.
         /// </summary>
-        /// 
         public void populateStats()
         {
+            MemberStatAverages averages = statsService.GetMemberStatAverages(memNum);
 
-            var db = new NineTapDb();
-
-            var temp = (from p in db.Participants
-                        join m in db.Members on p.Member.Id equals m.Id
-                        join g in db.Games on p.Game.Id equals g.Id
-                        join t in db.Tournaments on p.Tournament.Id equals t.Id
-                        where memNum == p.Member.Number
-                        orderby t.Date descending
-                        select new
-                        {
-                            t.Date,
-                            t.Location,
-                            p.Squad,
-                            p.Member.Id,
-                            p.Member.FirstName,
-                            p.Member.LastName,
-                            g.Game1,
-                            g.Game2,
-                            g.Game3,
-                            g.Game4,
-                            ScratchTotal = 0,
-                            GameTotal = 0,
-                            AvgPerGame = 0,
-                            g.Handicap,
-                            g.Bonus
-                        }).ToList();
-
-            List<statHolder> stats = [];
-
-            for (int i = 0; i < temp.Count; i++)
-            {
-                stats.Add(new statHolder(
-                            temp[i].Date,
-                             temp[i].Location,
-                             temp[i].Squad,
-                             temp[i].Id,
-                             temp[i].FirstName,
-                             temp[i].LastName,
-                             temp[i].Game1,
-                             temp[i].Game2,
-                             temp[i].Game3,
-                             temp[i].Game4,
-                             temp[i].Handicap,
-                             temp[i].Bonus
-                        ));
-            }
-
-            double sum = 0;
-            double count = 0;
-            #region Game 1 Average
-
-            for (int i = 0; i < stats.Count; i++)
-            {
-                count++;
-                sum += Convert.ToInt32(stats[i].Game1);
-            }
-
-            txtGame1.Text = String.Format("{0:N2}", (sum / count));
-            #endregion
-            #region Game 2 Average
-            sum = 0;
-            count = 0;
-
-            for (int i = 0; i < stats.Count; i++)
-            {
-                count++;
-                sum += Convert.ToInt32(stats[i].Game2);
-            }
-
-            txtGame2.Text = String.Format("{0:N2}", (sum / count));
-            #endregion
-            #region Game 3 Average
-            sum = 0;
-            count = 0;
-
-            for (int i = 0; i < stats.Count; i++)
-            {
-                count++;
-                sum += Convert.ToInt32(stats[i].Game3);
-            }
-
-            txtGame3.Text = String.Format("{0:N2}", (sum / count));
-            #endregion
-            #region Game 4 Average
-            sum = 0;
-            count = 0;
-
-            for (int i = 0; i < stats.Count; i++)
-            {
-                count++;
-                sum += Convert.ToInt32(stats[i].Game4);
-            }
-
-            txtGame4.Text = String.Format("{0:N2}", (sum / count));
-            #endregion
-            #region Scratch Total Average
-            sum = 0;
-            count = 0;
-
-            for (int i = 0; i < stats.Count; i++)
-            {
-                count++;
-                sum += Convert.ToInt32(stats[i].ScratchTotal);
-            }
-
-            txtScratchTotal.Text = String.Format("{0:N2}", (sum / count));
-            #endregion
-            #region Game Total Average
-            sum = 0;
-            count = 0;
-
-            for (int i = 0; i < stats.Count; i++)
-            {
-                count++;
-                sum += Convert.ToInt32(stats[i].GameTotal);
-            }
-
-            txtGameTotal.Text = String.Format("{0:N2}", (sum / count));
-            #endregion
-            #region Average Game Score
-            sum = 0;
-
-            foreach (var item in stats)
-            {
-                sum += Convert.ToDouble(item.AvgPerGame);
-            }
-
-            txtAveragePerGame.Text = (sum / stats.Count()).ToString();
-            #endregion
-
-            #region Handicap Average
-            sum = 0;
-            count = 0;
-
-            for (int i = 0; i < stats.Count; i++)
-            {
-                count++;
-                sum += Convert.ToInt32(stats[i].Handicap);
-            }
-
-            txtHandicap.Text = String.Format("{0:N2}", (sum / count));
-            #endregion
-            #region Bonus Pins Average
-            sum = 0;
-            count = 0;
-
-            for (int i = 0; i < stats.Count; i++)
-            {
-                count++;
-                sum += Convert.ToInt32(stats[i].Bonus);
-            }
-
-            txtBonus.Text = String.Format("{0:N2}", (sum / count));
-            #endregion
-
+            txtGame1.Text = String.Format("{0:N2}", averages.Game1Average);
+            txtGame2.Text = String.Format("{0:N2}", averages.Game2Average);
+            txtGame3.Text = String.Format("{0:N2}", averages.Game3Average);
+            txtGame4.Text = String.Format("{0:N2}", averages.Game4Average);
+            txtScratchTotal.Text = String.Format("{0:N2}", averages.ScratchTotalAverage);
+            txtGameTotal.Text = String.Format("{0:N2}", averages.GameTotalAverage);
+            txtAveragePerGame.Text = averages.AveragePerGame.ToString();
+            txtHandicap.Text = String.Format("{0:N2}", averages.HandicapAverage);
+            txtBonus.Text = String.Format("{0:N2}", averages.BonusAverage);
         }
 
         public DataTable tableview()
         {
             DataTable dtGames = new();
-            var db = new NineTapDb();
-            
-            var temp = (from p in db.Participants
-                        join m in db.Members on p.Member.Id equals m.Id
-                        join g in db.Games on p.Game.Id equals g.Id
-                        join t in db.Tournaments on p.Tournament.Id equals t.Id
-                        where m.Number == memNum 
-                           && g.IsFinalized
-                        orderby t.Date descending, g.Id descending
-                        select new
-                        {
-                            hisID = g.Id,
-                            GameID = g.Id,
-                            GamesPlayed = g.GamesPlayed,
-                            TournamentDate = t.Date,
-                            Game1 = g.Game1 ?? 0,
-                            Game2 = g.Game2 ?? 0,
-                            Game3 = g.Game3 ?? 0,
-                            Game4 = g.Game4 ?? 0,
-                            ScratchTotal = g.ScratchTotal,
-                            TotalScore = g.HandicapTotal,
-                            trueAVG = g.LeagueAverage,
-                            AVG = g.AdjustedAvg,
-                            HandiCap = g.Handicap ?? 0,
-                            Bonus = g.Bonus ?? 0,
-                            MoneyWon = g.MoneyWon ?? 0,
-                            PPHG = g.PlaceStanding,  // Don't ToString() in LINQ expression
-                            Notes = g.Notes
-                        }).ToList(); // Materialize first, then transform
+
+            // Query and display shaping live in StatsService (M7.5);
+            // this method only boxes the rows into a DataTable for the grid.
+            MemberStatsResult stats = statsService.GetMemberStats(memNum);
 
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
@@ -368,57 +146,30 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Bonus").ReadOnly = true;
             dtGames.Columns.Add("Place").ReadOnly = true;
 
-            string moneyWonWithTotal = $"Money Won ({PlayerHistoryDB.GetTotalMoneyWon(memNum)})";
+            string moneyWonWithTotal = $"Money Won ({stats.TotalMoneyWon})";
             dtGames.Columns.Add(moneyWonWithTotal, typeof(Decimal));
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GmID").ReadOnly = true;
 
-            foreach (var item in temp)
+            foreach (MemberStatsRow item in stats.Rows)
             {
                 DataRow newRow = dtGames.NewRow();
                 newRow["Games"] = item.GamesPlayed;
                 newRow["Date"] = item.TournamentDate.ToShortDateString();
-
-                #region display_fix_till_more_perm_fix_in_importation
-                if (item.GamesPlayed == 0)
-                {
-                    continue;
-                }
-                // some entries in the imported excel files have 0 gamesTotal and no relevant data to be
-                // imported which would cause crash when displaying 
-                #endregion
-
-                if (item.Game1 == 0)
-                    newRow["Gm1"] = null;
-                else
-                    newRow["Gm1"] = item.Game1;
-
-                if (item.Game2 == 0)
-                    newRow["Gm2"] = null;
-                else
-                    newRow["Gm2"] = item.Game2;
-                if (item.Game3 == 0)
-                    newRow["Gm3"] = null;
-                else
-                    newRow["Gm3"] = item.Game3;
-                if (item.Game4 == 0)
-                    newRow["Gm4"] = null;
-                else
-                    newRow["Gm4"] = item.Game4;
+                newRow["Gm1"] = item.Game1; // Zero scores were shaped to null by the service
+                newRow["Gm2"] = item.Game2;
+                newRow["Gm3"] = item.Game3;
+                newRow["Gm4"] = item.Game4;
                 newRow["Scratch Total"] = item.ScratchTotal;
-                newRow["Game Total w/HDCP"] = item.TotalScore;
-                newRow["30 Entry AVG"] = item.trueAVG;
-
-                if (item.AVG == 0)
-                    newRow["Adj. AVG"] = null;
-                else
-                    newRow["Adj. AVG"] = item.AVG;
-                newRow["HDCP"] = item.HandiCap;
+                newRow["Game Total w/HDCP"] = item.HandicapTotal;
+                newRow["30 Entry AVG"] = item.LeagueAverage;
+                newRow["Adj. AVG"] = item.AdjustedAvg;
+                newRow["HDCP"] = item.Handicap;
                 newRow["Bonus"] = item.Bonus;
                 newRow[moneyWonWithTotal] = item.MoneyWon;
-                newRow["Place"] = item.PPHG?.ToString() ?? ""; // Convert after materializing
+                newRow["Place"] = item.Place;
                 newRow["Notes"] = item.Notes;
-                newRow["GmID"] = item.GameID;
+                newRow["GmID"] = item.GameId;
 
                 dtGames.Rows.Add(newRow);
             }
@@ -446,41 +197,17 @@ namespace NineTapTour.Forms
                 lblStartAvg.Text = 0.ToString();
             }
 
-            List<PlayerHistoryViewModel> Last30 = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number).Take(30).ToList();
-            int game1AVG = 0;
-            int game2AVG = 0;
-            int game3AVG = 0;
-            int game4AVG = 0;
-            int scratchTotal = 0;
-            int gameTotal = 0;
+            // The last-30-entries math lives in StatsService (M7.5); this only displays it
+            Last30Averages last30 = statsService.GetLast30Averages(mem.Number);
 
-            if (Last30.Count > 0)
+            if (last30.EntryCount > 0)
             {
-                for (int i = 0; i < Last30.Count; i++)
-                {
-
-                    game1AVG += Last30[i].Game1 ?? 0;
-                    game2AVG += Last30[i].Game2 ?? 0;
-                    game3AVG += Last30[i].Game3 ?? 0;
-                    game4AVG += Last30[i].Game4 ?? 0;
-                    scratchTotal += (Last30[i].Game1 ?? 0) + (Last30[i].Game2 ?? 0) + (Last30[i].Game3 ?? 0) + (Last30[i].Game4 ?? 0);
-                    int total = (Last30[i].Game1 != null) ? (Last30[i].Game1 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
-                    total += (Last30[i].Game2 != null) ? (Last30[i].Game2 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
-                    total += (Last30[i].Game3 != null) ? (Last30[i].Game3 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
-                    total += (Last30[i].Game4 != null) ? (Last30[i].Game4 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
-                    gameTotal = total;
-                }
-                game1AVG /= Last30.Count;
-                game2AVG /= Last30.Count;
-                game3AVG /= Last30.Count;
-                game4AVG /= Last30.Count;
-
-                txtGame1.Text = game1AVG.ToString();
-                txtGame2.Text = game2AVG.ToString();
-                txtGame3.Text = game3AVG.ToString();
-                txtGame4.Text = game4AVG.ToString();
-                txtScratchTotal.Text = scratchTotal.ToString();
-                txtGameTotal.Text = gameTotal.ToString();
+                txtGame1.Text = last30.Game1Average.ToString();
+                txtGame2.Text = last30.Game2Average.ToString();
+                txtGame3.Text = last30.Game3Average.ToString();
+                txtGame4.Text = last30.Game4Average.ToString();
+                txtScratchTotal.Text = last30.ScratchTotal.ToString();
+                txtGameTotal.Text = last30.GameTotal.ToString();
             }
         }
 
@@ -568,7 +295,7 @@ namespace NineTapTour.Forms
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
             //grab untouched player history view models
-            List<PlayerHistoryViewModel> pHist = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number);
+            List<PlayerHistoryViewModel> pHist = playerHistoryRepository.GetMemberPlayerHistory(mem.Number);
 
             //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 
             dataGridView1.Sort(dataGridView1.Columns["Date"], System.ComponentModel.ListSortDirection.Descending);
