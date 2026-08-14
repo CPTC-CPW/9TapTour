@@ -149,10 +149,11 @@ public partial class FrmReports : Form
             memberNumber = selectedMember.Number;
         }
 
+        bool includeImported = chkIncludeImported.Checked;
         List<ReportGameEntry> entries;
         try
         {
-            entries = reportsRepository.GetReportEntries(startYear, endYear, memberNumber);
+            entries = reportsRepository.GetReportEntries(startYear, endYear, memberNumber, includeImported);
         }
         catch (Exception ex)
         {
@@ -175,6 +176,10 @@ public partial class FrmReports : Form
         if (includeSidePots)
         {
             currentReportTitle += " (incl. side pots)";
+        }
+        if (!includeImported)
+        {
+            currentReportTitle += " (excl. imported history)";
         }
 
         if (rbIndividual.Checked)

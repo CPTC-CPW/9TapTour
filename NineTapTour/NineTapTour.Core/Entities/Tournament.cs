@@ -41,6 +41,13 @@ public class Tournament
     /// </summary>
     public bool IsTwoDay { get; set; }
 
+    /// <summary>
+    /// If set to true, this tournament was created by the legacy history import
+    /// (MemberImportTest) rather than run through the app. Imported data may be
+    /// incomplete, so reports can optionally exclude these tournaments.
+    /// </summary>
+    public bool IsImported { get; set; }
+
 }
 
 public class TournamentDTO

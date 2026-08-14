@@ -42,6 +42,7 @@ namespace NineTapTour.Forms
             rbCareer = new System.Windows.Forms.RadioButton();
             grpReport = new System.Windows.Forms.GroupBox();
             chkIncludeSidePots = new System.Windows.Forms.CheckBox();
+            chkIncludeImported = new System.Windows.Forms.CheckBox();
             lblTopNHint = new System.Windows.Forms.Label();
             txtTopN = new System.Windows.Forms.TextBox();
             lblTopN = new System.Windows.Forms.Label();
@@ -194,6 +195,7 @@ namespace NineTapTour.Forms
             //
             // grpReport
             //
+            grpReport.Controls.Add(chkIncludeImported);
             grpReport.Controls.Add(chkIncludeSidePots);
             grpReport.Controls.Add(lblTopNHint);
             grpReport.Controls.Add(txtTopN);
@@ -202,7 +204,7 @@ namespace NineTapTour.Forms
             grpReport.Controls.Add(lblCategory);
             grpReport.Location = new System.Drawing.Point(633, 12);
             grpReport.Name = "grpReport";
-            grpReport.Size = new System.Drawing.Size(280, 130);
+            grpReport.Size = new System.Drawing.Size(280, 140);
             grpReport.TabIndex = 2;
             grpReport.TabStop = false;
             grpReport.Text = "Report";
@@ -216,6 +218,18 @@ namespace NineTapTour.Forms
             chkIncludeSidePots.TabIndex = 5;
             chkIncludeSidePots.Text = "Include side pots in earnings";
             chkIncludeSidePots.UseVisualStyleBackColor = true;
+            //
+            // chkIncludeImported
+            //
+            chkIncludeImported.AutoSize = true;
+            chkIncludeImported.Checked = true;
+            chkIncludeImported.CheckState = System.Windows.Forms.CheckState.Checked;
+            chkIncludeImported.Location = new System.Drawing.Point(15, 112);
+            chkIncludeImported.Name = "chkIncludeImported";
+            chkIncludeImported.Size = new System.Drawing.Size(160, 19);
+            chkIncludeImported.TabIndex = 6;
+            chkIncludeImported.Text = "Include imported history";
+            chkIncludeImported.UseVisualStyleBackColor = true;
             //
             // lblTopNHint
             //
@@ -339,6 +353,7 @@ namespace NineTapTour.Forms
         private System.Windows.Forms.TextBox txtTopN;
         private System.Windows.Forms.Label lblTopNHint;
         private System.Windows.Forms.CheckBox chkIncludeSidePots;
+        private System.Windows.Forms.CheckBox chkIncludeImported;
         private System.Windows.Forms.Button btnRunReport;
         private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.DataGridView dgvReport;
