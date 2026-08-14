@@ -509,7 +509,7 @@ public partial class FrmMain : Form
 
     private void FrmMain_Load(object sender, EventArgs e)
     {
-        Text = "Version: 3.1.11";
+        Text = "Version: 3.2.0";
 #if DEBUG
         Text += " DEVELOPMENT ONLY";
 #endif
