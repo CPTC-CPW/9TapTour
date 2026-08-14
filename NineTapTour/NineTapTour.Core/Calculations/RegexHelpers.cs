@@ -17,4 +17,11 @@ public static partial class RegexHelpers
 
     [GeneratedRegex(@"^(\d+)(st|nd|rd|th|T)?$", RegexOptions.IgnoreCase, "en-US")]
     public static partial Regex SinglePlacing();
+
+    /// <summary>
+    /// Matches the leading digits of a legacy place-standing cell, which has many
+    /// variations ("4th", "17th tie", "9thHM", ...). Group 1 is the numeric place.
+    /// </summary>
+    [GeneratedRegex(@"^\s*(\d+)")]
+    public static partial Regex LeadingDigits();
 }

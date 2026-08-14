@@ -24,7 +24,8 @@ public class ReportsRepository : IReportsRepository
     /// <param name="startYear">Earliest tournament year to include, or null for no lower bound</param>
     /// <param name="endYear">Latest tournament year to include, or null for no upper bound</param>
     /// <param name="memberNumber">If set, only entries for this member number are returned</param>
-    public List<ReportGameEntry> GetReportEntries(int? startYear, int? endYear, int? memberNumber = null)
+    /// <param name="includeImported">When false, tournaments created by the legacy history import are excluded</param>
+    public List<ReportGameEntry> GetReportEntries(int? startYear, int? endYear, int? memberNumber = null, bool includeImported = true)
     {
         using var db = dbFactory.CreateDbContext();
 
@@ -48,6 +49,10 @@ public class ReportsRepository : IReportsRepository
         if (memberNumber.HasValue)
         {
             query = query.Where(g => g.Participant.Member.Number == memberNumber.Value);
+        }
+        if (!includeImported)
+        {
+            query = query.Where(g => !g.Participant.Tournament.IsImported);
         }
 
         var games = query.ToList();

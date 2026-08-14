@@ -2,6 +2,7 @@
 using ClosedXML.Excel;
 using NineTapTour.Core.Calculations;
 using NineTapTour.Core.Models;
+using System.Globalization;
 
 namespace NineTapTour.Core.Import;
 
@@ -106,8 +107,11 @@ public static class ExcelWorkbookReader
         {
             if (playerFullName.Contains(','))
             {
-                playerLastName = playerFullName[..playerFullName.IndexOf(',')];
-                firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
+                // TrimStart instead of a fixed +2 offset: "Smith,John" (no space)
+                // must not lose its first letter, and "Smith," must not throw.
+                int commaIndex = playerFullName.IndexOf(',');
+                playerLastName = playerFullName[..commaIndex];
+                firstAndMiddle = playerFullName[(commaIndex + 1)..].TrimStart();
             }
             else if (playerFullName.Contains('.'))
             {
@@ -175,11 +179,9 @@ public static class ExcelWorkbookReader
 
     /// <summary>
     /// Reads one game row using the history import tool's conventions: failed
-    /// cell reads fall back to sentinels via try/catch, and the cash column is
-    /// only read when the finalized-progressive-pot column has a value.
+    /// cell reads fall back to sentinels via try/catch.
     /// Returns null when the row has no game data (GameTotal sentinel), matching
     /// the original skip-before-reading-the-remaining-columns behavior.
-    /// Moved verbatim from MemberImportTest.FrmMain.ProcessExcelFile.
     /// </summary>
     public static ExcelRow ReadHistoryRow(IXLWorksheet ws, int row, string[] playerFinalFirstAndMiddle,
         string playerLastName, int playerOrgAVG, int playerNumberAsInt)
@@ -213,7 +215,20 @@ public static class ExcelWorkbookReader
         try { temp.HandyCap = ws.Cell(row, 11).GetValue<int>(); } catch { temp.HandyCap = -1; }
         try { temp.Bonus = ws.Cell(row, 12).GetValue<int>(); } catch { temp.Bonus = -1; }
         temp.FinPPHG = ws.Cell(row, 14).GetString();
-        try { if (!string.IsNullOrEmpty(temp.FinPPHG)) { temp.Cash = ws.Cell(row, 15).GetValue<double>(); } else { temp.Cash = 0; } } catch { temp.Cash = 0; }
+        // Cash is read regardless of the place cell: a bowler can have winnings
+        // (side pots, brackets) without a recorded place. Text cells like
+        // "$25.50" fall back to a currency-aware parse.
+        try
+        {
+            temp.Cash = ws.Cell(row, 15).GetValue<double>();
+        }
+        catch
+        {
+            string cashText = ws.Cell(row, 15).GetString();
+            temp.Cash = double.TryParse(cashText, NumberStyles.Currency, CultureInfo.CurrentCulture, out double cash)
+                ? cash
+                : 0;
+        }
         temp.Notes = ws.Cell(row, 16).GetString();
 
         return temp;

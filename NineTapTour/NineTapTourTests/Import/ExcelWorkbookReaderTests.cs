@@ -230,19 +230,78 @@ namespace NineTapTourTests.Import
         }
 
         [TestMethod]
-        public void ReadHistoryRow_CashOnlyReadWhenFinPPHGPresent()
+        public void ReadHistoryRow_CashReadEvenWithoutFinPPHG()
         {
             using XLWorkbook workbook = new();
             IXLWorksheet ws = workbook.AddWorksheet("Sheet1");
             ws.Cell(3, 1).Value = 12;
             ws.Cell(3, 2).Value = new DateTime(2001, 5, 5);
-            // FinPPHG blank, but cash has a value that must be ignored
+            // FinPPHG blank: winnings without a recorded place (side pots,
+            // brackets) must still import.
             ws.Cell(3, 15).Value = 25.5;
 
             ExcelRow row = ExcelWorkbookReader.ReadHistoryRow(ws, 3, ["", ""], "Anderson", 150, 903);
 
             Assert.IsNotNull(row);
-            Assert.AreEqual(0, row.Cash);
+            Assert.AreEqual(25.5, row.Cash);
+        }
+
+        [TestMethod]
+        public void ReadHistoryRow_CurrencyTextCash_ParsesValue()
+        {
+            using XLWorkbook workbook = new();
+            IXLWorksheet ws = workbook.AddWorksheet("Sheet1");
+            ws.Cell(3, 1).Value = 12;
+            ws.Cell(3, 2).Value = new DateTime(2001, 5, 5);
+            ws.Cell(3, 15).Value = "$25.50";
+
+            ExcelRow row = ExcelWorkbookReader.ReadHistoryRow(ws, 3, ["", ""], "Anderson", 150, 903);
+
+            Assert.IsNotNull(row);
+            Assert.AreEqual(25.5, row.Cash);
+        }
+
+        [TestMethod]
+        public void ExtractHistoryPlayerInfo_CommaWithoutSpace_KeepsFullFirstName()
+        {
+            using XLWorkbook workbook = new();
+            IXLWorksheet ws = workbook.AddWorksheet("Sheet1");
+            ws.Cell(1, 2).Value = "Smith,John";
+            ws.Cell(1, 10).Value = 150;
+            ws.Cell(1, 14).Value = "904";
+
+            string[] firstAndMiddle = ["", ""];
+            string lastName = "";
+            int orgAvg = -1;
+            int number = 0;
+
+            ExcelWorkbookReader.ExtractHistoryPlayerInfo(ws, ref firstAndMiddle, ref lastName,
+                ref orgAvg, ref number, ['/', '-']);
+
+            Assert.AreEqual("Smith", lastName);
+            Assert.AreEqual("John", firstAndMiddle[0]);
+        }
+
+        [TestMethod]
+        public void ExtractHistoryPlayerInfo_TrailingComma_DoesNotThrow()
+        {
+            using XLWorkbook workbook = new();
+            IXLWorksheet ws = workbook.AddWorksheet("Sheet1");
+            ws.Cell(1, 2).Value = "Smith,";
+            ws.Cell(1, 10).Value = 150;
+            ws.Cell(1, 14).Value = "904";
+
+            string[] firstAndMiddle = ["", ""];
+            string lastName = "";
+            int orgAvg = -1;
+            int number = 0;
+
+            ExcelWorkbookReader.ExtractHistoryPlayerInfo(ws, ref firstAndMiddle, ref lastName,
+                ref orgAvg, ref number, ['/', '-']);
+
+            Assert.AreEqual("Smith", lastName);
+            Assert.AreEqual("", firstAndMiddle[0]);
+            Assert.AreEqual(904, number);
         }
 
         [TestMethod]
