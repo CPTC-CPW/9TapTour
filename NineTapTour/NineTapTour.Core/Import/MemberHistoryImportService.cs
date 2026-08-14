@@ -125,8 +125,12 @@ public class MemberHistoryImportService : IMemberHistoryImportService
                     const int GameDataLastRow = 46;
                     const int GameDataStartRow = 3;
 
-                    // PERFORMANCE: Track participant counts per tournament to avoid repeated DB queries
-                    Dictionary<int, int> tournamentSquadCounts = new Dictionary<int, int>();
+                    // PERFORMANCE: Track participant counts per tournament to avoid repeated DB queries.
+                    // Keyed by the Tournament instance (reference equality), NOT by Id: tournaments
+                    // newly added in this file all share Id 0 until SaveChanges runs, so an Id-keyed
+                    // counter would number squads sequentially across different new tournaments.
+                    Dictionary<Tournament, int> tournamentSquadCounts =
+                        new Dictionary<Tournament, int>(ReferenceEqualityComparer.Instance);
 
                     for (int row = GameDataStartRow; row <= GameDataLastRow; row++)
                     {
@@ -166,6 +170,16 @@ public class MemberHistoryImportService : IMemberHistoryImportService
                             existingTournaments.Add(tourn);
                         }
 
+                        // Squad numbering is 1-based per player per tournament within this import run.
+                        // Always start from 1 for the first entry read, regardless of any existing DB records.
+                        int squadNumber;
+                        if (!tournamentSquadCounts.ContainsKey(tourn))
+                        {
+                            tournamentSquadCounts[tourn] = 0;
+                        }
+                        tournamentSquadCounts[tourn]++;
+                        squadNumber = tournamentSquadCounts[tourn];
+
                         // There are some cases where an entire entry will be all null games
                         // this is due to tournament conditions such as invalid lane oilings.
                         // The tournament is valid but none of the scores are counted due to inflated numbers.
@@ -195,17 +209,21 @@ public class MemberHistoryImportService : IMemberHistoryImportService
                             // PlaceStanding = Convert.ToInt32(temp.FinPPHG),
                         };
 
-                        gameRepository.AddOrUpdateGame(game, db);
+                        // Only add the new Game to the context when this participant does not
+                        // already exist. For duplicates, AddMemberToTournament updates the
+                        // existing participant's game scores in place and this Game instance is
+                        // discarded (never tracked), so re-running an import does not leave
+                        // orphaned duplicate game rows.
+                        bool participantExists = db.Participants
+                            .AsNoTracking()
+                            .Any(p => p.Member.Id == member.Id
+                                   && p.Tournament.Id == tourn.Id
+                                   && p.Squad == squadNumber);
 
-                        // Squad numbering is 1-based per player per tournament within this import run.
-                        // Always start from 1 for the first entry read, regardless of any existing DB records.
-                        int squadNumber;
-                        if (!tournamentSquadCounts.ContainsKey(tourn.Id))
+                        if (!participantExists)
                         {
-                            tournamentSquadCounts[tourn.Id] = 0;
+                            gameRepository.AddOrUpdateGame(game, db);
                         }
-                        tournamentSquadCounts[tourn.Id]++;
-                        squadNumber = tournamentSquadCounts[tourn.Id];
 
                         Participant participant = new Participant()
                         {

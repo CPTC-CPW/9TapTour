@@ -81,7 +81,7 @@ namespace NineTapTour.IntegrationTests.Import
         }
 
         [TestMethod]
-        public void ImportFolder_CreatesHistory_AndReRunDuplicatesOnlyGames()
+        public void ImportFolder_CreatesHistory_AndReRunIsIdempotent()
         {
             MemberHistoryImportService service = CreateService();
             MemberRepository memberRepository = new(TestDatabase.DbFactory);
@@ -155,13 +155,12 @@ namespace NineTapTour.IntegrationTests.Import
                     CollectionAssert.AreEqual(new List<int> { 1, 2 }, squadsFirstDate,
                         "two entries on the same date get squads 1 and 2");
 
-                    // Observed quirk: brand-new tournaments all have Id 0 until
-                    // SaveChanges, so the per-tournament squad counter (keyed by
-                    // tournament Id) is shared across every new tournament in the
-                    // file. The single entry on the second date therefore gets
-                    // squad 3, not 1.
+                    // The squad counter is keyed by the Tournament instance, so
+                    // numbering restarts at 1 for each tournament even when the
+                    // tournaments are brand new (all Id 0) in the same file. The
+                    // single entry on the second date therefore gets squad 1.
                     Participant secondDate = participants.Single(p => p.Tournament.Id == importedTournaments[1].Id);
-                    Assert.AreEqual(3, secondDate.Squad);
+                    Assert.AreEqual(1, secondDate.Squad);
                     Assert.AreEqual(200, secondDate.Game.Game1);
                     Assert.AreEqual(203, secondDate.Game.Game4);
                     Assert.IsTrue(secondDate.Game.IsFinalized);
@@ -170,31 +169,41 @@ namespace NineTapTour.IntegrationTests.Import
                     Assert.AreEqual(3, gamesAfterFirst);
                 }
 
-                // Re-run the same import to pin down the observed idempotency.
-                // The current logic is NOT idempotent:
-                // - tournaments are reused, not duplicated;
-                // - every row's Game is inserted again because the game is added
-                //   to the shared context before the participant duplicate check
-                //   runs, leaving orphaned duplicates for skipped participants;
-                // - the same-date entries keep squads 1 and 2, so their
-                //   participants are detected as duplicates and skipped (their
-                //   existing games get their scores rewritten in place), but the
-                //   second date's entry is now numbered squad 1 (the tournaments
-                //   have real, distinct ids on the re-run, unlike the shared
-                //   Id-0 counter of the first run) so it no longer matches the
-                //   squad-3 participant and a duplicate participant is inserted.
-                ImportResult second = service.ImportFolder(folder, new ListProgress());
+                // Re-run the same import: it must be idempotent. Squad numbers
+                // are computed the same way on both runs (per-tournament 1..n),
+                // so every row matches an existing participant, the existing
+                // games get their scores rewritten in place, and no new
+                // tournaments, games, or participants are inserted. Rows are
+                // still parsed and reported, so Added and the progress messages
+                // are unchanged from the first run.
+                ListProgress secondProgress = new();
+                ImportResult second = service.ImportFolder(folder, secondProgress);
                 Assert.AreEqual(3, second.Added, "rows are still parsed and reported on a re-run");
+                Assert.AreEqual(0, second.Warnings.Count);
+                CollectionAssert.Contains(secondProgress.Messages, "  File complete: 3 records saved.\r\n");
 
                 using (NineTapDb db = TestDatabase.DbFactory.CreateDbContext())
                 {
                     int memberId = db.Members.Single(m => m.Number == 900).Id;
                     Assert.AreEqual(2, db.Tournaments.Count(t => t.Id > maxTournamentId),
                         "re-run reuses the existing tournaments");
-                    Assert.AreEqual(4, db.Participants.Count(p => p.Member.Id == memberId),
-                        "re-run duplicates the participant whose squad number changed");
-                    Assert.AreEqual(gamesAfterFirst + 3, db.Games.Count(g => g.Id > maxGameId),
-                        "re-run inserts a duplicate game per row");
+                    Assert.AreEqual(3, db.Participants.Count(p => p.Member.Id == memberId),
+                        "re-run must not insert duplicate participants");
+                    Assert.AreEqual(gamesAfterFirst, db.Games.Count(g => g.Id > maxGameId),
+                        "re-run must not insert duplicate games");
+
+                    // The skipped rows update the existing games in place, so the
+                    // scores and squad numbers are unchanged after the re-run.
+                    List<Tournament> importedTournaments = db.Tournaments
+                        .Where(t => t.Id > maxTournamentId)
+                        .OrderBy(t => t.Date)
+                        .ToList();
+                    Participant secondDate = db.Participants
+                        .Include(p => p.Game)
+                        .Single(p => p.Member.Id == memberId && p.Tournament.Id == importedTournaments[1].Id);
+                    Assert.AreEqual(1, secondDate.Squad);
+                    Assert.AreEqual(200, secondDate.Game.Game1);
+                    Assert.AreEqual(203, secondDate.Game.Game4);
                 }
             }
             finally
