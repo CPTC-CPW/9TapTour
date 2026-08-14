@@ -1,5 +1,4 @@
 #nullable disable
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NineTapTour.Core.Calculations;
 using NineTapTour.Core.Data;
@@ -232,61 +231,62 @@ public class ParticipantRepository : IParticipantRepository
     }
 
     /// <summary>
-    ///
+    /// Returns 3-of-4 scratch standings: the sum of a participant's games with the
+    /// lowest game dropped (only when all four games are present), ordered by score
+    /// descending. EF-based implementation (2026-08-14) replacing the former raw SQL,
+    /// which crashed on lifetime members and null games, inverted the Paid flag, and
+    /// returned Members.Id instead of Member.Number.
     /// </summary>
     public List<MemberScores> GetStandingsForThreeOf4ByScratch(int selectedTournament)
     {
         using (var db = dbFactory.CreateDbContext())
         {
-            string con = db.Database.GetDbConnection().ConnectionString;
-            string query = @"SELECT MemberId
-    , FirstName
-    , LastName
-    , (Game1 + Game2 + Game3 + Game4)
-    - (
-        CASE 
-            WHEN Game1 < Game2 AND Game1 < Game3 AND Game1 < Game4 THEN Game1
-            WHEN Game2 < Game1 AND Game2 < Game3 AND Game2 < Game4 THEN Game2
-            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game3
-            ELSE Game4
-        END) AS Score
-    , CASE
-        WHEN IsLifetimeMember = 1 THEN 'life'
-        ELSE YEAR(LastPayment)
-    END AS LastPaymentYear
-    , CASE
-        WHEN IsLifetimeMember = 1 THEN 'true'
-        WHEN LastPayment IS NOT NULL AND YEAR(LastPayment) <= @tourneyYear THEN 'true'
-        ELSE 'false'
-    END AS Paid
-FROM Members
-    JOIN Participants ON Members.Id = Participants.MemberId
-    JOIN Games ON Participants.GameId = Games.Id
-WHERE TournamentId = @tourneyId
-ORDER BY Score DESC";
-            using SqlCommand queryCmd = new(query, new SqlConnection(con));
-            queryCmd.Parameters.AddWithValue("@tourneyYear", DateTime.Today.Year - 1);
-            queryCmd.Parameters.AddWithValue("@tourneyId", selectedTournament);
-            queryCmd.Connection.Open();
-            SqlDataReader rdr = queryCmd.ExecuteReader();
+            List<MemberScoresInterim> interimScores = [.. (from g in (db.Participants.Include(b => b.Member)
+                        .Include(b => b.Game)
+                        .Where(b => b.Tournament.Id == selectedTournament))
+                    select new MemberScoresInterim {
+                        MemberId = g.Member.Number,
+                        FirstName = g.Member.FirstName,
+                        LastName = g.Member.LastName,
+                        Game1Score = g.Game.Game1,
+                        Game2Score = g.Game.Game2,
+                        Game3Score = g.Game.Game3,
+                        Game4Score = g.Game.Game4,
+                        Score = 0,
+                        LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
+                        Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
+                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                        Squad = g.Squad
+                    })];
 
             List<MemberScores> memberScores = [];
-            while (rdr.Read())
+
+            // Sum the games in memory so a null game contributes nothing instead of
+            // nulling out the player's total.
+            foreach (var memberInterim in interimScores)
             {
-                memberScores.Add(
-                    new MemberScores()
+                int?[] scores = [memberInterim.Game1Score, memberInterim.Game2Score, memberInterim.Game3Score, memberInterim.Game4Score];
+                int totalUsableGames = 0;
+                foreach (int? score in scores)
+                {
+                    if (score != null)
                     {
-                        FirstName = rdr["FirstName"].ToString(),
-                        LastName = rdr["LastName"].ToString(),
-                        MemberId = Convert.ToInt32(rdr["MemberId"]),
-                        Score = Convert.ToInt32(rdr["Score"]),
-                        LastPaymentYear = rdr["LastPaymentYear"].ToString(),
-                        Paid = Convert.ToBoolean(rdr["Paid"])
+                        memberInterim.Score += score;
+                        totalUsableGames++;
                     }
-                );
+                }
+
+                if (totalUsableGames == 4)
+                {
+                    // Find lowest score in scores
+                    int lowestScore = scores.Min(s => s.Value);
+                    memberInterim.Score -= lowestScore;
+                }
+
+                memberScores.Add(memberInterim);
             }
 
-            return memberScores;
+            return [.. memberScores.OrderByDescending(m => m.Score)];
         }
     }
 
@@ -351,7 +351,10 @@ ORDER BY Score DESC";
     }
 
     /// <summary>
-    ///
+    /// Returns scratch standings (games only, no handicap or bonus). Fixed
+    /// 2026-08-14: the interim projection now populates the per-game scores (they
+    /// were previously left null, so every row's Score summed to 0) and the scratch
+    /// summation no longer adds the null HandicapValue/BonusPinValue.
     /// </summary>
     public List<MemberScores> GetStandingsForTournamentByScratch(int selectedTournament, bool isThreeOfFourTournament = false)
     {
@@ -365,6 +368,10 @@ ORDER BY Score DESC";
                         MemberId = g.Member.Number,
                         FirstName = g.Member.FirstName,
                         LastName = g.Member.LastName,
+                        Game1Score = g.Game.Game1,
+                        Game2Score = g.Game.Game2,
+                        Game3Score = g.Game.Game3,
+                        Game4Score = g.Game.Game4,
                         Score = 0,
                         LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                         Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
@@ -383,7 +390,7 @@ ORDER BY Score DESC";
                 {
                     if (score != null)
                     {
-                        memberInterim.Score += score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                        memberInterim.Score += score;
                         totalUsableGames++;
                     }
                 }
@@ -392,7 +399,7 @@ ORDER BY Score DESC";
                 {
                     // Find lowest score in scores
                     int lowestScore = scores.Min(s => s.Value);
-                    memberInterim.Score -= lowestScore + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                    memberInterim.Score -= lowestScore;
                 }
 
                 memberScores.Add(memberInterim);
@@ -405,66 +412,74 @@ ORDER BY Score DESC";
     //Note:When printing, these methods get the desired squads in squadList instead of the qualifyBySquad radio btns
 
     /// <summary>
-    /// These GetStandings calls will return multiple squads by getting all the members of a squad then appending that list to the returned value.
-    /// Once all the squads in squadList have been appended to the returnedList it is returned.
+    /// Returns 3-of-4 handicap standings for the selected squads: per played game,
+    /// score plus handicap plus bonus; the lowest game (plus one handicap+bonus) is
+    /// dropped only when all four games are present. Filters to the squad list and
+    /// orders globally by score descending.
     /// </summary>
-    /// <param name="db"></param>
     /// <param name="squadList">A list of all the selected squads</param>
     /// <param name="selectedTournament"></param>
     /// <returns></returns>
     public List<MemberScores> GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(List<int> squadList, int selectedTournament)
     {
+        // EF-based implementation (2026-08-14) replacing the former raw SQL, which
+        // crashed on lifetime members and null games, inverted the Paid flag,
+        // returned Members.Id instead of Member.Number, and interpolated the squad
+        // list into the SQL text. The old SQL filtered all squads in one IN clause
+        // with a single global ordering, so this filters and orders the same way.
         using (var db = dbFactory.CreateDbContext())
         {
-            string con = db.Database.GetDbConnection().ConnectionString;
-            string query = $@"SELECT MemberId
-    , FirstName
-    , LastName
-    , (Game1 + Game2 + Game3 + Game4 + Games.Handicap * 3 + Games.Bonus * 3)
-    - (
-        CASE 
-            WHEN Game1 < Game2 AND Game1 < Game3 AND Game1 < Game4 THEN Game1
-            WHEN Game2 < Game1 AND Game2 < Game3 AND Game2 < Game4 THEN Game2
-            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game3
-            ELSE Game4
-        END) AS Score
-    , CASE
-        WHEN IsLifetimeMember = 1 THEN 'life'
-        ELSE YEAR(LastPayment)
-    END AS LastPaymentYear
-    , CASE
-        WHEN IsLifetimeMember = 1 THEN 'true'
-        WHEN LastPayment IS NOT NULL AND YEAR(LastPayment) <= @tourneyYear THEN 'true'
-        ELSE 'false'
-    END AS Paid
-FROM Members
-    JOIN Participants ON Members.Id = Participants.MemberId
-    JOIN Games ON Participants.GameId = Games.Id
-WHERE TournamentId = @tourneyId AND SquadNumber IN ({string.Join(",", squadList)})
-ORDER BY Score DESC";
-            using SqlCommand queryCmd = new(query, new SqlConnection(con));
-            queryCmd.Parameters.AddWithValue("@tourneyYear", DateTime.Today.Year - 1);
-            queryCmd.Parameters.AddWithValue("@tourneyId", selectedTournament);
-            queryCmd.Connection.Open();
-            SqlDataReader rdr = queryCmd.ExecuteReader();
+            List<MemberScoresInterim> interimScores = [.. (from g in (db.Participants.Include(b => b.Member)
+                        .Include(b => b.Game)
+                        .Where(b => b.Tournament.Id == selectedTournament)
+                        .Where(b => squadList.Contains(b.Squad)))
+                    select new MemberScoresInterim {
+                        MemberId = g.Member.Number,
+                        FirstName = g.Member.FirstName,
+                        LastName = g.Member.LastName,
+                        Game1Score = g.Game.Game1,
+                        Game2Score = g.Game.Game2,
+                        Game3Score = g.Game.Game3,
+                        Game4Score = g.Game.Game4,
+                        HandicapValue = g.Game.Handicap,
+                        BonusPinValue = g.Game.Bonus,
+                        Score = 0,
+                        LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
+                        Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
+                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                        Squad = g.Squad
+                    })];
 
             List<MemberScores> memberScores = [];
-            while (rdr.Read())
+
+            // Sum handicap+bonus per played game in memory so a null game contributes
+            // nothing instead of nulling out the player's total. When all four games
+            // are present, dropping the lowest game plus one handicap+bonus is
+            // numerically identical to the old SQL's sum + H*3 + B*3 - lowest.
+            foreach (var memberInterim in interimScores)
             {
-                memberScores.Add(
-                    new MemberScores()
+                int?[] scores = [memberInterim.Game1Score, memberInterim.Game2Score, memberInterim.Game3Score, memberInterim.Game4Score];
+                int totalUsableGames = 0;
+                foreach (int? score in scores)
+                {
+                    if (score != null)
                     {
-                        FirstName = rdr["FirstName"].ToString(),
-                        LastName = rdr["LastName"].ToString(),
-                        MemberId = Convert.ToInt32(rdr["MemberId"]),
-                        Score = Convert.ToInt32(rdr["Score"]),
-                        LastPaymentYear = rdr["LastPaymentYear"].ToString(),
-                        Paid = Convert.ToBoolean(rdr["Paid"])
+                        memberInterim.Score += score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                        totalUsableGames++;
                     }
-                );
+                }
+
+                if (totalUsableGames == 4)
+                {
+                    // Find lowest score in scores
+                    int lowestScore = scores.Min(s => s.Value);
+                    memberInterim.Score -= lowestScore + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                }
+
+                memberScores.Add(memberInterim);
             }
 
-            return memberScores;
+            return [.. memberScores.OrderByDescending(m => m.Score)];
         }
     }
 
@@ -534,66 +549,72 @@ ORDER BY Score DESC";
     }
 
     /// <summary>
-    ///
+    /// Returns 3-of-4 scratch standings for the selected squads: the sum of a
+    /// participant's games with the lowest game dropped (only when all four games
+    /// are present), filtered to the squad list and ordered globally by score
+    /// descending. EF-based implementation (2026-08-14) replacing the former raw
+    /// SQL, which crashed on lifetime members and null games, inverted the Paid
+    /// flag, returned Members.Id instead of Member.Number, and interpolated the
+    /// squad list into the SQL text.
     /// </summary>
     public List<MemberScores> GetStandingsForThreeOf4ByFilterSeriesByScratch(List<int> squadList, int selectedTournament)
     {
         using (var db = dbFactory.CreateDbContext())
         {
-            string con = db.Database.GetDbConnection().ConnectionString;
-            string query = $@"SELECT MemberId
-    , FirstName
-    , LastName
-    , (Game1 + Game2 + Game3 + Game4)
-    - (
-        CASE 
-            WHEN Game1 < Game2 AND Game1 < Game3 AND Game1 < Game4 THEN Game1
-            WHEN Game2 < Game1 AND Game2 < Game3 AND Game2 < Game4 THEN Game2
-            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game3
-            ELSE Game4
-        END) AS Score
-    , CASE
-        WHEN IsLifetimeMember = 1 THEN 'life'
-        ELSE YEAR(LastPayment)
-    END AS LastPaymentYear
-    , CASE
-        WHEN IsLifetimeMember = 1 THEN 'true'
-        WHEN LastPayment IS NOT NULL AND YEAR(LastPayment) <= @tourneyYear THEN 'true'
-        ELSE 'false'
-    END AS Paid
-FROM Members
-    JOIN Participants ON Members.Id = Participants.MemberId
-    JOIN Games ON Participants.GameId = Games.Id
-WHERE TournamentId = @tourneyId AND SquadNumber IN ({string.Join(",", squadList)})
-ORDER BY Score DESC";
-            using SqlCommand queryCmd = new(query, new SqlConnection(con));
-            queryCmd.Parameters.AddWithValue("@tourneyYear", DateTime.Today.Year - 1);
-            queryCmd.Parameters.AddWithValue("@tourneyId", selectedTournament);
-            queryCmd.Connection.Open();
-            SqlDataReader rdr = queryCmd.ExecuteReader();
+            List<MemberScoresInterim> interimScores = [.. (from g in (db.Participants.Include(b => b.Member)
+                        .Include(b => b.Game)
+                        .Where(b => b.Tournament.Id == selectedTournament)
+                        .Where(b => squadList.Contains(b.Squad)))
+                    select new MemberScoresInterim {
+                        MemberId = g.Member.Number,
+                        FirstName = g.Member.FirstName,
+                        LastName = g.Member.LastName,
+                        Game1Score = g.Game.Game1,
+                        Game2Score = g.Game.Game2,
+                        Game3Score = g.Game.Game3,
+                        Game4Score = g.Game.Game4,
+                        Score = 0,
+                        LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
+                        Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
+                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                        Squad = g.Squad
+                    })];
 
             List<MemberScores> memberScores = [];
-            while (rdr.Read())
+
+            // Sum the games in memory so a null game contributes nothing instead of
+            // nulling out the player's total.
+            foreach (var memberInterim in interimScores)
             {
-                memberScores.Add(
-                    new MemberScores()
+                int?[] scores = [memberInterim.Game1Score, memberInterim.Game2Score, memberInterim.Game3Score, memberInterim.Game4Score];
+                int totalUsableGames = 0;
+                foreach (int? score in scores)
+                {
+                    if (score != null)
                     {
-                        FirstName = rdr["FirstName"].ToString(),
-                        LastName = rdr["LastName"].ToString(),
-                        MemberId = Convert.ToInt32(rdr["MemberId"]),
-                        Score = Convert.ToInt32(rdr["Score"]),
-                        LastPaymentYear = rdr["LastPaymentYear"].ToString(),
-                        Paid = Convert.ToBoolean(rdr["Paid"])
+                        memberInterim.Score += score;
+                        totalUsableGames++;
                     }
-                );
+                }
+
+                if (totalUsableGames == 4)
+                {
+                    // Find lowest score in scores
+                    int lowestScore = scores.Min(s => s.Value);
+                    memberInterim.Score -= lowestScore;
+                }
+
+                memberScores.Add(memberInterim);
             }
 
-            return memberScores;
+            return [.. memberScores.OrderByDescending(m => m.Score)];
         }
     }
 
     /// <summary>
-    ///
+    /// Returns scratch standings (games only, no handicap or bonus) for the selected
+    /// squads, ordered per squad. Fixed 2026-08-14: the scratch summation no longer
+    /// adds the null HandicapValue/BonusPinValue, which previously nulled the totals.
     /// </summary>
     public List<MemberScores> GetStandingsForTournamentByFilterSeriesByScratch(List<int> squadList, int selectedTournament, bool isThreeOfFourTournament = false)
     {
@@ -634,7 +655,7 @@ ORDER BY Score DESC";
                 {
                     if (score != null)
                     {
-                        memberInterim.Score += score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                        memberInterim.Score += score;
                         totalUsableGames++;
                     }
                 }
@@ -643,7 +664,7 @@ ORDER BY Score DESC";
                 {
                     // Find lowest score in scores
                     int lowestScore = scores.Min(s => s.Value);
-                    memberInterim.Score -= lowestScore + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                    memberInterim.Score -= lowestScore;
                 }
 
                 memberScores.Add(memberInterim);

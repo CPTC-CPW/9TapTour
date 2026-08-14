@@ -32,9 +32,10 @@ namespace NineTapTour.IntegrationTests
         public static int RegularTournamentId { get; private set; }
 
         /// <summary>
-        /// Maps member Number (101..107) to the database identity Id. The raw
-        /// SQL standings return Members.Id while the EF paths return
-        /// Member.Number — tests must assert against the right one.
+        /// Maps member Number (101..107) to the database identity Id. The
+        /// standings queries all return Member.Number since the 2026-08-14 fix
+        /// (the raw SQL paths used to return Members.Id); this map remains for
+        /// tests that need the identity value.
         /// </summary>
         public static System.Collections.Generic.Dictionary<int, int> DbIdByNumber { get; } = [];
 
@@ -103,9 +104,9 @@ namespace NineTapTour.IntegrationTests
             Member m104 = NewMember(104, "Dave", "Diaz", average: 220, handicap: 0, bonus: 1, isSenior: false, lastPayment: DateTime.Today, isLifetime: false);
             Member m105 = NewMember(105, "Eve", "Evans", average: 140, handicap: 70, bonus: 3, isSenior: true, lastPayment: DateTime.Today, isLifetime: false);
             Member m106 = NewMember(106, "Frank", "Fox", average: 160, handicap: 54, bonus: 0, isSenior: false, lastPayment: null, isLifetime: false);
-            // Lifetime member participates ONLY in the regular tournament: the raw
-            // 3-of-4 SQL crashes when a lifetime member is present (its CASE mixes
-            // 'life' varchar with YEAR() int) — that behavior gets its own test.
+            // Lifetime member participates ONLY in the regular tournament. (The
+            // pre-2026-08-14 raw 3-of-4 SQL crashed when a lifetime member was
+            // present; the fixed EF path handles them, which has its own test.)
             Member m107 = NewMember(107, "Grace", "Gill", average: 200, handicap: 18, bonus: 5, isSenior: false, lastPayment: null, isLifetime: true);
             db.Members.AddRange(m101, m102, m103, m104, m105, m106, m107);
 

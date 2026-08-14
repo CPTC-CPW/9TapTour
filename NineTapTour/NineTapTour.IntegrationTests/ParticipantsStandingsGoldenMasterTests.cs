@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Repositories;
 using System;
@@ -8,24 +8,20 @@ using System.Linq;
 namespace NineTapTour.IntegrationTests
 {
     /// <summary>
-    /// Golden-master tests that freeze the CURRENT behavior of the standings
-    /// queries in ParticipantsDB (raw T-SQL and EF paths) before they are moved
-    /// into repositories. These assert observed behavior, including known
-    /// quirks (the raw SQL Paid classification differs from the EF one, and
-    /// GetStandingsForTournamentByScratch returns Score = 0 for every row).
-    /// Do NOT "fix" expectations here without an intentional behavior change.
+    /// Golden-master tests for the standings queries in ParticipantRepository.
+    /// These originally froze the pre-refactor behavior of the raw T-SQL
+    /// standings paths, including their known defects. Those defects were fixed
+    /// on 2026-08-14 (the raw SQL was replaced with EF/LINQ implementations that
+    /// mirror the EF siblings), so these tests now pin the FIXED behavior:
+    /// MemberId is Member.Number, Paid uses the EF rule (paid when the last
+    /// payment is within a year, or lifetime), lifetime members and null games
+    /// are handled gracefully, and the scratch standings return real totals.
     /// </summary>
     [TestClass]
     public class ParticipantsStandingsGoldenMasterTests
     {
         private static string ThisYear => DateTime.Today.Year.ToString();
         private static string TwoYearsAgo => DateTime.Today.AddYears(-2).Year.ToString();
-
-        /// <summary>
-        /// The raw SQL standings return the database identity Members.Id in the
-        /// MemberId column (NOT Member.Number, which the EF paths return).
-        /// </summary>
-        private static int DbId(int memberNumber) => TestDatabase.DbIdByNumber[memberNumber];
 
         private static ParticipantRepository Repo => new(TestDatabase.DbFactory);
 
@@ -36,29 +32,38 @@ namespace NineTapTour.IntegrationTests
 
             AssertRows(result,
             [
-                // dbId, score, lastPaymentYear, paid
-                // Note the raw SQL Paid classification: 'true' only when the last
-                // payment is at least a year old — the opposite of the EF paths.
-                (DbId(104), 690, ThisYear, false),
-                (DbId(103), 637, ThisYear, false),
-                (DbId(102), 570, TwoYearsAgo, true),
-                (DbId(101), 510, ThisYear, false),
-                (DbId(106), 369, "", false),
-                (DbId(105), 330, ThisYear, false),
+                // memberNumber, score, lastPaymentYear, paid
+                // Fixed 2026-08-14: MemberId is now Member.Number (was Members.Id),
+                // Paid follows the EF rule (true when paid within a year or
+                // lifetime; the raw SQL had it inverted), and a null LastPayment
+                // yields "" (EF translates ToString() with COALESCE(..., '')).
+                (104, 690, ThisYear, true),
+                (103, 637, ThisYear, true),
+                (102, 570, TwoYearsAgo, false),
+                (101, 510, ThisYear, true),
+                (106, 369, "", true),
+                (105, 330, ThisYear, true),
             ]);
         }
 
         [TestMethod]
-        public void GetStandingsForThreeOf4ByScratch_TournamentWithMissingGamesOrLifetimeMembers_Throws()
+        public void GetStandingsForThreeOf4ByScratch_HandlesMissingGamesAndLifetimeMembers()
         {
-            // Current behavior on tournaments outside the happy path: a
-            // participant with any null game makes the SQL Score column NULL,
-            // which Convert.ToInt32 rejects (and separately, the SQL CASE mixes
-            // 'life' varchar with YEAR() int, so a lifetime member with full
-            // games raises a SqlException). The EF-based standings queries
-            // handle both situations.
-            Assert.ThrowsExactly<InvalidCastException>(() =>
-                Repo.GetStandingsForThreeOf4ByScratch(TestDatabase.RegularTournamentId));
+            // Fixed 2026-08-14: the raw SQL predecessor crashed on this tournament
+            // (a null game made Score NULL, which Convert.ToInt32 rejected, and the
+            // lifetime member's CASE mixed 'life' varchar with YEAR() int). The EF
+            // implementation sums the played games and drops the lowest game only
+            // when all four are present.
+            List<MemberScores> result = Repo.GetStandingsForThreeOf4ByScratch(TestDatabase.RegularTournamentId);
+
+            AssertRows(result,
+            [
+                // memberNumber, score, lastPaymentYear, paid
+                (106, 570, "", true),       // 180+190+200 (only 3 games: nothing dropped)
+                (101, 510, ThisYear, true), // 150+160+170+180 - 150 (all 4 games: lowest dropped)
+                (105, 390, ThisYear, true), // 190+200
+                (107, 210, "life ", true),  // 210; lifetime member handled gracefully
+            ]);
         }
 
         [TestMethod]
@@ -67,14 +72,17 @@ namespace NineTapTour.IntegrationTests
             List<MemberScores> result = Repo.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(
                 [1, 2], TestDatabase.ThreeOf4TournamentId);
 
+            // Scores are unchanged from the raw SQL masters (the per-game EF
+            // handicap math is numerically identical to sum + H*3 + B*3 - lowest),
+            // but MemberId/Paid/LastPaymentYear follow the fixed EF semantics.
             AssertRows(result,
             [
-                (DbId(103), 706, ThisYear, false),
-                (DbId(101), 705, ThisYear, false),
-                (DbId(104), 693, ThisYear, false),
-                (DbId(102), 678, TwoYearsAgo, true),
-                (DbId(105), 549, ThisYear, false),
-                (DbId(106), 531, "", false),
+                (103, 706, ThisYear, true),
+                (101, 705, ThisYear, true),
+                (104, 693, ThisYear, true),
+                (102, 678, TwoYearsAgo, false),
+                (105, 549, ThisYear, true),
+                (106, 531, "", true),
             ]);
         }
 
@@ -86,10 +94,10 @@ namespace NineTapTour.IntegrationTests
             List<MemberScores> squad2 = Repo.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(
                 [2], TestDatabase.ThreeOf4TournamentId);
 
-            CollectionAssert.AreEqual(new[] { DbId(103), DbId(101), DbId(102) }, squad1.Select(r => r.MemberId).ToArray());
+            CollectionAssert.AreEqual(new[] { 103, 101, 102 }, squad1.Select(r => r.MemberId).ToArray());
             CollectionAssert.AreEqual(new[] { 706, 705, 678 }, squad1.Select(r => r.Score.Value).ToArray());
 
-            CollectionAssert.AreEqual(new[] { DbId(104), DbId(105), DbId(106) }, squad2.Select(r => r.MemberId).ToArray());
+            CollectionAssert.AreEqual(new[] { 104, 105, 106 }, squad2.Select(r => r.MemberId).ToArray());
             CollectionAssert.AreEqual(new[] { 693, 549, 531 }, squad2.Select(r => r.Score.Value).ToArray());
         }
 
@@ -99,7 +107,9 @@ namespace NineTapTour.IntegrationTests
             List<MemberScores> result = Repo.GetStandingsForThreeOf4ByFilterSeriesByScratch(
                 [1, 2], TestDatabase.ThreeOf4TournamentId);
 
-            CollectionAssert.AreEqual(new[] { DbId(104), DbId(103), DbId(102), DbId(101), DbId(106), DbId(105) }, result.Select(r => r.MemberId).ToArray());
+            // Like the raw SQL it replaced, this filters all squads at once and
+            // orders globally by score descending.
+            CollectionAssert.AreEqual(new[] { 104, 103, 102, 101, 106, 105 }, result.Select(r => r.MemberId).ToArray());
             CollectionAssert.AreEqual(new[] { 690, 637, 570, 510, 369, 330 }, result.Select(r => r.Score.Value).ToArray());
         }
 
@@ -117,8 +127,7 @@ namespace NineTapTour.IntegrationTests
             Assert.AreEqual(549, scoreByMember[105]);
             Assert.AreEqual(531, scoreByMember[106]);
 
-            // EF Paid rule: paid when the last payment is within a year (opposite
-            // of the raw SQL classification captured above)
+            // EF Paid rule: paid when the last payment is within a year
             Assert.IsTrue(result.Single(r => r.MemberId == 101).Paid);
             Assert.IsFalse(result.Single(r => r.MemberId == 102).Paid);
         }
@@ -147,16 +156,31 @@ namespace NineTapTour.IntegrationTests
         }
 
         [TestMethod]
-        public void GetStandingsForTournamentByScratch_CurrentBehavior_ScoreIsAlwaysZero()
+        public void GetStandingsForTournamentByScratch_ReturnsPlainGameSumsOrderedDescending()
         {
-            // The interim projection never populates the per-game scores, so the
-            // score summation loop adds nothing. Only the SQL-side ordering is
-            // meaningful. This is current production behavior; freeze it.
+            // Fixed 2026-08-14: the interim projection previously never populated
+            // the per-game scores, so every row's Score was 0. Scratch totals are
+            // now the plain 4-game sums (no handicap/bonus, no drop-lowest since
+            // isThreeOfFourTournament defaults to false).
             List<MemberScores> result = Repo.GetStandingsForTournamentByScratch(
                 TestDatabase.ThreeOf4TournamentId);
 
-            Assert.HasCount(6, result);
-            Assert.IsTrue(result.All(r => r.Score == 0));
+            CollectionAssert.AreEqual(new[] { 103, 104, 102, 101, 106, 105 }, result.Select(r => r.MemberId).ToArray());
+            CollectionAssert.AreEqual(new[] { 847, 800, 740, 660, 490, 430 }, result.Select(r => r.Score.Value).ToArray());
+        }
+
+        [TestMethod]
+        public void GetStandingsForTournamentByFilterSeriesByScratch_ReturnsPlainGameSumsPerSquad()
+        {
+            // Fixed 2026-08-14: the scratch summation previously added the null
+            // HandicapValue/BonusPinValue, nulling out the totals. Like its
+            // handicap sibling, this method appends each requested squad's rows in
+            // turn, ordered by game sum descending within the squad.
+            List<MemberScores> result = Repo.GetStandingsForTournamentByFilterSeriesByScratch(
+                [1, 2], TestDatabase.ThreeOf4TournamentId);
+
+            CollectionAssert.AreEqual(new[] { 103, 102, 101, 104, 106, 105 }, result.Select(r => r.MemberId).ToArray());
+            CollectionAssert.AreEqual(new[] { 847, 740, 660, 800, 490, 430 }, result.Select(r => r.Score.Value).ToArray());
         }
 
         [TestMethod]
