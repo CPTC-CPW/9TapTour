@@ -74,12 +74,17 @@ public interface IFinalizeCalculationService
     (int Hdcp, int Bonus) ComputePreviousHandicapAndBonus(IReadOnlyList<PreviousEntrySnapshot> previousEntries);
 
     /// <summary>
-    /// Computes the Bonus column preview for a loaded row: pre-deducts bonus pins for
-    /// members placing within the cash line and awards +1 bonus pin to members reaching
+    /// Computes the New Bonus column for a row: the bonus pins the member carries out of
+    /// this tournament. Pins are deducted from members who cashed — those who won place
+    /// money or finished within the cash line — and +1 pin is awarded to members reaching
     /// their 3rd total entry (not cashing, not a 2-day championship).
     /// </summary>
+    /// <param name="memberMoneyWon">
+    /// Place money the member won across all of their entries, excluding side pots.
+    /// Any amount above zero makes the member a casher regardless of the cash line.
+    /// </param>
     BonusPreviewResult ComputeBonusPreview(int baseBonus, int memberPlacing, int cashLine, bool isTwoDay,
-        int historicalEntryCount, int currentEntryCount);
+        int historicalEntryCount, int currentEntryCount, decimal memberMoneyWon);
 
     /// <summary>
     /// Resolves the handicap shown in the grid: the previous tournament's handicap when
@@ -100,11 +105,4 @@ public interface IFinalizeCalculationService
     /// positional place (1-based index + 1).
     /// </summary>
     int[] AssignTeamPlaces(IReadOnlyList<int> combinedTotalsDescending);
-
-    /// <summary>
-    /// Resolves the bonus value persisted to the Game record. Cashing and third-entry
-    /// rows show a preview value in the grid, so the original pre-deduction bonus is
-    /// preserved (falling back to the edited value when the original is unknown).
-    /// </summary>
-    int ResolvePersistedBonus(bool preserveOriginalBonus, int? originalBonus, int editedBonus);
 }

@@ -316,31 +316,40 @@ namespace NineTapTourTests.Services
             Assert.AreEqual((0, 2), service.ComputePreviousHandicapAndBonus(entries));
         }
 
-        // --- ComputeBonusPreview (cash-line deduction + third-entry bonus preview) ---
+        // --- ComputeBonusPreview (New Bonus: cash deduction + third-entry bonus) ---
 
         [DataTestMethod]
         // Cashing 1st place: all bonus pins removed
-        [DataRow(5, 1, 3, false, 5, 1, 0, true, false)]
+        [DataRow(5, 1, 3, false, 5, 1, 0.0, 0, true, false)]
         // Cashing 3rd place (2nd-5th): 3 pins removed
-        [DataRow(5, 3, 3, false, 0, 1, 2, true, false)]
-        // Placed below the cash line: no deduction
-        [DataRow(5, 4, 3, false, 0, 1, 5, false, false)]
+        [DataRow(5, 3, 3, false, 0, 1, 0.0, 2, true, false)]
+        // Placed below the cash line without money: no deduction
+        [DataRow(5, 4, 3, false, 0, 1, 0.0, 5, false, false)]
         // Not placed at all: no deduction
-        [DataRow(5, 0, 3, false, 0, 1, 5, false, false)]
+        [DataRow(5, 0, 3, false, 0, 1, 0.0, 5, false, false)]
         // Third total entry: +1 bonus pin
-        [DataRow(4, 0, 3, false, 2, 1, 5, false, true)]
+        [DataRow(4, 0, 3, false, 2, 1, 0.0, 5, false, true)]
         // Third entry bump capped at 5 pins
-        [DataRow(5, 0, 3, false, 2, 1, 5, false, true)]
+        [DataRow(5, 0, 3, false, 2, 1, 0.0, 5, false, true)]
         // 2-day championship: third-entry bump suppressed
-        [DataRow(4, 0, 0, true, 2, 1, 4, false, false)]
+        [DataRow(4, 0, 0, true, 2, 1, 0.0, 4, false, false)]
         // Cashing suppresses the third-entry bump
-        [DataRow(4, 1, 3, false, 2, 1, 0, true, false)]
+        [DataRow(4, 1, 3, false, 2, 1, 0.0, 0, true, false)]
+        // Won money with a cash line of 0 (fewer than five entries): still deducted.
+        // This is the case that previously let the winner keep — and gain — bonus pins.
+        [DataRow(1, 1, 0, false, 2, 1, 120.0, 0, true, false)]
+        // Won money below the cash line: deducted at their actual placement
+        [DataRow(5, 7, 3, false, 0, 1, 40.0, 3, true, false)]
+        // 2-day championship winners are never auto-deducted (PlaceStanding is a round group)
+        [DataRow(4, 1, 0, true, 0, 1, 200.0, 4, false, false)]
+        // Money with no placement recorded: nothing to deduct against
+        [DataRow(4, 0, 3, false, 0, 1, 50.0, 4, false, false)]
         public void ComputeBonusPreview_MatchesFormBehavior(
             int baseBonus, int placing, int cashLine, bool isTwoDay, int histCount, int currCount,
-            int expectedBonus, bool expectedCashing, bool expectedThirdEntry)
+            double moneyWon, int expectedBonus, bool expectedCashing, bool expectedThirdEntry)
         {
             BonusPreviewResult result = service.ComputeBonusPreview(
-                baseBonus, placing, cashLine, isTwoDay, histCount, currCount);
+                baseBonus, placing, cashLine, isTwoDay, histCount, currCount, (decimal)moneyWon);
 
             Assert.AreEqual(expectedBonus, result.DisplayBonus);
             Assert.AreEqual(expectedCashing, result.IsCashing);
@@ -412,21 +421,5 @@ namespace NineTapTourTests.Services
             CollectionAssert.AreEqual(new int[0], service.AssignTeamPlaces(new int[0]));
         }
 
-        // --- ResolvePersistedBonus (pure part of PersistRowToDatabase / FinalizeAllGames) ---
-
-        [DataTestMethod]
-        [DataRow(true, 4, 2, 4)]      // preserve: original wins
-        [DataRow(false, 4, 2, 2)]     // not preserving: edited cell value wins
-        public void ResolvePersistedBonus_PreservesOriginalForCashingRows(
-            bool preserve, int original, int edited, int expected)
-        {
-            Assert.AreEqual(expected, service.ResolvePersistedBonus(preserve, original, edited));
-        }
-
-        [TestMethod]
-        public void ResolvePersistedBonus_PreserveWithUnknownOriginal_FallsBackToEdited()
-        {
-            Assert.AreEqual(2, service.ResolvePersistedBonus(true, null, 2));
-        }
     }
 }

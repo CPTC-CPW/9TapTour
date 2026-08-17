@@ -154,10 +154,16 @@ public class FinalizeCalculationService : IFinalizeCalculationService
     }
 
     public BonusPreviewResult ComputeBonusPreview(int baseBonus, int memberPlacing, int cashLine, bool isTwoDay,
-        int historicalEntryCount, int currentEntryCount)
+        int historicalEntryCount, int currentEntryCount, decimal memberMoneyWon)
     {
-        // Pre-deduct bonus for members who will cash (placing within cash line)
-        bool isCashing   = memberPlacing > 0 && memberPlacing <= cashLine;
+        // A bowler cashes when the director awarded them place money, or when they finished
+        // within the cash line. The money check matters because the cash line
+        // ((entries - comps) / 5) rounds down to 0 in tournaments with fewer than five
+        // entries, which would otherwise let the winner keep their bonus pins.
+        // 2-day championships store a round group in PlaceStanding rather than a placement,
+        // so the place-based deduction never applies to them.
+        bool isCashing = !isTwoDay && memberPlacing > 0
+                      && (memberMoneyWon > 0 || memberPlacing <= cashLine);
         int displayBonus = isCashing
             ? TournamentCalculations.DeductFromBonusPins(memberPlacing, baseBonus)
             : baseBonus;
@@ -210,13 +216,6 @@ public class FinalizeCalculationService : IFinalizeCalculationService
                 ? places[i - 1]
                 : i + 1;
         return places;
-    }
-
-    public int ResolvePersistedBonus(bool preserveOriginalBonus, int? originalBonus, int editedBonus)
-    {
-        if (preserveOriginalBonus)
-            return originalBonus ?? editedBonus;
-        return editedBonus;
     }
 
     /// <summary>
