@@ -33,6 +33,7 @@ public partial class FrmFinalizeTournament : Form
 
     // Top-level controls — access these to adjust later
     private Panel pnlToolbar;
+    private Label lblFinalizedBanner;
     private Button btnFinalizeTournament;
     private Button btnUndoFinalize;
     private SplitContainer splitMain;
@@ -47,14 +48,9 @@ public partial class FrmFinalizeTournament : Form
 
     private static readonly string[] GameScoreColumns = ["colGame1", "colGame2", "colGame3", "colGame4"];
 
-    // GameIds whose colBonus cell shows a post-deduction preview value.
-    // The original (pre-deduction) bonus is kept in Game.Bonus; only Member.Bonus
-    // receives the deducted value on finalization.
+    // GameIds belonging to members who cashed, kept in sync by UpdateNewBonusPreview.
+    // Drives the detail grid's bonus highlight and entry ordering.
     private readonly HashSet<int> _cashingGameIds = [];
-
-    // Member numbers whose colBonus cell has been bumped +1 for reaching their 3rd total entry.
-    // Like _cashingGameIds, the original bonus is preserved in Game.Bonus.
-    private readonly HashSet<int> _thirdEntryBonusMemberNumbers = [];
 
     // Best place standing per member number, computed in LoadTournamentGrid and consumed
     // by LoadDetailGrid to populate the Place column for current-tournament entries.
@@ -65,19 +61,26 @@ public partial class FrmFinalizeTournament : Form
     // entries in prior tournaments. Combined with live grid values in UpdateAll30AvgForMember.
     private readonly Dictionary<int, (int Scratch, int Games)> _history30ByMember = [];
 
-    // Per game: the un-deducted carry-forward bonus from the previous tournament.
-    // Used in colHdcpTotal and RecalculateTournamentRow so the displayed total matches
-    // FrmTournamentResults (which also uses prevBonus without deduction).
-    // colBonus still shows the deducted/bumped preview value for the director's reference.
-    private readonly Dictionary<int, int> _baseBonusByGameId = [];
-
-    // Per member: handicap and base bonus derived from the member's most recent finalized
-    // tournament (excluding the current tournament). Used as the source for colHdcp and
-    // the base bonus in colBonus / HDCP Total, overriding the potentially-stale per-entry
-    // Game.Handicap / Game.Bonus snapshots.
+    // Per member: handicap derived from the member's most recent finalized tournament
+    // (excluding the current tournament). Used as the source for colHdcp, overriding the
+    // potentially-stale per-entry Game.Handicap snapshot. The bonus half of the tuple is
+    // not used for the grid — carry-in bonus comes from Member.Bonus, matching
+    // WinnersService so the finalize grid and FrmTournamentResults agree.
     private readonly Dictionary<int, (int Hdcp, int Bonus)> _prevTournHBByMember = [];
 
-    // Set to true once FinalizeAllGames completes successfully this session.
+    // Inputs the New Bonus preview needs beyond the live Bonus and Earnings cells.
+    private record BonusContext(
+        int Placing, int HistoricalEntries, int CurrentEntries, int SidePot,
+        bool IsDoubles, bool DoublesCashing);
+    private readonly Dictionary<int, BonusContext> _bonusContextByGameId = [];
+
+    // Lowest placement that cashes, from GetQtyOfMembersThatCanPlace. Rounds down to 0
+    // in tournaments with fewer than five entries, which is why ComputeBonusPreview also
+    // treats any member with place money as a casher.
+    private int _cashLine;
+
+    // True when the tournament was already finalized before the form opened, or once
+    // FinalizeAllGames completes successfully this session.
     private bool _isFinalized = false;
 
     // Team View overlay (doubles only) — read-only summary with one row per team.
@@ -127,11 +130,17 @@ public partial class FrmFinalizeTournament : Form
 
     private void FrmFinalizeTournament_Load(object sender, EventArgs e)
     {
+        // Set before the grids load — LoadDetailGrid skips the live preview rows once
+        // this tournament's entries are part of the member's finalized history.
+        _isFinalized = selectedTournament.IsTournamentFinalized;
+
         BuildGrids();
         LoadTournamentGrid();
         dgvTournament.SelectionChanged += DgvTournament_SelectionChanged;
         DgvTournament_SelectionChanged(dgvTournament, EventArgs.Empty);
         FormClosing += FrmFinalizeTournament_FormClosing;
+
+        if (_isFinalized) ApplyFinalizedState();
 
         // Snapshot all editable game fields immediately after load so "Undo Changes"
         // can restore the original DB state for the rest of the session.
@@ -198,6 +207,18 @@ public partial class FrmFinalizeTournament : Form
         pnlToolbar.Controls.AddRange([btnFinalizeTournament, btnUndoFinalize, btnTeamView]);
         pnlToolbar.Resize += (s, _) => PinToolbarButtons();
 
+        // --- "Already finalized" banner (shown by ApplyFinalizedState) ---
+        lblFinalizedBanner = new Label
+        {
+            Dock      = DockStyle.Top,
+            Height    = 36,
+            Font      = new Font("Arial", 16, FontStyle.Bold),
+            ForeColor = Color.Red,
+            TextAlign = ContentAlignment.MiddleCenter,
+            Text      = "THIS TOURNAMENT HAS ALREADY BEEN FINALIZED",
+            Visible   = false
+        };
+
         // --- SplitContainer (top grid / bottom grid) ---
         splitMain = new SplitContainer
         {
@@ -250,9 +271,11 @@ public partial class FrmFinalizeTournament : Form
         splitMain.Panel2.Controls.Add(dgvDetail);
         splitMain.Panel2.Controls.Add(pnlPlayerInfo);
 
-        // Add to form — Fill first, Top-docked toolbar second so toolbar is laid out first
+        // Add to form — Fill first, then the Top-docked controls in bottom-to-top order
+        // (the last one added is laid out first, so the banner sits above the toolbar)
         Controls.Add(splitMain);
         Controls.Add(pnlToolbar);
+        Controls.Add(lblFinalizedBanner);
 
         ResumeLayout(true);
 
@@ -260,6 +283,19 @@ public partial class FrmFinalizeTournament : Form
         PinToolbarButtons();
 
         splitMain.SplitterDistance = splitMain.Height / 2;
+    }
+
+    /// <summary>
+    /// Puts the form into read-only "already finalized" mode: shows the red banner,
+    /// disables the Finalize and Undo Changes buttons, and locks the tournament grid so
+    /// results that have already been written to the member records cannot be edited.
+    /// </summary>
+    private void ApplyFinalizedState()
+    {
+        lblFinalizedBanner.Visible    = true;
+        btnFinalizeTournament.Enabled = false;
+        btnUndoFinalize.Enabled       = false;
+        dgvTournament.ReadOnly        = true;
     }
 
     private void PinToolbarButtons()
@@ -307,6 +343,7 @@ public partial class FrmFinalizeTournament : Form
             new DataGridViewTextBoxColumn  { Name = "colHdcp",         HeaderText = "HDCP",            Width = 45,  ReadOnly = true },
             new DataGridViewTextBoxColumn  { Name = "colNewHdcp",      HeaderText = "New\nHDCP",       Width = 50,  ReadOnly = true },
             new DataGridViewTextBoxColumn  { Name = "colBonus",        HeaderText = "Bonus",           Width = 45  },
+            new DataGridViewTextBoxColumn  { Name = "colNewBonus",     HeaderText = "New\nBonus",      Width = 50,  ReadOnly = true },
             new DataGridViewTextBoxColumn  { Name = "colEarnings",     HeaderText = "Earnings",        Width = 60  },
             new DataGridViewTextBoxColumn  { Name = "colNotes",        HeaderText = "Notes",           AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill }
         );
@@ -314,12 +351,21 @@ public partial class FrmFinalizeTournament : Form
         return dgv;
     }
 
+    /// <summary>
+    /// The carry-in bonus an entry is scored with — the value shown in the Bonus column.
+    /// Before finalization this is the member's running Member.Bonus, the same source
+    /// WinnersService uses, so this grid agrees with FrmTournamentResults. Once finalized
+    /// the entry's own Game.Bonus is authoritative, because Member.Bonus has already been
+    /// advanced to the post-tournament value.
+    /// </summary>
+    private int ResolveCarryInBonus(WinnerListMemberViewModel entry) =>
+        _isFinalized ? Convert.ToInt32(entry.Bonus) : entry.MemberBonus;
+
     private void LoadTournamentGrid()
     {
         _cashingGameIds.Clear();
-        _thirdEntryBonusMemberNumbers.Clear();
         _placedGameIds.Clear();
-        _baseBonusByGameId.Clear();
+        _bonusContextByGameId.Clear();
         _currentTournamentBowlers = tournamentRepository.GetWinnerListMemberData(selectedTournament.Id);
 
         // Doubles tournaments: delegate to the doubles grid builder
@@ -371,8 +417,7 @@ public partial class FrmFinalizeTournament : Form
 
         // 2-day championships: use stored place standings (written by FrmTournamentResults)
         // instead of recalculating from scores. _cashingGameIds is seeded from MoneyWon > 0;
-        // cashLine is unused (isCashing resolves to false, suppressing bonus deduction preview).
-        int cashLine;
+        // _cashLine is unused (isCashing resolves to false, suppressing bonus deduction preview).
         if (selectedTournament.IsTwoDay)
         {
             var storedPlaceByGameId = _currentTournamentBowlers.ToDictionary(b => b.GameId, b => b.PlaceStanding ?? 0);
@@ -391,7 +436,7 @@ public partial class FrmFinalizeTournament : Form
             foreach (var b in _currentTournamentBowlers.Where(b => (b.MoneyWon ?? 0) > 0))
                 _cashingGameIds.Add(b.GameId);
 
-            cashLine = 0; // unused; isCashing = false for all rows (no auto bonus deduction)
+            _cashLine = 0; // unused; isCashing = false for all rows (no auto bonus deduction)
         }
         else
         {
@@ -402,7 +447,7 @@ public partial class FrmFinalizeTournament : Form
             // Determine the cash line so bonus deductions can be previewed in the grid
             int totalEntries = _currentTournamentBowlers.Count;
             int compEntries  = _currentTournamentBowlers.Count(b => b.IsComp);
-            cashLine         = CalcService.GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
+            _cashLine        = CalcService.GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
         }
 
         // Count current-tournament entries per member and finalized historical entries per member.
@@ -535,36 +580,22 @@ public partial class FrmFinalizeTournament : Form
             bool g3Checked = useFlags.Game3;
             bool g4Checked = useFlags.Game4;
 
-            // Use the previous tournament's H/B as the primary source.
-            // Fall back to Game.Handicap / Game.Bonus when no prior history exists,
-            // then to computing handicap from the current ADJ AVG as a last resort.
-            bool hasPrevHB = _prevTournHBByMember.TryGetValue(m.MemberNumber, out var prevHB);
-            int baseBonus = hasPrevHB
-                ? prevHB.Bonus
-                : Convert.ToInt32(m.Bonus);
+            int baseBonus = ResolveCarryInBonus(orig);
 
-            // Pre-deduct bonus for members who will cash and award the third-entry
-            // bonus pin preview (suppressed for cashers and 2-day championships).
+            // Everything the New Bonus preview needs that is not a live grid cell.
             int memberPlacing = _bestStandingByMember.TryGetValue(m.MemberNumber, out int p) ? p : 0;
             int histCount     = historicalCountByMember.TryGetValue(m.MemberNumber, out int hc) ? hc : 0;
             int currCount     = currentCountByMember.TryGetValue(m.MemberNumber, out int cc) ? cc : 0;
-            BonusPreviewResult bonusPreview = finalizeCalculationService.ComputeBonusPreview(
-                baseBonus, memberPlacing, cashLine, selectedTournament.IsTwoDay, histCount, currCount);
-            int displayBonus = bonusPreview.DisplayBonus;
-            if (bonusPreview.IsCashing)
-                _cashingGameIds.Add(m.GameId);
-            if (bonusPreview.AwardedThirdEntryBonus)
-                _thirdEntryBonusMemberNumbers.Add(m.MemberNumber);
+            _bonusContextByGameId[m.GameId] = new BonusContext(
+                memberPlacing, histCount, currCount, orig.SidePot.HasValue ? (int)orig.SidePot.Value : 0,
+                IsDoubles: false, DoublesCashing: false);
 
-            // Store the un-deducted carry-forward bonus so RecalculateTournamentRow and
-            // the initial hdcpTotal use prevBonus (matching FrmTournamentResults.TotalScore).
-            _baseBonusByGameId[m.GameId] = baseBonus;
-
+            bool hasPrevHB = _prevTournHBByMember.TryGetValue(m.MemberNumber, out var prevHB);
             int displayHdcp = finalizeCalculationService.ResolveDisplayHandicap(
                 hasPrevHB ? prevHB.Hdcp : null, m.Handicap, orig.AdjustedAvg);
 
-            // colHdcpTotal uses the un-deducted baseBonus so it matches FrmTournamentResults.
-            // colBonus still shows displayBonus (deducted/bumped preview) separately.
+            // colHdcpTotal uses the carry-in bonus so it matches FrmTournamentResults.
+            // colNewBonus shows the deducted/bumped value the member carries out.
             FinalizeRowResult rowCalc = finalizeCalculationService.RecalculateRow(new FinalizeRowInput(
                 orig.Game1, orig.Game2, orig.Game3, orig.Game4,
                 g1Checked, g2Checked, g3Checked, g4Checked,
@@ -598,7 +629,8 @@ public partial class FrmFinalizeTournament : Form
                 orig.Squad,
                 displayHdcp,
                 finalizeCalculationService.ComputeNewHdcpPreview(displayAdjAvg),  // New HDCP preview
-                displayBonus,
+                baseBonus,
+                null,  // New Bonus — filled in below once every row's Earnings are loaded
                 _placedGameIds.Contains(m.GameId)
                     ? ((m.MoneyWon ?? 0) + (orig.SidePot ?? 0) > 0 ? (object)((m.MoneyWon ?? 0) + (orig.SidePot ?? 0)) : null)
                     : (m.MoneyWon > 0 ? (object)m.MoneyWon : null),  // Earnings (SidePot only on placed entry)
@@ -618,6 +650,10 @@ public partial class FrmFinalizeTournament : Form
         // Populate 30 Entry AVG for all member rows now that all entries are loaded
         foreach (int memberNum in _currentTournamentBowlers.Select(b => b.MemberNumber).Distinct())
             UpdateAll30AvgForMember(memberNum);
+
+        // New Bonus reads every row's Earnings for the member, so it runs after the fill
+        for (int i = 0; i < dgvTournament.Rows.Count; i++)
+            UpdateNewBonusPreview(i);
 
         // Validate all rows so previously-valid rows are not incorrectly flagged on open
         for (int i = 0; i < dgvTournament.Rows.Count; i++)
@@ -723,8 +759,8 @@ public partial class FrmFinalizeTournament : Form
 
             int hdcp1     = has1 && hb1.Hdcp > 0 ? hb1.Hdcp : Convert.ToInt32(m1.Handicap);
             int hdcp2     = has2 && hb2.Hdcp > 0 ? hb2.Hdcp : Convert.ToInt32(m2.Handicap);
-            int baseBonus1 = has1 ? hb1.Bonus : Convert.ToInt32(m1.Bonus);
-            int baseBonus2 = has2 ? hb2.Bonus : Convert.ToInt32(m2.Bonus);
+            int baseBonus1 = ResolveCarryInBonus(m1);
+            int baseBonus2 = ResolveCarryInBonus(m2);
 
             int scratch1 = (m1.Game1 ?? 0) + (m1.Game2 ?? 0);
             int scratch2 = (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
@@ -741,7 +777,7 @@ public partial class FrmFinalizeTournament : Form
         // --- Assign place standings with tie detection ---
         int totalTeams = teamRows.Count;
         int compTeams  = 0;   // doubles teams are not comp entries in the current model
-        int cashLine   = totalTeams > 0 ? CalcService.GetQtyOfMembersThatCanPlace(totalTeams, compTeams) : 0;
+        _cashLine      = totalTeams > 0 ? CalcService.GetQtyOfMembersThatCanPlace(totalTeams, compTeams) : 0;
 
         int[] teamPlaces = finalizeCalculationService.AssignTeamPlaces(
             [.. teamRows.Select(r => r.CombinedHdcpTotal)]);
@@ -755,12 +791,8 @@ public partial class FrmFinalizeTournament : Form
         {
             var (combinedHdcpTotal, m1, m2, hdcp1, baseBonus1, hdcp2, baseBonus2) = teamRows[t];
             int  place     = teamPlaces[t];
-            bool isCashing = place <= cashLine;
+            bool isCashing = place <= _cashLine || (m1.MoneyWon ?? 0) > 0 || (m2.MoneyWon ?? 0) > 0;
             Color rowColor = teamColors[t % 2];
-
-            // Half-rate bonus preview (cashing pairs lose fewer pins)
-            int previewBonus1 = FinalizeCalculationService.ComputeHalfRateBonus(baseBonus1, place, isCashing);
-            int previewBonus2 = FinalizeCalculationService.ComputeHalfRateBonus(baseBonus2, place, isCashing);
 
             if (isCashing)
             {
@@ -768,8 +800,10 @@ public partial class FrmFinalizeTournament : Form
                 _cashingGameIds.Add(m2.GameId);
             }
 
-            _baseBonusByGameId[m1.GameId] = baseBonus1;
-            _baseBonusByGameId[m2.GameId] = baseBonus2;
+            _bonusContextByGameId[m1.GameId] = new BonusContext(
+                place, 0, 0, SidePot: 0, IsDoubles: true, DoublesCashing: isCashing);
+            _bonusContextByGameId[m2.GameId] = new BonusContext(
+                place, 0, 0, SidePot: 0, IsDoubles: true, DoublesCashing: isCashing);
 
             _placedGameIds.Add(m1.GameId);
             _placedGameIds.Add(m2.GameId);
@@ -797,7 +831,8 @@ public partial class FrmFinalizeTournament : Form
                 m1.Squad,
                 hdcp1,
                 finalizeCalculationService.ComputeNewHdcpPreview(adjAvg1),  // New HDCP preview
-                previewBonus1,
+                baseBonus1,
+                null,   // New Bonus — filled in below
                 m1.MoneyWon > 0 ? (object)m1.MoneyWon : null,
                 $"Partner: {m2.BowlerName}"
             );
@@ -827,7 +862,8 @@ public partial class FrmFinalizeTournament : Form
                 m2.Squad,
                 hdcp2,
                 finalizeCalculationService.ComputeNewHdcpPreview(adjAvg2),  // New HDCP preview
-                previewBonus2,
+                baseBonus2,
+                null,   // New Bonus — filled in below
                 m2.MoneyWon > 0 ? (object)m2.MoneyWon : null,
                 $"Partner: {m1.BowlerName}"
             );
@@ -835,9 +871,12 @@ public partial class FrmFinalizeTournament : Form
             dgvTournament.Rows[rowIdx2].DefaultCellStyle.BackColor = rowColor;
         }
 
-        // Populate 30-entry AVG for each member
+        // Populate 30-entry AVG and the New Bonus preview for each member
         foreach (int memberNum in memberNumbersInTournament)
             UpdateAll30AvgForMember(memberNum);
+
+        for (int i = 0; i < dgvTournament.Rows.Count; i++)
+            UpdateNewBonusPreview(i);
 
         // Hide columns not used in doubles (each member bowls only 2 games)
         dgvTournament.Columns["colGame3"].Visible      = false;
@@ -870,7 +909,9 @@ public partial class FrmFinalizeTournament : Form
                 MemberNumber = b.MemberNumber,
                 Name         = b.BowlerName,
                 Handicap     = hasPrevHBbem && prevHBbem.Hdcp > 0 ? prevHBbem.Hdcp : Convert.ToInt32(b.Handicap),
-                Bonus        = hasPrevHBbem ? prevHBbem.Bonus : Convert.ToInt32(b.Bonus),
+                // Same carry-in bonus the grid shows, so place standings computed here
+                // agree with the ones FrmTournamentResults produced
+                Bonus        = ResolveCarryInBonus(b),
                 MoneyWon     = b.MoneyWon,
                 GameId       = b.GameId,
                 Game1Score   = Convert.ToInt32(b.Game1),
@@ -940,6 +981,77 @@ public partial class FrmFinalizeTournament : Form
     }
 
     /// <summary>
+    /// Updates the read-only New Bonus cell: the bonus pins the member will carry out of
+    /// this tournament, derived from the row's carry-in Bonus cell, the member's place,
+    /// and the place money showing in the Earnings cells.
+    /// </summary>
+    private void UpdateNewBonusPreview(int rowIndex)
+    {
+        var row = dgvTournament.Rows[rowIndex];
+        int gameId = ResolveRowGameId(row);
+        if (gameId == 0 || !_bonusContextByGameId.TryGetValue(gameId, out BonusContext ctx)) return;
+
+        int baseBonus = ParseCellInt(row.Cells["colBonus"].Value) ?? 0;
+
+        // Doubles pairs lose half as many pins as an individual placing the same
+        if (ctx.IsDoubles)
+        {
+            row.Cells["colNewBonus"].Value =
+                FinalizeCalculationService.ComputeHalfRateBonus(baseBonus, ctx.Placing, ctx.DoublesCashing);
+            return;
+        }
+
+        BonusPreviewResult preview = finalizeCalculationService.ComputeBonusPreview(
+            baseBonus, ctx.Placing, _cashLine, selectedTournament.IsTwoDay,
+            ctx.HistoricalEntries, ctx.CurrentEntries, ComputeMemberMoneyWon(row));
+
+        row.Cells["colNewBonus"].Value = preview.DisplayBonus;
+
+        // 2-day championships never auto-deduct, so IsCashing is always false there;
+        // their _cashingGameIds are seeded from money won in LoadTournamentGrid instead.
+        if (selectedTournament.IsTwoDay) return;
+
+        if (preview.IsCashing) _cashingGameIds.Add(gameId);
+        else                   _cashingGameIds.Remove(gameId);
+    }
+
+    /// <summary>
+    /// Totals the place money a member won across all of their entries, reading the live
+    /// Earnings cells. Side pots are subtracted because they do not affect bonus pins.
+    /// </summary>
+    private decimal ComputeMemberMoneyWon(DataGridViewRow memberRow)
+    {
+        object memberNumber = memberRow.Cells["colMemberNumber"].Value;
+        decimal total = 0;
+
+        foreach (DataGridViewRow r in dgvTournament.Rows)
+        {
+            if (!Equals(r.Cells["colMemberNumber"].Value, memberNumber)) continue;
+
+            decimal earnings = 0;
+            if (r.Cells["colEarnings"].Value != null)
+                decimal.TryParse(r.Cells["colEarnings"].Value.ToString(), out earnings);
+
+            int gameId  = ResolveRowGameId(r);
+            int sidePot = gameId > 0 && _bonusContextByGameId.TryGetValue(gameId, out BonusContext c) ? c.SidePot : 0;
+            total += Math.Max(earnings - sidePot, 0);
+        }
+
+        return total;
+    }
+
+    /// <summary>
+    /// Returns the game ID a grid row represents — either a singles int tag or the
+    /// member's own game ID from a doubles tag — or 0 when the row carries neither.
+    /// </summary>
+    private static int ResolveRowGameId(DataGridViewRow row) => row.Tag switch
+    {
+        int gameId              => gameId,
+        DoubleMemberRowTag tag  => tag.MyGameId,
+        _                       => 0
+    };
+
+    /// <summary>
     /// Recomputes Scratch Total, HDCP Total, and Entry AVG for the given row
     /// based on which game checkboxes are currently checked.
     /// </summary>
@@ -948,18 +1060,15 @@ public partial class FrmFinalizeTournament : Form
         var row = dgvTournament.Rows[rowIndex];
 
         UpdateNewHdcpPreview(rowIndex);
+        UpdateNewBonusPreview(rowIndex);
 
-        int hdcp  = Convert.ToInt32(row.Cells["colHdcp"].Value  ?? 0);
-        int bonus = Convert.ToInt32(row.Cells["colBonus"].Value ?? 0);
+        int hdcp   = Convert.ToInt32(row.Cells["colHdcp"].Value ?? 0);
         int adjAvg = 0;
         if (row.Cells["colAdjAvg"].Value != null)
             int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
 
-        // Resolve the base (pre-deduction) bonus for HDCP Total calculation
-        int myGameIdForBase = row.Tag is int gId0 ? gId0
-                            : row.Tag is DoubleMemberRowTag dmt0 ? dmt0.MyGameId : 0;
-        int baseBonus = myGameIdForBase > 0 && _baseBonusByGameId.TryGetValue(myGameIdForBase, out int bb)
-            ? bb : bonus;
+        // The Bonus cell holds the carry-in bonus, which is what scores this tournament
+        int baseBonus = ParseCellInt(row.Cells["colBonus"].Value) ?? 0;
 
         FinalizeRowResult calc = finalizeCalculationService.RecalculateRow(new FinalizeRowInput(
             ParseCellInt(row.Cells["colGame1"].Value),
@@ -992,10 +1101,8 @@ public partial class FrmFinalizeTournament : Form
                 int pg2  = pc2 ? Convert.ToInt32(partnerRow.Cells["colGame2"].Value ?? 0) : 0;
                 int partnerScratch = pg1 + pg2;
                 int partnerGames   = (pc1 ? 1 : 0) + (pc2 ? 1 : 0);
-                int partnerHdcp    = Convert.ToInt32(partnerRow.Cells["colHdcp"].Value ?? 0);
-                int partnerBaseBonus = partnerRow.Tag is DoubleMemberRowTag pd
-                                   && _baseBonusByGameId.TryGetValue(pd.MyGameId, out int pbb)
-                    ? pbb : Convert.ToInt32(partnerRow.Cells["colBonus"].Value ?? 0);
+                int partnerHdcp      = Convert.ToInt32(partnerRow.Cells["colHdcp"].Value ?? 0);
+                int partnerBaseBonus = ParseCellInt(partnerRow.Cells["colBonus"].Value) ?? 0;
 
                 int combinedHdcpTotal = finalizeCalculationService.ComputeCombinedHdcpTotal(
                     calc.ScratchTotal, calc.CheckedGames, calc.ResolvedHandicap, baseBonus,
@@ -1174,6 +1281,34 @@ public partial class FrmFinalizeTournament : Form
             dgvTournament.InvalidateRow(e.RowIndex);
         }
 
+        if (colName == "colBonus")
+        {
+            // Carry-in bonus belongs to the member, not the entry — mirror it onto their
+            // other entries so every row scores with the same value.
+            object memberNumber = dgvTournament.Rows[e.RowIndex].Cells["colMemberNumber"].Value;
+            foreach (DataGridViewRow row in dgvTournament.Rows)
+            {
+                if (row.Index == e.RowIndex) continue;
+                if (!Equals(row.Cells["colMemberNumber"].Value, memberNumber)) continue;
+
+                row.Cells["colBonus"].Value = dgvTournament.Rows[e.RowIndex].Cells["colBonus"].Value;
+                RecalculateTournamentRow(row.Index);
+                PersistRowToDatabase(row.Index);
+            }
+
+            RecalculateTournamentRow(e.RowIndex);
+        }
+
+        // Earnings decide whether the member cashed, which drives the New Bonus preview
+        // for every one of their entries.
+        if (colName == "colEarnings")
+        {
+            object memberNumber = dgvTournament.Rows[e.RowIndex].Cells["colMemberNumber"].Value;
+            foreach (DataGridViewRow row in dgvTournament.Rows)
+                if (Equals(row.Cells["colMemberNumber"].Value, memberNumber))
+                    UpdateNewBonusPreview(row.Index);
+        }
+
         // Persist edited text columns to the database on focus loss
         if (colName is "colAdjAvg" or "colBonus" or "colEarnings" or "colNotes"
             or "colGame1" or "colGame2" or "colGame3" or "colGame4")
@@ -1203,14 +1338,8 @@ public partial class FrmFinalizeTournament : Form
     {
         var row = dgvTournament.Rows[rowIndex];
 
-        // Resolve game ID — either a singles int tag or a doubles individual-member tag
-        int gameId;
-        if (row.Tag is int directGameId)
-            gameId = directGameId;
-        else if (row.Tag is DoubleMemberRowTag dmt)
-            gameId = dmt.MyGameId;
-        else
-            return;
+        int gameId = ResolveRowGameId(row);
+        if (gameId == 0) return;
 
         Game game = gameRepository.GetGame(gameId);
         if (game == null) return;
@@ -1239,22 +1368,10 @@ public partial class FrmFinalizeTournament : Form
             int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
         game.Handicap = hdcp;
 
-        // Bonus — for cashing entries the cell shows a post-deduction preview;
-        // preserve the original pre-deduction value in the Game record so reopening
-        // the form does not deduct again on each open.
-        int memberNumberForBonus = row.Cells["colMemberNumber"].Value is int mn ? mn : 0;
-        int bonus = 0;
-        if (row.Cells["colBonus"].Value != null)
-            int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
-        bool preserveOriginalBonus = _cashingGameIds.Contains(gameId)
-            || _thirdEntryBonusMemberNumbers.Contains(memberNumberForBonus);
-        WinnerListMemberViewModel origBonusEntry = preserveOriginalBonus
-            ? _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId)
-            : null;
-        game.Bonus = finalizeCalculationService.ResolvePersistedBonus(
-            preserveOriginalBonus,
-            origBonusEntry != null ? Convert.ToInt32(origBonusEntry.Bonus) : null,
-            bonus);
+        // Game.Bonus is the carry-in bonus this entry was scored with, so it stays stable
+        // across reopens. The post-tournament value lives in New Bonus and is written to
+        // Member.Bonus at finalization.
+        game.Bonus = ParseCellInt(row.Cells["colBonus"].Value) ?? 0;
 
         // Director Check → persisted as KeepAdjustedAvg
         game.KeepAdjustedAvg = row.Cells["colDirCheck"].Value as bool? ?? false;
@@ -1505,13 +1622,12 @@ public partial class FrmFinalizeTournament : Form
                 int dblMemberNum = row.Cells["colMemberNumber"].Value is int dblMn ? dblMn : 0;
                 dblGame.LeagueAverage = finalizeTempRepository.Get30GameAverage(dblMemberNum, selectedTournament.Id);
 
-                // Half-rate bonus: look up the original pre-tournament base bonus
-                WinnerListMemberViewModel dblOrigEntry =
-                    _currentTournamentBowlers.FirstOrDefault(b => b.GameId == dmt.MyGameId);
-                int dblBaseBonus = dblOrigEntry != null ? Convert.ToInt32(dblOrigEntry.Bonus) : 0;
+                // Game.Bonus keeps the carry-in value this entry was scored with;
+                // New Bonus (the half-rate result for doubles) goes to the member below.
+                int dblBaseBonus = ParseCellInt(row.Cells["colBonus"].Value) ?? 0;
+                int dblNewBonus  = ParseCellInt(row.Cells["colNewBonus"].Value) ?? dblBaseBonus;
                 int dblPlace     = row.Cells["colStanding"].Value is int dblP ? dblP : 0;
-                bool dblCashing  = _cashingGameIds.Contains(dmt.MyGameId);
-                dblGame.Bonus    = FinalizeCalculationService.ComputeHalfRateBonus(dblBaseBonus, dblPlace, dblCashing);
+                dblGame.Bonus    = dblBaseBonus;
 
                 // Director entered the full place prize; save each member's 50% share
                 decimal dblEarnings = 0;
@@ -1527,7 +1643,7 @@ public partial class FrmFinalizeTournament : Form
                     {
                         dblMember.Average  = dblAdjAvg;
                         dblMember.Handicap = CalcService.CalculateHandicapPins(dblAdjAvg);
-                        dblMember.Bonus    = dblGame.Bonus ?? 0;
+                        dblMember.Bonus    = dblNewBonus;
                     }
                 }
                 continue;
@@ -1553,20 +1669,12 @@ public partial class FrmFinalizeTournament : Form
             // Compute league average for this game
             int memberNumber = Convert.ToInt32(row.Cells["colMemberNumber"].Value);
 
-            // Update bonus on the game from the grid — preserve the original pre-deduction
-            // value for cashing/third-entry members so the Game record is not corrupted across sessions.
-            int bonus = 0;
-            if (row.Cells["colBonus"].Value != null)
-                int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
-            bool preserveOriginalBonus = _cashingGameIds.Contains(gameId)
-                || _thirdEntryBonusMemberNumbers.Contains(memberNumber);
-            WinnerListMemberViewModel origBonusEntry = preserveOriginalBonus
-                ? _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId)
-                : null;
-            game.Bonus = finalizeCalculationService.ResolvePersistedBonus(
-                preserveOriginalBonus,
-                origBonusEntry != null ? Convert.ToInt32(origBonusEntry.Bonus) : null,
-                bonus);
+            // Game.Bonus records the carry-in bonus this entry was scored with, so
+            // re-finalizing never deducts a second time. New Bonus is the value the
+            // member carries forward and is written to Member.Bonus below.
+            int baseBonus = ParseCellInt(row.Cells["colBonus"].Value) ?? 0;
+            int newBonus  = ParseCellInt(row.Cells["colNewBonus"].Value) ?? baseBonus;
+            game.Bonus = baseBonus;
             double leagueAvg = finalizeTempRepository.Get30GameAverage(memberNumber, selectedTournament.Id);
             game.LeagueAverage = leagueAvg;
 
@@ -1578,10 +1686,11 @@ public partial class FrmFinalizeTournament : Form
                 {
                     member.Average = adjAvg;
                     member.Handicap = CalcService.CalculateHandicapPins(adjAvg);
-                    // Use the cell value so any manual director edits are respected.
-                    // The grid already shows the correct adjusted bonus (deducted for
-                    // cashers, +1 for third-entry new bowlers) from LoadTournamentGrid.
-                    member.Bonus = bonus;
+                    // New Bonus already reflects the deduction for cashers and the +1 for
+                    // third-entry new bowlers, plus any director edit to the Bonus cell.
+                    // Rows are ordered placed-entry-first, so multi-entry members take the
+                    // New Bonus from the entry they placed with.
+                    member.Bonus = newBonus;
                 }
             }
         }
@@ -1592,8 +1701,12 @@ public partial class FrmFinalizeTournament : Form
         db.SaveChanges();
 
         _isFinalized = true;
-        btnUndoFinalize.Enabled       = false;
-        btnFinalizeTournament.Enabled = false;
+        ApplyFinalizedState();
+
+        // These entries are now part of each member's finalized history, so reload the
+        // detail grid to show them there instead of as live preview rows.
+        _displayedDetailMemberNumber = -1;
+        DgvTournament_SelectionChanged(dgvTournament, EventArgs.Empty);
 
         MessageBox.Show(
             "Tournament has been finalized successfully.",
@@ -1710,11 +1823,15 @@ public partial class FrmFinalizeTournament : Form
         // Pull live values from dgvTournament so edits are immediately reflected.
         // Entries are sorted by w/HDCP descending when the member cashed,
         // or by squad number ascending when they did not cash.
+        // Once the tournament is finalized these entries appear in the history section
+        // below, so the preview rows are skipped to avoid listing each entry twice.
         bool memberCashed = _currentTournamentBowlers
             .Where(b => b.MemberNumber == memberNumber)
             .Any(b => _cashingGameIds.Contains(b.GameId));
 
-        var currentEntries = memberCashed
+        List<WinnerListMemberViewModel> currentEntries = _isFinalized
+            ? []
+            : memberCashed
             ? _currentTournamentBowlers
                 .Where(b => b.MemberNumber == memberNumber)
                 .OrderByDescending(b =>
