@@ -7,6 +7,7 @@ using NineTapTour.Forms;
 using NineTapTour.Startup;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -53,7 +54,10 @@ namespace NineTapTour
         {
             var dbFactory = provider.GetRequiredService<IDbContextFactory<NineTapDb>>();
             using NineTapDb db = dbFactory.CreateDbContext();
-            db.Database.Migrate();
+            if (db.Database.GetPendingMigrations().Any())
+            {
+                db.Database.Migrate();
+            }
         }
 
         private static void SetUpGlobalExceptionHandling()
