@@ -29,113 +29,122 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMemberScoresReports));
-            this.btnPrint = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtNumberOfMembers = new System.Windows.Forms.TextBox();
-            this.cbPrintDues = new System.Windows.Forms.CheckBox();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.lblSave = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtCutoffLine = new System.Windows.Forms.MaskedTextBox();
-            this.SuspendLayout();
+            btnPrint = new System.Windows.Forms.Button();
+            label1 = new System.Windows.Forms.Label();
+            txtNumberOfMembers = new System.Windows.Forms.TextBox();
+            cbPrintDues = new System.Windows.Forms.CheckBox();
+            btnSave = new System.Windows.Forms.Button();
+            lblSave = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
+            txtCutoffLine = new System.Windows.Forms.MaskedTextBox();
+            SuspendLayout();
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(56, 102);
-            this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(75, 23);
-            this.btnPrint.TabIndex = 1;
-            this.btnPrint.Text = "Print";
-            this.btnPrint.UseVisualStyleBackColor = true;
-            this.btnPrint.Click += new System.EventHandler(this.BtnPrint_Click);
+            btnPrint.Location = new System.Drawing.Point(65, 118);
+            btnPrint.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnPrint.Name = "btnPrint";
+            btnPrint.Size = new System.Drawing.Size(88, 27);
+            btnPrint.TabIndex = 5;
+            btnPrint.Text = "Print";
+            btnPrint.UseVisualStyleBackColor = true;
+            btnPrint.Click += BtnPrint_Click;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(77, 18);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(140, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Enter Amount of Top Places";
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(90, 21);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(154, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Enter Amount of Top Places";
             // 
             // txtNumberOfMembers
             // 
-            this.txtNumberOfMembers.BackColor = System.Drawing.SystemColors.Control;
-            this.txtNumberOfMembers.Location = new System.Drawing.Point(94, 43);
-            this.txtNumberOfMembers.Name = "txtNumberOfMembers";
-            this.txtNumberOfMembers.Size = new System.Drawing.Size(100, 20);
-            this.txtNumberOfMembers.TabIndex = 0;
+            txtNumberOfMembers.BackColor = System.Drawing.SystemColors.Control;
+            txtNumberOfMembers.Location = new System.Drawing.Point(110, 50);
+            txtNumberOfMembers.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtNumberOfMembers.Name = "txtNumberOfMembers";
+            txtNumberOfMembers.Size = new System.Drawing.Size(116, 23);
+            txtNumberOfMembers.TabIndex = 1;
             // 
             // cbPrintDues
             // 
-            this.cbPrintDues.AutoSize = true;
-            this.cbPrintDues.Location = new System.Drawing.Point(56, 79);
-            this.cbPrintDues.Name = "cbPrintDues";
-            this.cbPrintDues.Size = new System.Drawing.Size(75, 17);
-            this.cbPrintDues.TabIndex = 2;
-            this.cbPrintDues.Text = "Print Dues";
-            this.cbPrintDues.UseVisualStyleBackColor = true;
+            cbPrintDues.AutoSize = true;
+            cbPrintDues.Location = new System.Drawing.Point(65, 91);
+            cbPrintDues.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbPrintDues.Name = "cbPrintDues";
+            cbPrintDues.Size = new System.Drawing.Size(80, 19);
+            cbPrintDues.TabIndex = 4;
+            cbPrintDues.Text = "Print Dues";
+            cbPrintDues.UseVisualStyleBackColor = true;
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(160, 102);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 3;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
+            btnSave.Location = new System.Drawing.Point(187, 118);
+            btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new System.Drawing.Size(88, 27);
+            btnSave.TabIndex = 7;
+            btnSave.Text = "Save";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += BtnSave_Click;
             // 
             // lblSave
             // 
-            this.lblSave.AutoSize = true;
-            this.lblSave.Location = new System.Drawing.Point(157, 80);
-            this.lblSave.Name = "lblSave";
-            this.lblSave.Size = new System.Drawing.Size(91, 13);
-            this.lblSave.TabIndex = 4;
-            this.lblSave.Text = "Save To Desktop";
+            lblSave.AutoSize = true;
+            lblSave.Location = new System.Drawing.Point(183, 92);
+            lblSave.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblSave.Name = "lblSave";
+            lblSave.Size = new System.Drawing.Size(93, 15);
+            lblSave.TabIndex = 6;
+            lblSave.Text = "Save To Desktop";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(256, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(233, 26);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Manual Cutoff Line\r\n(Overrides calculated number of winning places)";
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(299, 10);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(263, 30);
+            label2.TabIndex = 2;
+            label2.Text = "Manual Cutoff Line\r\n(Overrides calculated number of winning places)";
             // 
-            // maskedTextBox1
+            // txtCutoffLine
             // 
-            this.txtCutoffLine.BackColor = System.Drawing.SystemColors.Control;
-            this.txtCutoffLine.Location = new System.Drawing.Point(259, 43);
-            this.txtCutoffLine.Mask = "00";
-            this.txtCutoffLine.Name = "maskedTextBox1";
-            this.txtCutoffLine.Size = new System.Drawing.Size(100, 20);
-            this.txtCutoffLine.TabIndex = 7;
-            this.txtCutoffLine.ValidatingType = typeof(int);
-            this.txtCutoffLine.Click += new System.EventHandler(this.TxtCutoffLine_Click);
+            txtCutoffLine.BackColor = System.Drawing.SystemColors.Control;
+            txtCutoffLine.Location = new System.Drawing.Point(302, 50);
+            txtCutoffLine.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtCutoffLine.Mask = "00";
+            txtCutoffLine.Name = "txtCutoffLine";
+            txtCutoffLine.Size = new System.Drawing.Size(116, 23);
+            txtCutoffLine.TabIndex = 3;
+            txtCutoffLine.ValidatingType = typeof(int);
+            txtCutoffLine.Click += TxtCutoffLine_Click;
             // 
             // FrmMemberScoresReports
             // 
-            this.AcceptButton = this.btnPrint;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(498, 217);
-            this.Controls.Add(this.txtCutoffLine);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.lblSave);
-            this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.cbPrintDues);
-            this.Controls.Add(this.txtNumberOfMembers);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.btnPrint);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "FrmMemberScoresReports";
-            this.Text = "Member Scores Report";
-            this.Load += new System.EventHandler(this.FrmMemberScoresReports_Load);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AcceptButton = btnPrint;
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.White;
+            ClientSize = new System.Drawing.Size(581, 250);
+            Controls.Add(txtCutoffLine);
+            Controls.Add(label2);
+            Controls.Add(lblSave);
+            Controls.Add(btnSave);
+            Controls.Add(cbPrintDues);
+            Controls.Add(txtNumberOfMembers);
+            Controls.Add(label1);
+            Controls.Add(btnPrint);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "FrmMemberScoresReports";
+            Text = "Member Scores Report";
+            Load += FrmMemberScoresReports_Load;
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
