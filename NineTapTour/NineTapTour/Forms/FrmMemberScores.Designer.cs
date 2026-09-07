@@ -619,7 +619,7 @@
             // 
             btnRecapByPin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             btnRecapByPin.Location = new System.Drawing.Point(4, 43);
-            btnRecapByPin.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            btnRecapByPin.Margin = new System.Windows.Forms.Padding(1);
             btnRecapByPin.Name = "btnRecapByPin";
             btnRecapByPin.Size = new System.Drawing.Size(230, 29);
             btnRecapByPin.TabIndex = 35;
@@ -1219,7 +1219,7 @@
             // btnTournamentsByYear
             // 
             btnTournamentsByYear.Location = new System.Drawing.Point(4, 162);
-            btnTournamentsByYear.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            btnTournamentsByYear.Margin = new System.Windows.Forms.Padding(1);
             btnTournamentsByYear.Name = "btnTournamentsByYear";
             btnTournamentsByYear.Size = new System.Drawing.Size(220, 27);
             btnTournamentsByYear.TabIndex = 34;
@@ -1241,7 +1241,7 @@
             // btnTournamentResults
             // 
             btnTournamentResults.Location = new System.Drawing.Point(7, 208);
-            btnTournamentResults.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            btnTournamentResults.Margin = new System.Windows.Forms.Padding(1);
             btnTournamentResults.Name = "btnTournamentResults";
             btnTournamentResults.Size = new System.Drawing.Size(144, 27);
             btnTournamentResults.TabIndex = 43;
@@ -1324,7 +1324,7 @@
             // btnDeleteTournament
             // 
             btnDeleteTournament.Location = new System.Drawing.Point(8, 208);
-            btnDeleteTournament.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            btnDeleteTournament.Margin = new System.Windows.Forms.Padding(2);
             btnDeleteTournament.Name = "btnDeleteTournament";
             btnDeleteTournament.Size = new System.Drawing.Size(216, 20);
             btnDeleteTournament.TabIndex = 35;
