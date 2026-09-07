@@ -69,10 +69,17 @@ public partial class FrmFinalizeTournament : Form
     private readonly Dictionary<int, (int Hdcp, int Bonus)> _prevTournHBByMember = [];
 
     // Inputs the New Bonus preview needs beyond the live Bonus and Earnings cells.
+    // Whether a doubles team cashed is not stored here: it depends on the Earnings
+    // cells of both partners, so UpdateNewBonusPreview resolves it live.
     private record BonusContext(
-        int Placing, int HistoricalEntries, int CurrentEntries, int SidePot,
-        bool IsDoubles, bool DoublesCashing);
+        int Placing, int HistoricalEntries, int CurrentEntries, int SidePot, bool IsDoubles);
     private readonly Dictionary<int, BonusContext> _bonusContextByGameId = [];
+
+    // 2-day championships never auto-deduct bonus pins, so the director sets each
+    // member's outgoing bonus by typing into the New Bonus column. The override lives
+    // here (keyed by member number) so it survives Bonus / Earnings edits that
+    // recompute the preview. It is not written to the database until finalization.
+    private readonly Dictionary<int, int> _newBonusOverrideByMember = [];
 
     // Lowest placement that cashes, from GetQtyOfMembersThatCanPlace. Rounds down to 0
     // in tournaments with fewer than five entries, which is why ComputeBonusPreview also
@@ -135,6 +142,11 @@ public partial class FrmFinalizeTournament : Form
         _isFinalized = selectedTournament.IsTournamentFinalized;
 
         BuildGrids();
+
+        // 2-day championships have no automatic deduction, so the director edits the
+        // outgoing bonus directly. Every other format computes it from Bonus + Earnings.
+        dgvTournament.Columns["colNewBonus"].ReadOnly = !selectedTournament.IsTwoDay;
+
         LoadTournamentGrid();
         dgvTournament.SelectionChanged += DgvTournament_SelectionChanged;
         DgvTournament_SelectionChanged(dgvTournament, EventArgs.Empty);
@@ -588,7 +600,7 @@ public partial class FrmFinalizeTournament : Form
             int currCount     = currentCountByMember.TryGetValue(m.MemberNumber, out int cc) ? cc : 0;
             _bonusContextByGameId[m.GameId] = new BonusContext(
                 memberPlacing, histCount, currCount, orig.SidePot.HasValue ? (int)orig.SidePot.Value : 0,
-                IsDoubles: false, DoublesCashing: false);
+                IsDoubles: false);
 
             bool hasPrevHB = _prevTournHBByMember.TryGetValue(m.MemberNumber, out var prevHB);
             int displayHdcp = finalizeCalculationService.ResolveDisplayHandicap(
@@ -791,19 +803,13 @@ public partial class FrmFinalizeTournament : Form
         {
             var (combinedHdcpTotal, m1, m2, hdcp1, baseBonus1, hdcp2, baseBonus2) = teamRows[t];
             int  place     = teamPlaces[t];
-            bool isCashing = place <= _cashLine || (m1.MoneyWon ?? 0) > 0 || (m2.MoneyWon ?? 0) > 0;
             Color rowColor = teamColors[t % 2];
 
-            if (isCashing)
-            {
-                _cashingGameIds.Add(m1.GameId);
-                _cashingGameIds.Add(m2.GameId);
-            }
-
-            _bonusContextByGameId[m1.GameId] = new BonusContext(
-                place, 0, 0, SidePot: 0, IsDoubles: true, DoublesCashing: isCashing);
-            _bonusContextByGameId[m2.GameId] = new BonusContext(
-                place, 0, 0, SidePot: 0, IsDoubles: true, DoublesCashing: isCashing);
+            // Whether the team cashed (and so _cashingGameIds) is resolved by
+            // UpdateNewBonusPreview once both partners' rows exist, because it depends
+            // on the live Earnings cells and must follow later director edits.
+            _bonusContextByGameId[m1.GameId] = new BonusContext(place, 0, 0, SidePot: 0, IsDoubles: true);
+            _bonusContextByGameId[m2.GameId] = new BonusContext(place, 0, 0, SidePot: 0, IsDoubles: true);
 
             _placedGameIds.Add(m1.GameId);
             _placedGameIds.Add(m2.GameId);
@@ -992,27 +998,62 @@ public partial class FrmFinalizeTournament : Form
         if (gameId == 0 || !_bonusContextByGameId.TryGetValue(gameId, out BonusContext ctx)) return;
 
         int baseBonus = ParseCellInt(row.Cells["colBonus"].Value) ?? 0;
+        int newBonus;
+        bool isCashing;
 
-        // Doubles pairs lose half as many pins as an individual placing the same
         if (ctx.IsDoubles)
         {
-            row.Cells["colNewBonus"].Value =
-                FinalizeCalculationService.ComputeHalfRateBonus(baseBonus, ctx.Placing, ctx.DoublesCashing);
-            return;
+            // Doubles pairs lose half as many pins as an individual placing the same.
+            // The team cashes on either partner's Earnings, so read both rows live.
+            isCashing = IsDoublesTeamCashing(row, ctx.Placing);
+            newBonus  = FinalizeCalculationService.ComputeHalfRateBonus(baseBonus, ctx.Placing, isCashing);
+        }
+        else
+        {
+            BonusPreviewResult preview = finalizeCalculationService.ComputeBonusPreview(
+                baseBonus, ctx.Placing, _cashLine, selectedTournament.IsTwoDay,
+                ctx.HistoricalEntries, ctx.CurrentEntries, ComputeMemberMoneyWon(row));
+            isCashing = preview.IsCashing;
+            newBonus  = preview.DisplayBonus;
         }
 
-        BonusPreviewResult preview = finalizeCalculationService.ComputeBonusPreview(
-            baseBonus, ctx.Placing, _cashLine, selectedTournament.IsTwoDay,
-            ctx.HistoricalEntries, ctx.CurrentEntries, ComputeMemberMoneyWon(row));
+        // 2-day championships: the director's typed value wins over the computed one.
+        if (selectedTournament.IsTwoDay
+            && row.Cells["colMemberNumber"].Value is int memberNumber
+            && _newBonusOverrideByMember.TryGetValue(memberNumber, out int overrideBonus))
+        {
+            newBonus = overrideBonus;
+        }
 
-        row.Cells["colNewBonus"].Value = preview.DisplayBonus;
+        row.Cells["colNewBonus"].Value = newBonus;
 
         // 2-day championships never auto-deduct, so IsCashing is always false there;
         // their _cashingGameIds are seeded from money won in LoadTournamentGrid instead.
         if (selectedTournament.IsTwoDay) return;
 
-        if (preview.IsCashing) _cashingGameIds.Add(gameId);
-        else                   _cashingGameIds.Remove(gameId);
+        if (isCashing) _cashingGameIds.Add(gameId);
+        else           _cashingGameIds.Remove(gameId);
+    }
+
+    /// <summary>
+    /// A doubles team cashes when it placed within the cash line or when the director
+    /// awarded place money to either partner. Read from the live Earnings cells so a
+    /// prize typed after load still deducts bonus pins from both members.
+    /// </summary>
+    private bool IsDoublesTeamCashing(DataGridViewRow row, int place)
+    {
+        if (place > 0 && place <= _cashLine) return true;
+        if (ParseCellDecimal(row.Cells["colEarnings"].Value) > 0) return true;
+
+        DataGridViewRow partnerRow = FindDoublePartnerRow(row);
+        return partnerRow != null && ParseCellDecimal(partnerRow.Cells["colEarnings"].Value) > 0;
+    }
+
+    private static decimal ParseCellDecimal(object cellValue)
+    {
+        if (cellValue == null) return 0;
+        if (cellValue is decimal d) return d;
+        return decimal.TryParse(cellValue.ToString(), out decimal parsed) ? parsed : 0;
     }
 
     /// <summary>
@@ -1027,17 +1068,25 @@ public partial class FrmFinalizeTournament : Form
         foreach (DataGridViewRow r in dgvTournament.Rows)
         {
             if (!Equals(r.Cells["colMemberNumber"].Value, memberNumber)) continue;
-
-            decimal earnings = 0;
-            if (r.Cells["colEarnings"].Value != null)
-                decimal.TryParse(r.Cells["colEarnings"].Value.ToString(), out earnings);
-
-            int gameId  = ResolveRowGameId(r);
-            int sidePot = gameId > 0 && _bonusContextByGameId.TryGetValue(gameId, out BonusContext c) ? c.SidePot : 0;
-            total += Math.Max(earnings - sidePot, 0);
+            total += PlaceMoneyInEarningsCell(r);
         }
 
         return total;
+    }
+
+    /// <summary>
+    /// The place money in a row's Earnings cell. LoadTournamentGrid folds the side pot
+    /// into the Earnings cell of a placed singles entry only, so it is stripped back out
+    /// only for those rows.
+    /// </summary>
+    private decimal PlaceMoneyInEarningsCell(DataGridViewRow row)
+    {
+        decimal earnings = ParseCellDecimal(row.Cells["colEarnings"].Value);
+        int gameId = ResolveRowGameId(row);
+        if (row.Tag is not int || !_placedGameIds.Contains(gameId)) return earnings;
+
+        int sidePot = _bonusContextByGameId.TryGetValue(gameId, out BonusContext c) ? c.SidePot : 0;
+        return Math.Max(earnings - sidePot, 0);
     }
 
     /// <summary>
@@ -1307,6 +1356,30 @@ public partial class FrmFinalizeTournament : Form
             foreach (DataGridViewRow row in dgvTournament.Rows)
                 if (Equals(row.Cells["colMemberNumber"].Value, memberNumber))
                     UpdateNewBonusPreview(row.Index);
+
+            // Doubles: the partner shares this team's prize, so their preview moves too
+            DataGridViewRow partnerRow = FindDoublePartnerRow(dgvTournament.Rows[e.RowIndex]);
+            if (partnerRow != null)
+                UpdateNewBonusPreview(partnerRow.Index);
+        }
+
+        // 2-day championships: the director sets the outgoing bonus directly. Keep it per
+        // member (mirrored onto their other entries) and clamp to the 0-5 pin range.
+        if (colName == "colNewBonus" && selectedTournament.IsTwoDay)
+        {
+            var editedRow = dgvTournament.Rows[e.RowIndex];
+            if (editedRow.Cells["colMemberNumber"].Value is int memberNumber)
+            {
+                int? typed = ParseCellInt(editedRow.Cells["colNewBonus"].Value);
+                if (typed.HasValue)
+                    _newBonusOverrideByMember[memberNumber] = CalcService.ValidateBonusPins(typed.Value);
+                else
+                    _newBonusOverrideByMember.Remove(memberNumber);  // cleared: back to computed
+
+                foreach (DataGridViewRow row in dgvTournament.Rows)
+                    if (Equals(row.Cells["colMemberNumber"].Value, memberNumber))
+                        UpdateNewBonusPreview(row.Index);
+            }
         }
 
         // Persist edited text columns to the database on focus loss
@@ -1376,11 +1449,10 @@ public partial class FrmFinalizeTournament : Form
         // Director Check → persisted as KeepAdjustedAvg
         game.KeepAdjustedAvg = row.Cells["colDirCheck"].Value as bool? ?? false;
 
-        // Earnings
-        decimal earnings = 0;
-        if (row.Cells["colEarnings"].Value != null)
-            decimal.TryParse(row.Cells["colEarnings"].Value.ToString(), out earnings);
-        game.MoneyWon = earnings > 0 ? earnings : null;
+        // Earnings — the cell on a placed singles entry shows place money plus side pot,
+        // so strip the side pot back out or MoneyWon grows by the pot on every save.
+        decimal placeMoney = PlaceMoneyInEarningsCell(row);
+        game.MoneyWon = placeMoney > 0 ? placeMoney : null;
 
         // Notes
         game.Notes = row.Cells["colNotes"].Value as string;
@@ -1765,6 +1837,7 @@ public partial class FrmFinalizeTournament : Form
         db.SaveChanges();
 
         _invalidRowIndices.Clear();
+        _newBonusOverrideByMember.Clear();
         LoadTournamentGrid();
 
         MessageBox.Show(

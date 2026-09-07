@@ -331,6 +331,14 @@ namespace NineTapTourTests.Services
         [DataRow(4, 0, 3, false, 2, 1, 0.0, 5, false, true)]
         // Third entry bump capped at 5 pins
         [DataRow(5, 0, 3, false, 2, 1, 0.0, 5, false, true)]
+        // One prior entry, three entries here (4 total): still crosses the 3rd entry
+        [DataRow(4, 0, 3, false, 1, 3, 0.0, 5, false, true)]
+        // No prior entries, three entries here: crosses the 3rd entry
+        [DataRow(4, 0, 3, false, 0, 3, 0.0, 5, false, true)]
+        // Already had three finalized entries before this tournament: no bump
+        [DataRow(4, 0, 3, false, 3, 1, 0.0, 4, false, false)]
+        // Two entries in total: not yet at the 3rd entry
+        [DataRow(4, 0, 3, false, 1, 1, 0.0, 4, false, false)]
         // 2-day championship: third-entry bump suppressed
         [DataRow(4, 0, 0, true, 2, 1, 0.0, 4, false, false)]
         // Cashing suppresses the third-entry bump

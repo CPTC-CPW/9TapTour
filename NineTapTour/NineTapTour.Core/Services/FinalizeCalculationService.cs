@@ -168,11 +168,15 @@ public class FinalizeCalculationService : IFinalizeCalculationService
             ? TournamentCalculations.DeductFromBonusPins(memberPlacing, baseBonus)
             : baseBonus;
 
-        // Award +1 bonus pin to new bowlers reaching their 3rd total entry
-        // (history + current tournament), but only when they are not cashing.
+        // Award +1 bonus pin to new bowlers who reach their 3rd total entry in this
+        // tournament (fewer than 3 finalized entries before it, 3 or more including it),
+        // but only when they are not cashing. A bowler with one prior entry who bowls
+        // three entries here still crosses the threshold and still earns the pin.
         // Not applicable to 2-day championships (earnings are set manually).
         bool awardedThirdEntryBonus = false;
-        if (!isCashing && !isTwoDay && historicalEntryCount + currentEntryCount == 3)
+        bool reachesThirdEntry = historicalEntryCount < 3
+                              && historicalEntryCount + currentEntryCount >= 3;
+        if (!isCashing && !isTwoDay && reachesThirdEntry)
         {
             displayBonus = TournamentCalculations.ValidateBonusPins(displayBonus + 1);
             awardedThirdEntryBonus = true;
