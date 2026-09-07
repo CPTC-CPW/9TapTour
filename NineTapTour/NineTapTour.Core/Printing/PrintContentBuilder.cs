@@ -1,5 +1,6 @@
 ﻿using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using NineTapTour.Core.Calculations;
 using static NineTapTour.Core.Calculations.ReportHelper;
 
 namespace NineTapTour.Core.Printing;
@@ -74,6 +75,14 @@ public static class PrintContentBuilder
         {
             title = header + reportType + " Standings";
         }
+        // Series report filtered to more than one squad: name the whole range in the
+        // title (e.g. "Squad 1 - 3 Standings") instead of pairing a single-squad title
+        // with a separate 'Through Squad x' line.
+        else if (string.Equals(reportType, "Series") && squadList.Count > 1 && squadList[0] != 0)
+        {
+            title = header + reportType + "     " + FormatSquadRange(squadList) + " Standings ";
+            seriesSubtitle = null;
+        }
         // The report title
         else if (currentSquad == 0)
         {
@@ -127,7 +136,26 @@ public static class PrintContentBuilder
     }
 
     /// <summary>
+    /// Formats the squads a series report is filtered to for use in the title.
+    /// Consecutive squads print as a range ("Squad 1 - 3"); otherwise each
+    /// squad is listed ("Squads 1, 3, 5").
+    /// </summary>
+    public static string FormatSquadRange(List<int> squadList)
+    {
+        int min = squadList[0];
+        int max = squadList[squadList.Count - 1];
+
+        if (ValidationHelper.IsContinuous(squadList))
+        {
+            return "Squad " + min + " - " + max;
+        }
+        return "Squads " + string.Join(", ", squadList);
+    }
+
+    /// <summary>
     /// Builds the 'Final' / 'Through Squad x' subtitle drawn on series reports.
+    /// Only used when the report covers all squads or a single squad; multi-squad
+    /// filters put the range in the title instead (see <see cref="FormatSquadRange"/>).
     /// </summary>
     private static string BuildSeriesSubtitle(List<int> squadList)
     {
@@ -136,55 +164,13 @@ public static class PrintContentBuilder
             return "Final";
         }
 
-        // Create helper ints and bool
-        int min = squadList[0];
-        int max = squadList[squadList.Count - 1];
-        string list = string.Join(",", squadList.ToArray());
-        bool consective = true;
+        int squad = squadList[0];
 
-        if (squadList.Count == 1) // If one squad
+        if (squad == 1) // Squad 1 on its own reads as a progression-based filter
         {
-            if (min == 1) // Checks for squad 1 is test for progression based filter
-            {
-                return "Through Squad " + min;
-            }
-            return "Squad " + min;
+            return "Through Squad " + squad;
         }
-
-        // If more than one squad
-        // Test to see if squads given are consecutive
-        for (int i = 1; i < squadList.Count; i++)
-        {
-            if (squadList[i] - squadList[i - 1] != 1)
-            {
-                consective = false;
-            }
-        }
-
-        if (squadList.Count == 2) // If filtering two squads
-        {
-            if (consective) // Calls if bool consecutive is true
-            {
-                if (min == 1)
-                {
-                    return "Through Squad " + max;
-                }
-                return "Squads " + min + " Through " + max;
-            }
-            // If bool not true
-            return "Squad " + min + " and " + max;
-        }
-
-        // If three or more squads being filtered
-        if (consective)
-        {
-            if (min == 1)
-            {
-                return "Through squad" + max;
-            }
-            return "Squads " + min + " Through " + max;
-        }
-        return "Squads " + list;
+        return "Squad " + squad;
     }
 
     /// <summary>
