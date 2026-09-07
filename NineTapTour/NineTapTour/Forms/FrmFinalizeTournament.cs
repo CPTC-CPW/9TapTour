@@ -1700,6 +1700,12 @@ public partial class FrmFinalizeTournament : Form
 
         db.SaveChanges();
 
+        // The tournament passed into this form is the shared session instance that
+        // FrmMemberScores (and its dropdown) keep using. It is detached from the context
+        // above, so mirror the flag onto it or the app will still treat the tournament
+        // as un-finalized until it is reloaded from the database on the next launch.
+        selectedTournament.IsTournamentFinalized = true;
+
         _isFinalized = true;
         ApplyFinalizedState();
 
