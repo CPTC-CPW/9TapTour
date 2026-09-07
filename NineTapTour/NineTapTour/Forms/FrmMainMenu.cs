@@ -80,7 +80,7 @@ public partial class FrmMainMenu : Form
 
     private void FrmMainMenu_Load(object sender, EventArgs e)
     {
-        Text = "Version: 3.2.0";
+        Text = "Version: 3.2.1";
 #if DEBUG
         Text += " DEVELOPMENT ONLY";
 #endif

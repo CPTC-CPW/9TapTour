@@ -64,6 +64,11 @@ public partial class FrmReports : Form
     private readonly IMemberRepository memberRepository;
     private readonly IReportsRepository reportsRepository;
 
+    /// <summary>
+    /// All members, sorted by name, that the member search filters over.
+    /// </summary>
+    private List<Member> allMembers = [];
+
     public FrmReports(IMemberRepository memberRepository, IReportsRepository reportsRepository)
     {
         this.memberRepository = memberRepository;
@@ -82,13 +87,53 @@ public partial class FrmReports : Form
             cmbYearTo.Items.Add(year);
         }
 
-        List<Member> members = memberRepository.GetMemberList()
+        allMembers = memberRepository.GetMemberList()
             .OrderBy(m => m.LastName)
             .ThenBy(m => m.FirstName)
             .ToList();
-        cmbMember.DataSource = members;
+        FilterMembers();
 
         PopulateCategories();
+    }
+
+    private void TxtMemberSearch_TextChanged(object sender, EventArgs e)
+    {
+        FilterMembers();
+    }
+
+    /// <summary>
+    /// Narrows the member list to those whose number starts with the search
+    /// text or whose name contains it. Blank shows every member. Keeps the
+    /// current selection when it still matches.
+    /// </summary>
+    private void FilterMembers()
+    {
+        string term = txtMemberSearch.Text.Trim();
+        Member previousSelection = lstMembers.SelectedItem as Member;
+
+        List<Member> matches = string.IsNullOrEmpty(term)
+            ? allMembers
+            : allMembers.Where(m => MemberMatches(m, term)).ToList();
+
+        lstMembers.DataSource = matches;
+
+        if (previousSelection != null && matches.Contains(previousSelection))
+        {
+            lstMembers.SelectedItem = previousSelection;
+        }
+    }
+
+    private static bool MemberMatches(Member member, string term)
+    {
+        if (member.Number.ToString().StartsWith(term, StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        string firstLast = $"{member.FirstName} {member.LastName}";
+        string lastFirst = $"{member.LastName}, {member.FirstName}";
+        return firstLast.Contains(term, StringComparison.OrdinalIgnoreCase)
+            || lastFirst.Contains(term, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>
@@ -115,7 +160,8 @@ public partial class FrmReports : Form
 
     private void RbScope_CheckedChanged(object sender, EventArgs e)
     {
-        cmbMember.Enabled = rbIndividual.Checked;
+        txtMemberSearch.Enabled = rbIndividual.Checked;
+        lstMembers.Enabled = rbIndividual.Checked;
         PopulateCategories();
     }
 
@@ -139,11 +185,13 @@ public partial class FrmReports : Form
         }
 
         int? memberNumber = null;
+        Member selectedMember = null;
         if (rbIndividual.Checked)
         {
-            if (cmbMember.SelectedItem is not Member selectedMember)
+            selectedMember = lstMembers.SelectedItem as Member;
+            if (selectedMember == null)
             {
-                MessageBox.Show("Please select a member for an individual report.");
+                MessageBox.Show("Please search for and select a member for an individual report.");
                 return;
             }
             memberNumber = selectedMember.Number;
@@ -171,7 +219,7 @@ public partial class FrmReports : Form
 
         bool includeSidePots = chkIncludeSidePots.Checked;
         string category = cmbCategory.Text;
-        string scopeLabel = rbIndividual.Checked ? cmbMember.Text : "Tour-Wide";
+        string scopeLabel = selectedMember?.ToString() ?? "Tour-Wide";
         currentReportTitle = $"{scopeLabel} — {category} — {periodLabel}";
         if (includeSidePots)
         {

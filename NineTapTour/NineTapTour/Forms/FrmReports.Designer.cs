@@ -1,4 +1,4 @@
-namespace NineTapTour.Forms
+﻿namespace NineTapTour.Forms
 {
     partial class FrmReports
     {
@@ -29,7 +29,8 @@ namespace NineTapTour.Forms
         private void InitializeComponent()
         {
             grpScope = new System.Windows.Forms.GroupBox();
-            cmbMember = new System.Windows.Forms.ComboBox();
+            txtMemberSearch = new System.Windows.Forms.TextBox();
+            lstMembers = new System.Windows.Forms.ListBox();
             rbIndividual = new System.Windows.Forms.RadioButton();
             rbTourWide = new System.Windows.Forms.RadioButton();
             grpPeriod = new System.Windows.Forms.GroupBox();
@@ -59,26 +60,36 @@ namespace NineTapTour.Forms
             //
             // grpScope
             //
-            grpScope.Controls.Add(cmbMember);
+            grpScope.Controls.Add(lstMembers);
+            grpScope.Controls.Add(txtMemberSearch);
             grpScope.Controls.Add(rbIndividual);
             grpScope.Controls.Add(rbTourWide);
             grpScope.Location = new System.Drawing.Point(12, 12);
             grpScope.Name = "grpScope";
-            grpScope.Size = new System.Drawing.Size(255, 130);
+            grpScope.Size = new System.Drawing.Size(255, 230);
             grpScope.TabIndex = 0;
             grpScope.TabStop = false;
             grpScope.Text = "Report Scope";
             //
-            // cmbMember
+            // txtMemberSearch
             //
-            cmbMember.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            cmbMember.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            cmbMember.Enabled = false;
-            cmbMember.FormattingEnabled = true;
-            cmbMember.Location = new System.Drawing.Point(15, 84);
-            cmbMember.Name = "cmbMember";
-            cmbMember.Size = new System.Drawing.Size(225, 23);
-            cmbMember.TabIndex = 2;
+            txtMemberSearch.Enabled = false;
+            txtMemberSearch.Location = new System.Drawing.Point(15, 78);
+            txtMemberSearch.Name = "txtMemberSearch";
+            txtMemberSearch.PlaceholderText = "Search by member # or name";
+            txtMemberSearch.Size = new System.Drawing.Size(225, 23);
+            txtMemberSearch.TabIndex = 2;
+            txtMemberSearch.TextChanged += TxtMemberSearch_TextChanged;
+            //
+            // lstMembers
+            //
+            lstMembers.Enabled = false;
+            lstMembers.FormattingEnabled = true;
+            lstMembers.IntegralHeight = false;
+            lstMembers.Location = new System.Drawing.Point(15, 105);
+            lstMembers.Name = "lstMembers";
+            lstMembers.Size = new System.Drawing.Size(225, 115);
+            lstMembers.TabIndex = 3;
             //
             // rbIndividual
             //
@@ -301,11 +312,11 @@ namespace NineTapTour.Forms
             dgvReport.AllowUserToDeleteRows = false;
             dgvReport.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvReport.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvReport.Location = new System.Drawing.Point(12, 155);
+            dgvReport.Location = new System.Drawing.Point(12, 255);
             dgvReport.Name = "dgvReport";
             dgvReport.ReadOnly = true;
             dgvReport.RowHeadersVisible = false;
-            dgvReport.Size = new System.Drawing.Size(1060, 440);
+            dgvReport.Size = new System.Drawing.Size(1060, 340);
             dgvReport.TabIndex = 5;
             //
             // FrmReports
@@ -337,7 +348,8 @@ namespace NineTapTour.Forms
         private System.Windows.Forms.GroupBox grpScope;
         private System.Windows.Forms.RadioButton rbIndividual;
         private System.Windows.Forms.RadioButton rbTourWide;
-        private System.Windows.Forms.ComboBox cmbMember;
+        private System.Windows.Forms.TextBox txtMemberSearch;
+        private System.Windows.Forms.ListBox lstMembers;
         private System.Windows.Forms.GroupBox grpPeriod;
         private System.Windows.Forms.RadioButton rbCareer;
         private System.Windows.Forms.RadioButton rbYear;
