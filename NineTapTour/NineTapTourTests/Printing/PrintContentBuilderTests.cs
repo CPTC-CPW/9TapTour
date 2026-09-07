@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
 using NineTapTour.Core.Printing;
@@ -290,14 +290,14 @@ namespace NineTapTourTests.Printing
     public class PrintContentBuilderRecapCardTests
     {
         [TestMethod]
-        public void BuildRecapCard_FromValues_TotalHandicapIsFourTimesHandicap()
+        public void BuildRecapCard_FromValues_TotalHandicapIsThreeAndFourGameTotals()
         {
             RecapCardContent card = PrintContentBuilder.BuildRecapCard(25, 123, "Springfield", "Jane", "Smith", "180", 5);
 
             Assert.AreEqual("180", card.AverageText);
             Assert.AreEqual("25", card.HandicapText);
             Assert.AreEqual("5", card.BonusText);
-            Assert.AreEqual("100", card.TotalHandicapText);
+            Assert.AreEqual("75 / 100", card.TotalHandicapText);
             Assert.AreEqual("Smith, Jane", card.NameLine);
             Assert.AreEqual("Springfield", card.CityLine);
             Assert.AreEqual("123", card.MemberNumberText);
@@ -320,9 +320,23 @@ namespace NineTapTourTests.Printing
 
             Assert.AreEqual("", card.AverageText);
             Assert.AreEqual("0", card.HandicapText);
-            Assert.AreEqual("0", card.TotalHandicapText);
+            Assert.AreEqual("0 / 0", card.TotalHandicapText);
             Assert.AreEqual("Doe, John", card.NameLine);
             Assert.AreEqual("77", card.MemberNumberText);
+        }
+    }
+
+    [TestClass]
+    public class PrintContentBuilderFormatTotalHandicapTests
+    {
+        [DataTestMethod]
+        [DataRow(25, "75 / 100")]
+        [DataRow(0, "0 / 0")]
+        [DataRow(1, "3 / 4")]
+        [DataRow(48, "144 / 192")]
+        public void FormatTotalHandicap_ReturnsThreeGameSlashFourGameTotals(int handicap, string expected)
+        {
+            Assert.AreEqual(expected, PrintContentBuilder.FormatTotalHandicap(handicap));
         }
     }
 

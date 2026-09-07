@@ -1,4 +1,4 @@
-using NineTapTour.Core.Entities;
+﻿using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
 using static NineTapTour.Core.Calculations.ReportHelper;
 
@@ -14,7 +14,8 @@ public static class PrintContentBuilder
 {
     public const int BowlersPerPage = 40;
 
-    private const int AmtOfTimesHandicapApplied = 4;
+    private const int ThreeGameCount = 3;
+    private const int FourGameCount = 4;
 
     /// <summary>
     /// Builds the full content of a member report: header strings plus the
@@ -241,22 +242,29 @@ public static class PrintContentBuilder
 
     /// <summary>
     /// Builds the recap card text from individual member values. The total
-    /// handicap shown on the card is the per-game handicap applied once for
-    /// each of the four games.
+    /// handicap shown on the card is the per-game handicap applied over three
+    /// games and over four games, displayed as "3-game total / 4-game total"
+    /// (e.g. a handicap of 25 prints as "75 / 100").
     /// </summary>
     public static RecapCardContent BuildRecapCard(int handicap, int memberNumber, string city, string firstName, string lastName, string average, int bonus)
     {
-        // Get the total handicap to display on the card when printed
-        int totalHandicap = handicap * AmtOfTimesHandicapApplied;
-
         return new RecapCardContent(
             average,
             handicap.ToString(),
             bonus.ToString(),
-            totalHandicap.ToString(),
+            FormatTotalHandicap(handicap),
             lastName + ", " + firstName,
             city,
             memberNumber.ToString());
+    }
+
+    /// <summary>
+    /// Formats the recap card total handicap as the 3-game total followed by
+    /// the 4-game total, e.g. a per-game handicap of 25 becomes "75 / 100".
+    /// </summary>
+    public static string FormatTotalHandicap(int handicap)
+    {
+        return $"{handicap * ThreeGameCount} / {handicap * FourGameCount}";
     }
 
     /// <summary>

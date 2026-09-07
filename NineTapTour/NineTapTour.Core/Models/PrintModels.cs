@@ -1,4 +1,4 @@
-namespace NineTapTour.Core.Models;
+﻿namespace NineTapTour.Core.Models;
 
 /// <summary>
 /// One printed row of a member report: every value is the exact string the
@@ -28,7 +28,8 @@ public record MemberReportContent(
 
 /// <summary>
 /// The text drawn on a single member's recap card: average, handicap (drawn
-/// once per game), the pre-multiplied total handicap, and identity lines.
+/// once per game), the total handicap shown as "3-game total / 4-game total",
+/// and identity lines.
 /// </summary>
 public record RecapCardContent(
     string AverageText,
