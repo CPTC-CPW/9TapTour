@@ -258,17 +258,28 @@ namespace NineTapTourTests.Printing
         [DataTestMethod]
         [DataRow(new int[] { 1 }, "Through Squad 1")]
         [DataRow(new int[] { 2 }, "Squad 2")]
-        [DataRow(new int[] { 1, 2 }, "Through Squad 2")]
-        [DataRow(new int[] { 2, 3 }, "Squads 2 Through 3")]
-        [DataRow(new int[] { 2, 4 }, "Squad 2 and 4")]
-        [DataRow(new int[] { 1, 2, 3 }, "Through squad3")]
-        [DataRow(new int[] { 2, 3, 4 }, "Squads 2 Through 4")]
-        [DataRow(new int[] { 1, 3, 5 }, "Squads 1,3,5")]
-        public void BuildMemberReport_SeriesSquadFilters_MatchCurrentSubtitles(int[] squads, string expected)
+        public void BuildMemberReport_SeriesSingleSquadFilter_TitleNamesSquadAndSubtitleShowsProgress(int[] squads, string expectedSubtitle)
         {
-            MemberReportContent content = PrintContentBuilderPagingTests.BuildReport(PrintContentBuilderPagingTests.MakeMembers(1), ReportType.HighSeriesScratch, squadList: [.. squads]);
+            MemberReportContent content = PrintContentBuilderPagingTests.BuildReport(PrintContentBuilderPagingTests.MakeMembers(1), ReportType.HighSeriesScratch, currentSquad: squads[0], squadList: [.. squads]);
 
-            Assert.AreEqual(expected, content.SeriesSubtitle);
+            Assert.AreEqual("9 Tap Tour High - Series     Squad " + squads[0] + " Standings ", content.Title);
+            Assert.AreEqual(expectedSubtitle, content.SeriesSubtitle);
+        }
+
+        [DataTestMethod]
+        [DataRow(new int[] { 1, 2 }, "Squad 1 - 2")]
+        [DataRow(new int[] { 2, 3 }, "Squad 2 - 3")]
+        [DataRow(new int[] { 1, 2, 3 }, "Squad 1 - 3")]
+        [DataRow(new int[] { 2, 3, 4 }, "Squad 2 - 4")]
+        [DataRow(new int[] { 1, 2, 3, 4, 5, 6, 7, 8 }, "Squad 1 - 8")]
+        [DataRow(new int[] { 2, 4 }, "Squads 2, 4")]
+        [DataRow(new int[] { 1, 3, 5 }, "Squads 1, 3, 5")]
+        public void BuildMemberReport_SeriesMultiSquadFilter_TitleNamesRangeWithoutSubtitle(int[] squads, string expectedRange)
+        {
+            MemberReportContent content = PrintContentBuilderPagingTests.BuildReport(PrintContentBuilderPagingTests.MakeMembers(1), ReportType.HighSeriesScratch, currentSquad: squads[0], squadList: [.. squads]);
+
+            Assert.AreEqual("9 Tap Tour High - Series     " + expectedRange + " Standings ", content.Title);
+            Assert.IsNull(content.SeriesSubtitle);
         }
 
         [TestMethod]
