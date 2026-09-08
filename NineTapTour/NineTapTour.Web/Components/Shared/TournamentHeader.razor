@@ -1,0 +1,23 @@
+@inject IRegionRepository RegionRepository
+
+<div class="d-flex flex-wrap align-items-baseline gap-2 mb-2 tournament-header">
+    <h1 class="h3 mb-0">@Tournament.TourneyNameDate</h1>
+    @if (!string.IsNullOrWhiteSpace(Tournament.Event))
+    {
+        <span class="text-muted">@Tournament.Event</span>
+    }
+    <TournamentTypeBadges Tournament="Tournament" />
+    <span class="text-muted small">@Tournament.Squads squad(s) &middot; @RegionName</span>
+    <span class="ms-auto no-print">
+        <a class="btn btn-sm btn-outline-secondary" href="tournaments/@Tournament.Id">Tournament hub</a>
+    </span>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public Tournament Tournament { get; set; } = default!;
+
+    private string RegionName => Tournament.Region?.Name
+        ?? RegionRepository.GetById(Tournament.RegionId)?.Name
+        ?? string.Empty;
+}

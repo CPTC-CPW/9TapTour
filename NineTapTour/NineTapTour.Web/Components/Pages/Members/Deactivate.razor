@@ -1,0 +1,121 @@
+@page "/members/deactivate"
+@inject IMemberRepository MemberRepository
+@inject FlashMessageService Flash
+
+<PageTitle>Deactivate Members - 9-Tap Tour</PageTitle>
+
+<PageHeader Title="Deactivate by Last Bowled" Subtitle="Active members who have not bowled since the chosen date (or never)." />
+
+<ConfirmDialog @ref="confirm" />
+
+<div class="row g-2 align-items-end mb-3">
+    <div class="col-sm-3">
+        <label class="form-label" for="d-date">Last bowled on or before</label>
+        <input id="d-date" type="date" class="form-control" value="@targetDate.ToString("yyyy-MM-dd")" @onchange="OnDateChanged" />
+    </div>
+    <div class="col-sm-9 d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary" @onclick="CheckAll">Check all</button>
+        <button type="button" class="btn btn-outline-secondary" @onclick="UncheckAll">Uncheck all</button>
+        <button type="button" class="btn btn-danger" @onclick="DeactivateAsync" disabled="@(selected.Count == 0)">Set @selected.Count selected inactive</button>
+    </div>
+</div>
+
+@if (candidates.Count == 0)
+{
+    <div class="alert alert-info">No active members match that date.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle grid-sm">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Last bowled</th>
+                    <th>Region</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Member m in candidates)
+                {
+                    <tr class="selectable-row" @onclick="() => Toggle(m.Id)">
+                        <td><input type="checkbox" class="form-check-input" checked="@selected.Contains(m.Id)" @onclick:stopPropagation @onchange="() => Toggle(m.Id)" /></td>
+                        <td>@m.Number</td>
+                        <td>@m.LastName, @m.FirstName</td>
+                        <td>@(m.LastBowled?.ToShortDateString() ?? "never")</td>
+                        <td>@m.Region?.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private ConfirmDialog confirm = default!;
+    private DateTime targetDate = DateTime.Today.AddDays(-180);
+    private List<Member> candidates = [];
+    private readonly HashSet<int> selected = [];
+
+    protected override void OnInitialized()
+    {
+        Load();
+    }
+
+    private void Load()
+    {
+        candidates = MemberRepository.GetInactiveCandidates(targetDate);
+        selected.Clear();
+    }
+
+    private void OnDateChanged(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value?.ToString(), out DateTime date))
+        {
+            targetDate = date;
+            Load();
+        }
+    }
+
+    private void Toggle(int memberId)
+    {
+        if (!selected.Remove(memberId))
+        {
+            selected.Add(memberId);
+        }
+    }
+
+    private void CheckAll()
+    {
+        foreach (Member m in candidates)
+        {
+            selected.Add(m.Id);
+        }
+    }
+
+    private void UncheckAll()
+    {
+        selected.Clear();
+    }
+
+    private async Task DeactivateAsync()
+    {
+        if (selected.Count == 0)
+        {
+            Flash.Warning("No members checked.");
+            return;
+        }
+
+        bool ok = await confirm.ShowAsync("Update the selected members to inactive?", "Deactivate members", "Update", "Cancel", danger: true);
+        if (!ok)
+        {
+            return;
+        }
+
+        int count = MemberRepository.SetInactive(selected);
+        Flash.Success($"{count} member(s) set inactive.");
+        Load();
+    }
+}

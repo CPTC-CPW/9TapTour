@@ -1,0 +1,48 @@
+@* Warns before the browser leaves the page while edits are unsaved (replaces the desktop's HasUnsavedBowlerData guard). *@
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+@code {
+    private bool applied;
+
+    [Parameter]
+    public bool IsDirty { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // OnAfterRender only runs interactively, so JS is safe here.
+        if (applied == IsDirty && !firstRender)
+        {
+            return;
+        }
+        applied = IsDirty;
+        await SetGuardAsync(IsDirty);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        // During prerendering there is no circuit; JS interop would throw and
+        // abort the static response, so only clean up when interactive.
+        if (!RendererInfo.IsInteractive || !applied)
+        {
+            return;
+        }
+        await SetGuardAsync(false);
+    }
+
+    private async Task SetGuardAsync(bool isDirty)
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("nineTap.setUnsavedGuard", isDirty);
+        }
+        catch (JSDisconnectedException)
+        {
+            // Circuit already gone; nothing to clean up.
+        }
+        catch (InvalidOperationException)
+        {
+            // Not interactive; nothing to do.
+        }
+    }
+}

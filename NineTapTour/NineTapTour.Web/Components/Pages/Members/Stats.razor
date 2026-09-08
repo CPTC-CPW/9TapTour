@@ -1,0 +1,142 @@
+@page "/members/{Number:int}/stats"
+@inject IMemberRepository MemberRepository
+@inject IStatsService StatsService
+
+<PageTitle>Stats - Member @Number - 9-Tap Tour</PageTitle>
+
+@if (member == null)
+{
+    <p>Loading...</p>
+}
+else if (member.Id == 0)
+{
+    <div class="alert alert-warning">Member @Number was not found.</div>
+}
+else
+{
+    <PageHeader Title="@($"{member.FirstName} {member.LastName}")" Subtitle="@($"Member #{member.Number} · Starting average {member.Average ?? 0}")">
+        <Actions>
+            <a class="btn btn-outline-primary btn-sm" href="members/edit/@member.Number">Edit member</a>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.print()">Print</button>
+        </Actions>
+    </PageHeader>
+
+    <div class="row g-2 mb-3">
+        <StatTile Label="Game 1" Value="@Format(summary!.Game1Average)" />
+        <StatTile Label="Game 2" Value="@Format(summary.Game2Average)" />
+        <StatTile Label="Game 3" Value="@Format(summary.Game3Average)" />
+        <StatTile Label="Game 4" Value="@Format(summary.Game4Average)" />
+        <StatTile Label="Scratch total" Value="@Format(summary.ScratchTotalAverage)" />
+        <StatTile Label="Game total" Value="@Format(summary.GameTotalAverage)" />
+        <StatTile Label="Avg per game" Value="@summary.AveragePerGame.ToString()" />
+        <StatTile Label="Handicap" Value="@Format(summary.HandicapAverage)" />
+        <StatTile Label="Bonus" Value="@Format(summary.BonusAverage)" />
+    </div>
+    @if (last30 != null && last30.EntryCount > 0)
+    {
+        <p class="text-muted small">Last @last30.EntryCount finalized entries: Game 1 @last30.Game1Average, Game 2 @last30.Game2Average, Game 3 @last30.Game3Average, Game 4 @last30.Game4Average, scratch @last30.ScratchTotal, game total @last30.GameTotal.</p>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-sm table-bordered grid-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Games</th>
+                    <th>Date</th>
+                    <th>Gm1</th>
+                    <th>Gm2</th>
+                    <th>Gm3</th>
+                    <th>Gm4</th>
+                    <th>Scratch total</th>
+                    <th>Game total w/HDCP</th>
+                    <th>Entry AVG</th>
+                    <th>30 entry AVG</th>
+                    <th>Adj. AVG</th>
+                    <th>HDCP</th>
+                    <th>Bonus</th>
+                    <th>Place</th>
+                    <th>Money won (@stats!.TotalMoneyWon.ToString("0.00"))</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < stats.Rows.Count; i++)
+                {
+                    MemberStatsRow row = stats.Rows[i];
+                    <tr>
+                        <td>@row.GamesPlayed</td>
+                        <td>@row.TournamentDate.ToShortDateString()</td>
+                        <td>@row.Game1</td>
+                        <td>@row.Game2</td>
+                        <td>@row.Game3</td>
+                        <td>@row.Game4</td>
+                        <td>@row.ScratchTotal</td>
+                        <td>@row.HandicapTotal</td>
+                        <td>@(row.GamesPlayed > 0 ? row.ScratchTotal / row.GamesPlayed : 0)</td>
+                        <td class="@(i < 30 ? "highlight-avg30" : "")">@row.LeagueAverage.ToString("0.#")</td>
+                        <td>@row.AdjustedAvg</td>
+                        <td>@row.Handicap</td>
+                        <td class="@(bonusReset[i] ? "highlight-bonus" : "")">@row.Bonus</td>
+                        <td>@row.Place</td>
+                        <td>@row.MoneyWon.ToString("0.00")</td>
+                        <td>@row.Notes</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private Member? member;
+    private MemberStatsResult? stats;
+    private MemberStatAverages? summary;
+    private Last30Averages? last30;
+    private bool[] bonusReset = [];
+
+    [Parameter]
+    public int Number { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        member = MemberRepository.GetMember(Number);
+        if (member.Id == 0)
+        {
+            return;
+        }
+
+        stats = StatsService.GetMemberStats(Number);
+        summary = StatsService.GetMemberStatAverages(Number);
+        last30 = StatsService.GetLast30Averages(Number);
+        bonusReset = ComputeBonusResetHighlights(stats.Rows);
+    }
+
+    /// <summary>
+    /// Mirrors FrmStats.dataGridView1_CellFormatting: a bonus cell is highlighted
+    /// when the member cashed (bonus reset to 0 with money won) in that
+    /// tournament, including the member's other entries on the same date.
+    /// </summary>
+    private static bool[] ComputeBonusResetHighlights(List<MemberStatsRow> rows)
+    {
+        bool[] highlight = new bool[rows.Count];
+        var byDate = rows.Select((row, index) => (row, index)).GroupBy(x => x.row.TournamentDate.Date);
+        foreach (var group in byDate)
+        {
+            bool reset = group.Any(x => x.row.Bonus == 0 && x.row.MoneyWon > 0);
+            if (!reset)
+            {
+                continue;
+            }
+            foreach (var entry in group)
+            {
+                highlight[entry.index] = true;
+            }
+        }
+        return highlight;
+    }
+
+    private static string Format(double value)
+    {
+        return double.IsNaN(value) ? "-" : value.ToString("N2");
+    }
+}

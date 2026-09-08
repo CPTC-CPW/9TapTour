@@ -1,0 +1,137 @@
+/* Print-friendly pages (PrintLayout) and @media print rules for everything else. */
+
+.print-page {
+    padding: 1rem;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000;
+    background: #fff;
+}
+
+.print-toolbar {
+    margin-bottom: 1rem;
+}
+
+@media print {
+    .no-print,
+    .site-navbar,
+    .site-footer,
+    .page-actions,
+    #blazor-error-ui,
+    #components-reconnect-modal {
+        display: none !important;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    main.content {
+        padding: 0 !important;
+    }
+}
+
+/* ---- Recap cards: one per page ---- */
+.recap-card {
+    width: 7.5in;
+    min-height: 4.5in;
+    border: 1px solid #000;
+    padding: 0.5in;
+    margin: 0 auto 1rem auto;
+    page-break-after: always;
+    break-after: page;
+    font-size: 18pt;
+}
+
+.recap-card .recap-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.35in;
+}
+
+.recap-card .recap-name {
+    font-size: 24pt;
+    font-weight: bold;
+}
+
+/* ---- Standings / member report: 40 rows per page ---- */
+.report-page {
+    page-break-after: always;
+    break-after: page;
+    font-size: 12pt;
+}
+
+.report-page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+}
+
+.report-title {
+    font-size: 20pt;
+    font-weight: bold;
+    text-align: center;
+}
+
+.report-subtitle {
+    font-size: 14pt;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.report-table th,
+.report-table td {
+    padding: 2px 8px;
+    text-align: left;
+}
+
+.report-table th {
+    border-bottom: 2px solid #000;
+}
+
+.report-table td.num {
+    text-align: right;
+}
+
+.report-table tr.cutoff td {
+    border-bottom: 3px solid red;
+}
+
+.report-table tr.separator td {
+    text-align: center;
+    letter-spacing: 0.5em;
+}
+
+/* ---- Mailing labels: Avery 5160, 3 x 10 per page ---- */
+.label-sheet {
+    display: grid;
+    grid-template-columns: repeat(3, 2.625in);
+    grid-auto-rows: 1in;
+    column-gap: 0.125in;
+    padding: 0.5in 0 0 0.1875in;
+    width: 8.5in;
+    height: 11in;
+    box-sizing: border-box;
+    page-break-after: always;
+    break-after: page;
+    font-size: 11pt;
+    line-height: 1.2;
+}
+
+.label-sheet:last-child {
+    page-break-after: auto;
+    break-after: auto;
+}
+
+.label-cell {
+    padding: 0.125in 0.2in;
+    overflow: hidden;
+    white-space: pre-line;
+}
+
+@page {
+    margin: 0;
+}

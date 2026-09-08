@@ -1,0 +1,183 @@
+@page "/results/{TournamentId:int}/two-day"
+@inject ITournamentRepository TournamentRepository
+@inject IResultsService ResultsService
+@inject ExcelDownload Download
+@inject FlashMessageService Flash
+
+<PageTitle>2-Day Results - 9-Tap Tour</PageTitle>
+
+<UnsavedChangesGuard IsDirty="isDirty" />
+
+@if (tournament == null)
+{
+    <div class="alert alert-warning">Tournament @TournamentId was not found.</div>
+}
+else
+{
+    <TournamentHeader Tournament="tournament" />
+    <h2 class="h5">2-Day Championship results</h2>
+
+    <div class="card mb-3">
+        <div class="card-body d-flex flex-wrap align-items-end gap-2">
+            <div>
+                <label class="form-label" for="td-start">Start place</label>
+                <input id="td-start" type="number" min="1" max="999" class="form-control" style="max-width: 7rem;" @bind="startPlace" />
+            </div>
+            <div>
+                <label class="form-label" for="td-end">End place</label>
+                <input id="td-end" type="number" min="1" max="999" class="form-control" style="max-width: 7rem;" @bind="endPlace" />
+            </div>
+            <div>
+                <label class="form-label" for="td-earn">Earnings $</label>
+                <input id="td-earn" type="number" step="0.01" class="form-control" style="max-width: 9rem;" @bind="roundEarnings" />
+            </div>
+            <button type="button" class="btn btn-primary" @onclick="AddRound">Add round</button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-sm table-bordered grid-sm align-middle">
+            <thead class="table-light">
+                <tr><th>Place</th><th style="width: 8rem;">Member #</th><th>Full name</th><th>H/B*</th><th>Total score</th><th style="width: 8rem;">Earnings</th><th style="width: 8rem;">Progressive pot</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (TwoDayRow row in Ordered)
+                {
+                    <tr>
+                        <td>@row.PlaceLabel</td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm" @bind="row.MemberNumber" @bind:after="() => AutoFill(row)" />
+                            @if (row.StatusMessage != null)
+                            {
+                                <div class="text-danger small">@row.StatusMessage</div>
+                            }
+                        </td>
+                        <td>@row.FullName</td>
+                        <td>@row.HandicapDisplay</td>
+                        <td>@row.TotalScore</td>
+                        <td><input type="number" step="0.01" class="form-control form-control-sm" @bind="row.Earnings" @bind:after="MarkDirty" /></td>
+                        <td><input class="form-control form-control-sm" @bind="row.ProgressivePotText" @bind:after="MarkDirty" /></td>
+                        <td><button type="button" class="btn btn-sm btn-outline-danger" title="Remove row" @onclick="() => rows.Remove(row)">&times;</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-body d-flex flex-wrap align-items-end gap-3">
+            <button type="button" class="btn btn-primary" @onclick="Save" disabled="@saving">Save results</button>
+            <div>
+                <label class="form-label" for="td-template">Client check template (.xlsx / .xlsm)</label>
+                <InputFile id="td-template" OnChange="e => templateFile = e.File" accept=".xlsx,.xlsm" class="form-control form-control-sm" />
+            </div>
+            <button type="button" class="btn btn-outline-primary" @onclick="ExportAsync" disabled="@(templateFile == null || exporting)">Save and export to Excel</button>
+        </div>
+    </div>
+}
+
+@code {
+    private Tournament? tournament;
+    private readonly List<TwoDayRow> rows = [];
+    private int startPlace = 1;
+    private int endPlace = 1;
+    private decimal roundEarnings;
+    private bool isDirty;
+    private bool saving;
+    private bool exporting;
+    private IBrowserFile? templateFile;
+
+    [Parameter]
+    public int TournamentId { get; set; }
+
+    private IEnumerable<TwoDayRow> Ordered => rows.OrderBy(r => r.PlaceSortStart).ThenByDescending(r => r.TotalScore ?? 0);
+
+    protected override void OnParametersSet()
+    {
+        tournament = TournamentRepository.GetTourneyByID(TournamentId);
+        if (tournament != null)
+        {
+            rows.Clear();
+            rows.AddRange(ResultsService.LoadTwoDay(TournamentId));
+        }
+    }
+
+    private void MarkDirty()
+    {
+        isDirty = true;
+    }
+
+    private void AddRound()
+    {
+        try
+        {
+            rows.AddRange(ResultsService.AddTwoDayRound(startPlace, endPlace, roundEarnings));
+            isDirty = true;
+        }
+        catch (ArgumentException ex)
+        {
+            Flash.Warning(ex.Message);
+        }
+    }
+
+    private void AutoFill(TwoDayRow row)
+    {
+        ResultsService.AutoFillTwoDayRow(TournamentId, row);
+        if (row.StatusMessage != null)
+        {
+            row.MemberNumber = null;
+        }
+        isDirty = true;
+    }
+
+    private void Save()
+    {
+        saving = true;
+        try
+        {
+            ResultsSaveOutcome outcome = ResultsService.SaveTwoDay(TournamentId,
+                [.. Ordered.Select(r => new TwoDayRowSave(r.GameId, r.PlaceLabel, r.Earnings, r.ProgressivePotText))]);
+            Flash.Success($"Saved {outcome.SavedCount} row(s).");
+            foreach (string error in outcome.Errors)
+            {
+                Flash.Warning(error);
+            }
+            isDirty = false;
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+
+    private async Task ExportAsync()
+    {
+        if (templateFile == null)
+        {
+            return;
+        }
+
+        exporting = true;
+        try
+        {
+            using TempFileScope template = await TempFileScope.FromBrowserFileAsync(templateFile);
+            using MemoryStream output = new();
+            ResultsExportOutcome outcome = ResultsService.ExportTwoDay(TournamentId, template.Path, output, [.. Ordered]);
+            await Download.SendAsync(outcome.FileName, output);
+            Flash.Success($"Excel file created: {outcome.FileName}");
+            foreach (string error in outcome.Save.Errors)
+            {
+                Flash.Warning(error);
+            }
+            isDirty = false;
+        }
+        catch (Exception ex)
+        {
+            Flash.Error("Export failed: " + ex.Message);
+        }
+        finally
+        {
+            exporting = false;
+        }
+    }
+}

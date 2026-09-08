@@ -1,0 +1,31 @@
+@* One member recap card, laid out like the desktop's SinglePrint card. *@
+<div class="recap-card">
+    <div class="recap-line">
+        <span>AVG <strong>@Card.AverageText</strong></span>
+        <span>HDCP <strong>@Card.HandicapText</strong></span>
+        <span>BONUS <strong>@Card.BonusText</strong></span>
+    </div>
+    <div class="recap-name">@Card.NameLine</div>
+    <div>@Card.CityLine</div>
+    <table class="mt-3" style="width: 100%; border-collapse: collapse;">
+        <tbody>
+            @for (int game = 1; game <= 4; game++)
+            {
+                <tr>
+                    <td style="border-bottom: 1px solid #000; width: 60%;">Game @game</td>
+                    <td style="border-bottom: 1px solid #000; text-align: right;">@Card.HandicapText</td>
+                </tr>
+            }
+            <tr>
+                <td style="padding-top: 0.3in;">Total handicap (3-game / 4-game)</td>
+                <td style="padding-top: 0.3in; text-align: right;"><strong>@Card.TotalHandicapText</strong></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="mt-3">Member # <strong>@Card.MemberNumberText</strong></div>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public RecapCardContent Card { get; set; } = default!;
+}

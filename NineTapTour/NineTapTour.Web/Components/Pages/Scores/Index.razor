@@ -1,0 +1,706 @@
+@page "/scores/{TournamentId:int}"
+@using NineTapTour.Core.Calculations
+@using NineTapTour.Core.ViewModels
+@using static NineTapTour.Core.Calculations.ReportHelper
+@inject ITournamentRepository TournamentRepository
+@inject IMemberRepository MemberRepository
+@inject IGameRepository GameRepository
+@inject IParticipantRepository ParticipantRepository
+@inject IPlayerHistoryRepository PlayerHistoryRepository
+@inject IScoresService ScoresService
+@inject FlashMessageService Flash
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Scores - @(tournament?.TourneyNameDate) - 9-Tap Tour</PageTitle>
+
+<ConfirmDialog @ref="confirm" />
+<UnsavedChangesGuard IsDirty="isDirty" />
+
+@if (tournament == null)
+{
+    <div class="alert alert-warning">Tournament @TournamentId was not found.</div>
+}
+else
+{
+    <TournamentHeader Tournament="tournament" />
+
+    <div class="row g-2 align-items-end mb-3 no-print">
+        <div class="col-md-5">
+            <label class="form-label" for="s-tournament">Tournament</label>
+            <select id="s-tournament" class="form-select form-select-sm" value="@tournament.Id" @onchange="OnTournamentChanged">
+                @foreach (Tournament t in recentTournaments)
+                {
+                    <option value="@t.Id" selected="@(t.Id == tournament.Id)">@t.TourneyNameDate @(string.IsNullOrWhiteSpace(t.Event) ? "" : $"- {t.Event}")</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-7 d-flex flex-wrap gap-1 justify-content-md-end">
+            <a class="btn btn-sm btn-outline-secondary" href="tournaments/edit">New tournament</a>
+            <a class="btn btn-sm btn-outline-secondary" href="tournaments">Tournament search</a>
+            <a class="btn btn-sm btn-outline-secondary" href="tournaments/@tournament.Id/stats">Stats</a>
+            <a class="btn btn-sm btn-outline-secondary" href="standings/@tournament.Id">Standings reports</a>
+            <a class="btn btn-sm btn-outline-secondary" href="results/@tournament.Id">Results</a>
+            <a class="btn btn-sm btn-outline-secondary" href="finalize/@tournament.Id">Finalize</a>
+            @if (tournament.Doubles)
+            {
+                <a class="btn btn-sm btn-outline-secondary" href="doubles/@tournament.Id">Manage pairings</a>
+            }
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Bowler entry</span>
+                    <span class="text-muted small">Record @RecordLabel</span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <span class="form-label me-2">Squad</span>
+                        @for (int s = 1; s <= tournament.Squads; s++)
+                        {
+                            int squadNumber = s;
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="squad" id="squad-@squadNumber" checked="@(squad == squadNumber)" @onchange="() => SelectSquad(squadNumber)" />
+                                <label class="form-check-label" for="squad-@squadNumber">@squadNumber</label>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="row g-2 align-items-end">
+                        <div class="col-3">
+                            <label class="form-label" for="s-member">Member #</label>
+                            <input id="s-member" type="number" class="form-control" @bind="memberNumberText" @bind:event="oninput" @onkeydown="OnMemberKeyDown" @onblur="LookupAsync" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Name</label>
+                            <input class="form-control" value="@MemberName" readonly />
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Status</label>
+                            <div>
+                                @if (member != null && member.Id > 0)
+                                {
+                                    <span class="badge @(member.IsActive ? "text-bg-success" : "text-bg-danger") fs-6">@(member.IsActive ? "Active" : "Inactive")</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Handicap</label>
+                            <input class="form-control" value="@(member?.Id > 0 ? handicap : null)" readonly />
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Bonus pins</label>
+                            <input class="form-control" value="@(member?.Id > 0 ? bonus : null)" readonly />
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="s-money">Money</label>
+                            <input id="s-money" type="number" step="0.01" class="form-control" @bind="money" @bind:after="MarkDirty" disabled="@(!CanEnterScores)" />
+                        </div>
+                        <div class="col-3">
+                            <div class="form-check mt-4">
+                                <input id="s-comp" type="checkbox" class="form-check-input" @bind="isComp" @bind:after="MarkDirty" disabled="@(!CanEnterScores)" />
+                                <label class="form-check-label" for="s-comp">Comp entry</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="table table-sm mt-3 mb-2 score-grid">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                @for (int g = 1; g <= VisibleGames; g++)
+                                {
+                                    <th class="text-center">Game @g</th>
+                                }
+                                <th class="text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Scratch</th>
+                                @for (int g = 0; g < VisibleGames; g++)
+                                {
+                                    int index = g;
+                                    <td>
+                                        <input id="score-@index" type="number" min="0" max="300" class="form-control text-center" value="@games[index]"
+                                               @oninput="e => OnScoreInput(index, e)" disabled="@(!CanEnterScores)" />
+                                    </td>
+                                }
+                                <td><input class="form-control text-center fw-bold" value="@ScratchTotal" readonly /></td>
+                            </tr>
+                            <tr>
+                                <th>With handicap</th>
+                                @for (int g = 0; g < VisibleGames; g++)
+                                {
+                                    int index = g;
+                                    <td><input class="form-control text-center" value="@HandicapScore(index)" readonly /></td>
+                                }
+                                <td><input class="form-control text-center fw-bold" value="@HandicapTotal" readonly /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    @if (tournament.ThreeOutOf4 && !tournament.IsOnlyThreeGames)
+                    {
+                        <div class="text-muted small">3 out of 4: totals drop the lowest game once all four are entered.</div>
+                    }
+
+                    <div class="d-flex flex-wrap gap-2 align-items-center mt-2">
+                        <button type="button" class="btn btn-primary" @onclick="SaveAsync" disabled="@(!CanEnterScores || saving)">Add / Update record</button>
+                        <button type="button" class="btn btn-outline-danger" @onclick="DeleteEntryAsync" disabled="@(currentGame == null)">Delete entry</button>
+                        <div class="form-check ms-2">
+                            <input id="s-ignore" type="checkbox" class="form-check-input" @bind="ignoreUnscored" />
+                            <label class="form-check-label" for="s-ignore">Ignore unscored games</label>
+                        </div>
+                        <div class="btn-group ms-auto" role="group" aria-label="Record navigation">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="() => GoToRecordAsync(0)" disabled="@(participants.Count == 0)">&laquo;</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="() => GoToRecordAsync(currentIndex - 1)" disabled="@(currentIndex <= 0)">&lsaquo;</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="() => GoToRecordAsync(currentIndex + 1)" disabled="@(currentIndex >= participants.Count - 1)">&rsaquo;</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="() => GoToRecordAsync(participants.Count - 1)" disabled="@(participants.Count == 0)">&raquo;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">Entries (@participants.Count)</div>
+                <div class="table-responsive leaderboard">
+                    <table class="table table-sm table-hover mb-0 grid-sm">
+                        <thead>
+                            <tr><th>#</th><th>Member</th><th>Name</th><th>Squad</th><th>G1</th><th>G2</th>@if (VisibleGames > 2) {<th>G3</th>}@if (VisibleGames > 3) {<th>G4</th>}<th>Scratch</th></tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < participants.Count; i++)
+                            {
+                                int index = i;
+                                Participant p = participants[i];
+                                Game? g = gamesByParticipantId.GetValueOrDefault(p.Id);
+                                <tr class="selectable-row @(index == currentIndex ? "table-primary" : "")" @onclick="() => GoToRecordAsync(index)">
+                                    <td>@(index + 1)</td>
+                                    <td>@p.Member.Number</td>
+                                    <td>@p.Member.LastName, @p.Member.FirstName</td>
+                                    <td>@p.Squad</td>
+                                    <td>@g?.Game1</td>
+                                    <td>@g?.Game2</td>
+                                    @if (VisibleGames > 2) {<td>@g?.Game3</td>}
+                                    @if (VisibleGames > 3) {<td>@g?.Game4</td>}
+                                    <td>@g?.ScratchTotal</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-header">Leaderboard</div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-3 mb-2">
+                        <div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="lb" id="lb-hc" checked="@(leaderboardType == LeaderboardType.GameHandicap)" @onchange="() => SetLeaderboard(LeaderboardType.GameHandicap)" /><label class="form-check-label" for="lb-hc">Game (handicap)</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="lb" id="lb-sc" checked="@(leaderboardType == LeaderboardType.GameScratch)" @onchange="() => SetLeaderboard(LeaderboardType.GameScratch)" /><label class="form-check-label" for="lb-sc">Game (scratch)</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="lb" id="lb-series" checked="@(leaderboardType == LeaderboardType.HighSeries)" @onchange="() => SetLeaderboard(LeaderboardType.HighSeries)" /><label class="form-check-label" for="lb-series">High series</label></div>
+                        </div>
+                        <div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="scoring" id="sc-h" checked="@useHandicap" @onchange="() => SetScoring(true)" /><label class="form-check-label" for="sc-h">Handicap</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="scoring" id="sc-s" checked="@(!useHandicap)" @onchange="() => SetScoring(false)" /><label class="form-check-label" for="sc-s">Scratch</label></div>
+                        </div>
+                        <div>
+                            <div class="small text-muted">Qualify by squad</div>
+                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="qualify" id="q-0" checked="@(qualifySquad == 0)" @onchange="() => SetQualify(0)" /><label class="form-check-label" for="q-0">All</label></div>
+                            @for (int s = 1; s <= tournament.Squads; s++)
+                            {
+                                int squadNumber = s;
+                                <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="qualify" id="q-@squadNumber" checked="@(qualifySquad == squadNumber)" @onchange="() => SetQualify(squadNumber)" /><label class="form-check-label" for="q-@squadNumber">@squadNumber</label></div>
+                            }
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <span class="small text-muted me-2">Filter series by squad</span>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="f-all" checked="@(filterSquads.Count == 0)" @onchange="ClearSquadFilter" /><label class="form-check-label" for="f-all">All squads</label></div>
+                        @for (int s = 1; s <= tournament.Squads; s++)
+                        {
+                            int squadNumber = s;
+                            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="f-@squadNumber" checked="@filterSquads.Contains(squadNumber)" @onchange="() => ToggleSquadFilter(squadNumber)" /><label class="form-check-label" for="f-@squadNumber">@squadNumber</label></div>
+                        }
+                    </div>
+                    <div class="small text-muted mb-1">@(leaderboardType == LeaderboardType.HighSeries ? "Series" : "Game") [Member No.] --- (Name)</div>
+                    <div class="leaderboard border rounded">
+                        <table class="table table-sm table-hover mb-0 grid-sm">
+                            <tbody>
+                                @if (leaderboardType == LeaderboardType.HighSeries)
+                                {
+                                    foreach (TopParticipantGameViewModel row in leaderboard?.Top3Scores ?? [])
+                                    {
+                                        <tr class="selectable-row" @onclick="() => SelectFromLeaderboardAsync(row.MemberNo, row.Squad)">
+                                            <td class="text-end">@(useHandicap ? (row.ThreeOutOf4 ? row.Top3HandiScores : row.HandicapScore) : (row.ThreeOutOf4 ? row.Top3ScratchScore : row.ScratchTotal))</td>
+                                            <td>[@row.MemberNo]</td>
+                                            <td>@row.FirstName @row.LastName</td>
+                                            <td class="text-muted">S@(row.Squad)</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (ParticipantsGameViewModel row in leaderboard?.ParticipantsGameScores ?? [])
+                                    {
+                                        <tr class="selectable-row" @onclick="() => SelectFromLeaderboardAsync(row.MemberNo, row.Squad)">
+                                            <td class="text-end">@(leaderboardType == LeaderboardType.GameHandicap ? row.HighScore + row.Handicap + row.Bonus : row.HighScore)</td>
+                                            <td>[@row.MemberNo]</td>
+                                            <td>@row.FirstName @row.LastName</td>
+                                            <td class="text-muted">S@(row.Squad)</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private enum LeaderboardType { GameHandicap, GameScratch, HighSeries }
+
+    private ConfirmDialog confirm = default!;
+    private Tournament? tournament;
+    private List<Tournament> recentTournaments = [];
+    private List<Participant> participants = [];
+    private Dictionary<int, Game> gamesByParticipantId = [];
+    private int currentIndex;
+    private int squad = 1;
+
+    private string? memberNumberText;
+    private Member? member;
+    private Game? currentGame;
+    private int handicap;
+    private int bonus;
+    private readonly int?[] games = new int?[4];
+    private decimal? money;
+    private bool isComp;
+    private bool ignoreUnscored;
+    private bool isDirty;
+    private bool saving;
+
+    private LeaderboardType leaderboardType = LeaderboardType.GameHandicap;
+    private bool useHandicap = true;
+    private int qualifySquad;
+    private readonly List<int> filterSquads = [];
+    private LeaderboardResult? leaderboard;
+
+    [Parameter]
+    public int TournamentId { get; set; }
+
+    private bool CanEnterScores => member != null && member.Id > 0 && member.IsActive && !(tournament?.IsTournamentFinalized ?? true);
+
+    private int VisibleGames => tournament == null ? 4 : tournament.Doubles ? 2 : tournament.IsOnlyThreeGames ? 3 : 4;
+
+    private string MemberName => member == null || member.Id == 0 ? string.Empty : $"{member.FirstName} {member.MiddleInitial} {member.LastName}".Replace("  ", " ");
+
+    // Past the last record (a new bowler) the desktop showed "count / count".
+    private string RecordLabel => participants.Count == 0 ? "0 / 0" : $"{Math.Min(currentIndex + 1, participants.Count)} / {participants.Count}";
+
+    protected override void OnParametersSet()
+    {
+        tournament = TournamentRepository.GetTourneyByID(TournamentId);
+        recentTournaments = TournamentRepository.GetTournamentList();
+        if (tournament == null)
+        {
+            return;
+        }
+
+        ResetEntry();
+        LoadParticipants();
+        // Start on the last record so the next bowler is not entered in the wrong squad.
+        if (participants.Count > 0)
+        {
+            currentIndex = participants.Count - 1;
+            Participant last = participants[currentIndex];
+            squad = last.Squad;
+            memberNumberText = last.Member.Number.ToString();
+            Lookup();
+        }
+        RefreshLeaderboard();
+    }
+
+    private void LoadParticipants()
+    {
+        // Entry order (by participant id) drives record navigation, as on the desktop;
+        // the games come from the participant query that includes them.
+        participants = TournamentRepository.GetTournamentMemberList(tournament!);
+        gamesByParticipantId = ParticipantRepository.GetParticipants(tournament!.Id)
+            .Where(p => p.Game != null)
+            .ToDictionary(p => p.Id, p => p.Game);
+    }
+
+    private void OnTournamentChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int id) && id != TournamentId)
+        {
+            Navigation.NavigateTo($"scores/{id}");
+        }
+    }
+
+    private void ResetEntry()
+    {
+        member = null;
+        currentGame = null;
+        handicap = 0;
+        bonus = 0;
+        Array.Clear(games);
+        money = null;
+        isComp = false;
+        isDirty = false;
+    }
+
+    private void MarkDirty()
+    {
+        isDirty = true;
+    }
+
+    private async Task OnMemberKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await LookupAsync();
+        }
+    }
+
+    private async Task LookupAsync()
+    {
+        Lookup();
+        if (member != null && member.Id > 0)
+        {
+            await FocusAsync("score-0");
+        }
+    }
+
+    /// <summary>Mirrors FrmMemberScores.FillMember + GetScoresById + UpdateRecordNumber.</summary>
+    private void Lookup()
+    {
+        if (tournament == null || string.IsNullOrWhiteSpace(memberNumberText))
+        {
+            return;
+        }
+        if (!int.TryParse(memberNumberText, out int number))
+        {
+            Flash.Warning("Please input numbers only.");
+            return;
+        }
+
+        member = MemberRepository.GetMember(number);
+        if (member.Id == 0)
+        {
+            Flash.Warning($"A member with the number {number} does not exist");
+            ResetEntry();
+            memberNumberText = null;
+            return;
+        }
+
+        int? mostRecentAvg = PlayerHistoryRepository.GetMostRecentAverage(member.Number);
+        handicap = mostRecentAvg != null ? TournamentCalculations.CalculateHandicapPins(mostRecentAvg.Value) : member.Handicap ?? 0;
+        bonus = member.Bonus;
+
+        try
+        {
+            currentGame = GameRepository.GetGameInTournament(member.Id, tournament.Id, squad);
+        }
+        catch (InvalidOperationException)
+        {
+            currentGame = null;
+        }
+
+        Array.Clear(games);
+        money = null;
+        isComp = false;
+        if (currentGame != null)
+        {
+            games[0] = currentGame.Game1;
+            games[1] = currentGame.Game2;
+            games[2] = currentGame.Game3;
+            games[3] = currentGame.Game4;
+            money = currentGame.MoneyWon;
+            isComp = currentGame.IsComp;
+        }
+
+        int index = participants.FindIndex(p => p.Member.Id == member.Id && p.Squad == squad);
+        currentIndex = index >= 0 ? index : participants.Count;
+        isDirty = false;
+    }
+
+    private void SelectSquad(int squadNumber)
+    {
+        squad = squadNumber;
+        Array.Clear(games);
+        if (member != null && member.Id > 0)
+        {
+            Lookup();
+        }
+    }
+
+    private async Task GoToRecordAsync(int index)
+    {
+        if (participants.Count == 0)
+        {
+            return;
+        }
+        currentIndex = Math.Clamp(index, 0, participants.Count - 1);
+        Participant p = participants[currentIndex];
+        squad = p.Squad;
+        memberNumberText = p.Member.Number.ToString();
+        Lookup();
+        await FocusAsync("score-0");
+    }
+
+    private async Task SelectFromLeaderboardAsync(int memberNumber, int participantSquad)
+    {
+        squad = participantSquad;
+        memberNumberText = memberNumber.ToString();
+        Lookup();
+        await FocusAsync("score-0");
+    }
+
+    private async Task OnScoreInput(int index, ChangeEventArgs e)
+    {
+        string text = e.Value?.ToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            games[index] = null;
+        }
+        else if (int.TryParse(text, out int score))
+        {
+            if (score < 0 || score > 300)
+            {
+                Flash.Warning("Score out of range.");
+                games[index] = null;
+            }
+            else
+            {
+                games[index] = score;
+            }
+        }
+        isDirty = true;
+
+        // Three digits typed: move on like the desktop's auto-tab.
+        if (text.Length == 3)
+        {
+            bool isLastGame = index == VisibleGames - 1;
+            await FocusAsync(isLastGame ? "s-money" : $"score-{index + 1}");
+        }
+    }
+
+    private int ScratchTotal
+    {
+        get
+        {
+            if (AllVisibleGamesEntered && tournament!.ThreeOutOf4 && VisibleGames == 4)
+            {
+                return NineTapTour.Core.Services.ScoresService.ComputeThreeOfFourAdjustedTotals(ScoresAsInts(), HandicapScoresAsInts()).ScratchTotal;
+            }
+            return games.Take(VisibleGames).Sum(g => g ?? 0);
+        }
+    }
+
+    private int HandicapTotal
+    {
+        get
+        {
+            if (AllVisibleGamesEntered && tournament!.ThreeOutOf4 && VisibleGames == 4)
+            {
+                return NineTapTour.Core.Services.ScoresService.ComputeThreeOfFourAdjustedTotals(ScoresAsInts(), HandicapScoresAsInts()).HandicapTotal;
+            }
+            return Enumerable.Range(0, VisibleGames).Sum(i => HandicapScore(i) ?? 0);
+        }
+    }
+
+    private bool AllVisibleGamesEntered => games.Take(VisibleGames).All(g => g.HasValue);
+
+    private int[] ScoresAsInts() => [.. games.Take(4).Select(g => g ?? 0)];
+
+    private int[] HandicapScoresAsInts() => [.. Enumerable.Range(0, 4).Select(i => HandicapScore(i) ?? 0)];
+
+    private int? HandicapScore(int index)
+    {
+        int? score = games[index];
+        return score is > 0 ? score + handicap + bonus : null;
+    }
+
+    private async Task SaveAsync()
+    {
+        if (tournament == null || member == null || member.Id == 0)
+        {
+            Flash.Warning("Please Fill out the Participants information!");
+            return;
+        }
+
+        if (games.Take(VisibleGames).All(g => !g.HasValue))
+        {
+            Flash.Warning("A player must play at least one game to be added to the tournament.");
+            return;
+        }
+
+        bool missing = NineTapTour.Core.Services.ScoresService.AreRequiredScoresMissing(tournament.Doubles, tournament.IsOnlyThreeGames,
+            !games[0].HasValue, !games[1].HasValue, !games[2].HasValue, !games[3].HasValue);
+        if (missing && !ignoreUnscored)
+        {
+            bool proceed = await confirm.ShowAsync("Are you sure you want to continue with a score missing?", "Are you sure?");
+            if (!proceed)
+            {
+                return;
+            }
+        }
+
+        saving = true;
+        try
+        {
+            ScoreEntryRequest request = new(tournament.Id, member.Number, squad,
+                games[0], games[1], VisibleGames > 2 ? games[2] : null, VisibleGames > 3 ? games[3] : null,
+                money ?? 0m, isComp);
+            ScoreEntryResult result = ScoresService.SaveScoreEntry(request);
+            if (!result.Success)
+            {
+                Flash.Error(result.ErrorMessage);
+                return;
+            }
+
+            Flash.Success($"Saved {member.FirstName} {member.LastName} in squad {squad}.");
+            LoadParticipants();
+            ResetEntry();
+            memberNumberText = null;
+            currentIndex = participants.Count;
+            RefreshLeaderboard();
+            await FocusAsync("s-member");
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+
+    private async Task DeleteEntryAsync()
+    {
+        if (tournament == null || member == null || member.Id == 0 || currentGame == null)
+        {
+            return;
+        }
+
+        bool ok = await confirm.ShowAsync($"Remove {member.FirstName} {member.LastName}'s squad {squad} entry from this tournament?", "Delete entry", "Delete", "Cancel", danger: true);
+        if (!ok)
+        {
+            return;
+        }
+
+        RemoveEntryResult result = ScoresService.RemoveParticipantEntry(tournament.Id, member.Number, squad);
+        if (result.Removed)
+        {
+            Flash.Success(result.Message);
+        }
+        else
+        {
+            Flash.Error(result.Message);
+        }
+
+        LoadParticipants();
+        ResetEntry();
+        memberNumberText = null;
+        RefreshLeaderboard();
+        if (participants.Count > 0)
+        {
+            await GoToRecordAsync(participants.Count - 1);
+        }
+    }
+
+    private void SetLeaderboard(LeaderboardType type)
+    {
+        leaderboardType = type;
+        RefreshLeaderboard();
+    }
+
+    private void SetScoring(bool handicapScoring)
+    {
+        useHandicap = handicapScoring;
+        RefreshLeaderboard();
+    }
+
+    private void SetQualify(int squadNumber)
+    {
+        qualifySquad = squadNumber;
+        RefreshLeaderboard();
+    }
+
+    private void ClearSquadFilter()
+    {
+        filterSquads.Clear();
+        RefreshLeaderboard();
+    }
+
+    private void ToggleSquadFilter(int squadNumber)
+    {
+        if (!filterSquads.Remove(squadNumber))
+        {
+            filterSquads.Add(squadNumber);
+        }
+        if (filterSquads.Count == tournament!.Squads)
+        {
+            filterSquads.Clear();
+        }
+        RefreshLeaderboard();
+    }
+
+    private void RefreshLeaderboard()
+    {
+        if (tournament == null)
+        {
+            return;
+        }
+
+        ReportType reportType = leaderboardType switch
+        {
+            LeaderboardType.GameHandicap => ReportType.HighGameHandicapGameSenior,
+            LeaderboardType.GameScratch => ReportType.HighGame,
+            _ => useHandicap ? ReportType.HighSeriesHandicap : ReportType.HighSeriesScratch,
+        };
+        leaderboard = ScoresService.GetTournamentLeaderboards(tournament.Id, tournament.ThreeOutOf4, reportType, qualifySquad, filterSquads);
+    }
+
+    private string? pendingFocusId;
+
+    /// <summary>
+    /// Focus is applied after the next render so inputs enabled by the same
+    /// handler (for example the score boxes after a member lookup) exist and are
+    /// enabled in the browser by the time the JS call runs.
+    /// </summary>
+    private Task FocusAsync(string elementId)
+    {
+        pendingFocusId = elementId;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (pendingFocusId == null)
+        {
+            return;
+        }
+        string id = pendingFocusId;
+        pendingFocusId = null;
+        try
+        {
+            await JS.InvokeVoidAsync("nineTap.focusById", id, true);
+        }
+        catch (JSException)
+        {
+            // Focus is a convenience only.
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+    }
+}

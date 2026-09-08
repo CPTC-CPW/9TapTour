@@ -1,0 +1,393 @@
+@page "/members/edit"
+@page "/members/edit/{Number:int}"
+@using NineTapTour.Core.Import
+@using NineTapTour.Web.Startup
+@inject IMemberEditorService Editor
+@inject IMemberRepository MemberRepository
+@inject IMemberImportService ImportService
+@inject FlashMessageService Flash
+@inject NavigationManager Navigation
+
+<PageTitle>@(model?.IsNew == true ? "New member" : $"Member {member?.Number}") - 9-Tap Tour</PageTitle>
+
+@if (model == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <PageHeader Title="@(model.IsNew ? "New Member" : $"Member #{member!.Number}")"
+                Subtitle="@(model.IsNew ? "The next free member number is assigned on save." : $"{member!.FirstName} {member.LastName}")">
+        <Actions>
+            <div class="btn-group me-2" role="group" aria-label="Record navigation">
+                <a class="btn btn-outline-secondary btn-sm @(nav.First is null || nav.First == member?.Number ? "disabled" : "")" href="members/edit/@nav.First" title="First">&laquo;</a>
+                <a class="btn btn-outline-secondary btn-sm @(nav.Previous is null ? "disabled" : "")" href="members/edit/@nav.Previous" title="Previous">&lsaquo;</a>
+                <span class="btn btn-outline-secondary btn-sm disabled">@(model.IsNew ? "New" : $"{nav.Position} / {nav.Count}")</span>
+                <a class="btn btn-outline-secondary btn-sm @(nav.Next is null ? "disabled" : "")" href="members/edit/@nav.Next" title="Next">&rsaquo;</a>
+                <a class="btn btn-outline-secondary btn-sm @(nav.Last is null || nav.Last == member?.Number ? "disabled" : "")" href="members/edit/@nav.Last" title="Last">&raquo;</a>
+            </div>
+            <a class="btn btn-outline-primary btn-sm" href="members">Search</a>
+            <a class="btn btn-outline-success btn-sm" href="members/edit">New</a>
+            @if (!model.IsNew)
+            {
+                <a class="btn btn-outline-secondary btn-sm" href="members/@member!.Number/stats">Stats</a>
+                <a class="btn btn-outline-secondary btn-sm" href="print/members/@member!.Number/recap" target="_blank">Print recap card</a>
+                <a class="btn btn-outline-secondary btn-sm" href="print/members/active-recaps" target="_blank">Print all active recaps</a>
+            }
+        </Actions>
+    </PageHeader>
+
+    <ConfirmDialog @ref="confirm" />
+    <UnsavedChangesGuard IsDirty="isDirty" />
+
+    @if (errors.Count > 0)
+    {
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach (string error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <EditForm Model="member" OnSubmit="SaveAsync" FormName="member-edit">
+        <div class="row g-3">
+            <div class="col-lg-4">
+                <div class="card h-100">
+                    <div class="card-header">Personal information</div>
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-4">
+                                <label class="form-label" for="m-number">Member #</label>
+                                <InputNumber id="m-number" class="form-control" @bind-Value="member!.Number" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-8">
+                                <label class="form-label" for="m-status">Status</label>
+                                <div id="m-status" class="pt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="status" id="m-active" checked="@member.IsActive" @onchange="() => { member.IsActive = true; MarkDirty(); }" />
+                                        <label class="form-check-label" for="m-active">Active</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="status" id="m-inactive" checked="@(!member.IsActive)" @onchange="() => { member.IsActive = false; MarkDirty(); }" />
+                                        <label class="form-check-label" for="m-inactive">Inactive</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="m-last">Last name *</label>
+                                <InputText id="m-last" class="form-control" @bind-Value="member.LastName" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-9">
+                                <label class="form-label" for="m-first">First name *</label>
+                                <InputText id="m-first" class="form-control" @bind-Value="member.FirstName" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-3">
+                                <label class="form-label" for="m-mi">MI</label>
+                                <InputText id="m-mi" class="form-control" maxlength="1" @bind-Value="member.MiddleInitial" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="m-dob">Date of birth</label>
+                                <InputDate id="m-dob" class="form-control" @bind-Value="member.DateOfBirth" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Gender</label>
+                                <div class="pt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="gender" id="m-female" checked="@(member.Gender == MemberGenders.Female)" @onchange="() => { member.Gender = MemberGenders.Female; MarkDirty(); }" />
+                                        <label class="form-check-label" for="m-female">Female</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="gender" id="m-male" checked="@(member.Gender == MemberGenders.Male)" @onchange="() => { member.Gender = MemberGenders.Male; MarkDirty(); }" />
+                                        <label class="form-check-label" for="m-male">Male</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check mt-2">
+                                    <InputCheckbox id="m-senior" class="form-check-input" @bind-Value="member.IsSenior" @bind-Value:after="MarkDirty" />
+                                    <label class="form-check-label" for="m-senior">Senior (set automatically from date of birth)</label>
+                                </div>
+                            </div>
+                            <AuthorizeView Policy="@WebServiceConfiguration.AdminOnlyPolicy" Context="adminContext">
+                                <div class="col-6">
+                                    <label class="form-label" for="m-ssn">SSN <span class="badge text-bg-warning">admin only</span></label>
+                                    <InputText id="m-ssn" class="form-control" maxlength="11" autocomplete="off" @bind-Value="member.SSN" @bind-Value:after="MarkDirty" />
+                                </div>
+                            </AuthorizeView>
+                            <div class="col-12">
+                                <label class="form-label" for="m-region">Home region *</label>
+                                <RegionSelect Id="m-region" Value="member.RegionId" ValueChanged="OnRegionChanged" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card mb-3">
+                    <div class="card-header">Address and contact</div>
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <label class="form-label" for="m-street">Street</label>
+                                <InputText id="m-street" class="form-control" @bind-Value="member.Street" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="m-city">City</label>
+                                <InputText id="m-city" class="form-control" @bind-Value="member.City" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-2">
+                                <label class="form-label" for="m-state">State</label>
+                                <InputText id="m-state" class="form-control" maxlength="2" @bind-Value="member.State" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label" for="m-zip">Zip</label>
+                                <InputText id="m-zip" class="form-control" @bind-Value="member.PostalCode" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="m-email">Email</label>
+                                <InputText id="m-email" type="email" class="form-control" @bind-Value="member.Email" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="m-phone">Phone</label>
+                                <InputText id="m-phone" class="form-control" @bind-Value="member.PrimaryPhone" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="m-phone2">Phone 2</label>
+                                <InputText id="m-phone2" class="form-control" @bind-Value="member.SecondaryPhone" @bind-Value:after="MarkDirty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Membership</div>
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="form-label" for="m-joined">Date joined *</label>
+                                <InputDate id="m-joined" class="form-control" @bind-Value="member.JoinDate" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="m-rejoined">Rejoin date</label>
+                                <InputDate id="m-rejoined" class="form-control" @bind-Value="member.RejoinDate" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="m-lastpay">Last payment</label>
+                                <InputDate id="m-lastpay" class="form-control" @bind-Value="member.LastPayment" @bind-Value:after="MarkDirty" disabled="@member.IsLifetimeMember" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Paid through</label>
+                                <input class="form-control" value="@PaidToYear" readonly />
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <InputCheckbox id="m-lifetime" class="form-check-input" @bind-Value="member.IsLifetimeMember" @bind-Value:after="MarkDirty" />
+                                    <label class="form-check-label" for="m-lifetime">Lifetime member</label>
+                                </div>
+                                @if (IsPaymentDue)
+                                {
+                                    <div class="text-danger fw-bold mt-1">Membership payment is due.</div>
+                                }
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="m-referrals">Referrals</label>
+                                <InputNumber id="m-referrals" class="form-control" @bind-Value="member.Referrals" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="m-lastbowled">Last bowled</label>
+                                <InputDate id="m-lastbowled" class="form-control" @bind-Value="member.LastBowled" @bind-Value:after="MarkDirty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card mb-3">
+                    <div class="card-header">Score information</div>
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-4">
+                                <label class="form-label" for="m-average">Average</label>
+                                <InputNumber id="m-average" class="form-control" @bind-Value="member.Average" @bind-Value:after="OnAverageChanged" />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label" for="m-handicap">Handicap</label>
+                                <input id="m-handicap" class="form-control" value="@member.Handicap" readonly />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label" for="m-bonus">Bonus (0-5)</label>
+                                <InputNumber id="m-bonus" class="form-control" @bind-Value="member.Bonus" @bind-Value:after="MarkDirty" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">30-game average</label>
+                                <input class="form-control" value="@model.ThirtyGameAverage" readonly />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Money earned</label>
+                                <input class="form-control" value="@member.MoneyEarned.ToString("C")" readonly />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="m-notes">Notes</label>
+                                <InputTextArea id="m-notes" class="form-control" rows="3" @bind-Value="member.Notes" @bind-Value:after="MarkDirty" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (!model.IsNew)
+                {
+                    <div class="card">
+                        <div class="card-header">Import member history</div>
+                        <div class="card-body">
+                            <p class="small text-muted mb-2">Upload the legacy Excel history workbook for this member. Nothing is imported when history already exists.</p>
+                            <InputFile OnChange="ImportHistoryAsync" accept=".xlsx,.xlsm,.xls" class="form-control form-control-sm" disabled="@importing" />
+                            @if (importing)
+                            {
+                                <div class="text-muted small mt-1">Importing...</div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="mt-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary" disabled="@saving">Save</button>
+            <a class="btn btn-secondary" href="members">Cancel</a>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private ConfirmDialog confirm = default!;
+    private MemberEditModel? model;
+    private Member? member;
+    private MemberNavigation nav = new(null, null, null, null, 0, 0);
+    private readonly List<string> errors = [];
+    private bool isDirty;
+    private bool saving;
+    private bool importing;
+
+    [Parameter]
+    public int? Number { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    private string PaidToYear => member is { LastPayment: not null, IsLifetimeMember: false }
+        ? member.LastPayment.Value.AddYears(1).ToString("yyyy")
+        : string.Empty;
+
+    private bool IsPaymentDue => member != null && Editor.IsPaymentDue(member);
+
+    protected override void OnParametersSet()
+    {
+        Load();
+    }
+
+    private void Load()
+    {
+        errors.Clear();
+        isDirty = false;
+        model = Editor.Load(Number ?? 0);
+        member = model.Member;
+        nav = Editor.GetNavigation(member.Number);
+    }
+
+    private void MarkDirty()
+    {
+        isDirty = true;
+    }
+
+    private void OnAverageChanged()
+    {
+        member!.Handicap = NineTapTour.Core.Calculations.TournamentCalculations.CalculateHandicapPins(member.Average ?? 0);
+        MarkDirty();
+    }
+
+    private void OnRegionChanged(int regionId)
+    {
+        member!.RegionId = regionId;
+        MarkDirty();
+    }
+
+    private async Task SaveAsync()
+    {
+        if (member == null)
+        {
+            return;
+        }
+
+        saving = true;
+        errors.Clear();
+        try
+        {
+            if (member.RegionId == 0)
+            {
+                errors.Add("Home region is required.");
+                return;
+            }
+
+            // Non-admins never see the SSN field, so their save must keep the stored value.
+            bool isAdmin = AuthenticationState != null && (await AuthenticationState).User.IsInRole(WebServiceConfiguration.AdminRole);
+            if (!isAdmin && !model!.IsNew)
+            {
+                member.SSN = MemberRepository.GetMember(member.Number).SSN;
+            }
+
+            MemberSaveResult result = Editor.Save(member);
+            if (!result.Success)
+            {
+                errors.AddRange(result.Errors);
+                return;
+            }
+
+            isDirty = false;
+            Flash.Success($"Member #{result.Saved!.Number} saved.");
+            Navigation.NavigateTo($"members/edit/{result.Saved.Number}");
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+
+    private async Task ImportHistoryAsync(InputFileChangeEventArgs e)
+    {
+        if (member == null || model == null || model.IsNew)
+        {
+            return;
+        }
+
+        importing = true;
+        try
+        {
+            using TempFileScope upload = await TempFileScope.FromBrowserFileAsync(e.File);
+            ImportResult result = ImportService.ImportMemberHistory(upload.Path, member);
+            if (result.Skipped > 0)
+            {
+                Flash.Warning(MemberImportService.HistoryAlreadyImportedWarning);
+                return;
+            }
+
+            Flash.Success($"Import completed. {result.Added} games imported across multiple tournaments.");
+            foreach (string warning in result.Warnings)
+            {
+                Flash.Warning(warning);
+            }
+            Load();
+        }
+        catch (Exception ex)
+        {
+            Flash.Error("Import failed: " + ex.Message);
+        }
+        finally
+        {
+            importing = false;
+        }
+    }
+}

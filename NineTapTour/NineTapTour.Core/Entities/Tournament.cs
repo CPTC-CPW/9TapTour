@@ -48,6 +48,13 @@ public class Tournament
     /// </summary>
     public bool IsImported { get; set; }
 
+    /// <summary>
+    /// The region this tournament belongs to. Required; the repositories apply
+    /// the default region when a caller (the desktop app, imports) leaves it 0.
+    /// </summary>
+    public int RegionId { get; set; }
+
+    public Region Region { get; set; }
 }
 
 public class TournamentDTO

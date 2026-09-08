@@ -1,0 +1,54 @@
+@* Awaitable yes/no dialog replacing the desktop's MessageBox confirmations. *@
+@if (isOpen)
+{
+    <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@title</h5>
+                    <button type="button" class="btn-close" aria-label="Close" @onclick="() => Close(false)"></button>
+                </div>
+                <div class="modal-body">
+                    <p style="white-space: pre-line;">@text</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="() => Close(false)">@noText</button>
+                    <button type="button" class="btn @yesCss" @onclick="() => Close(true)">@yesText</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    private bool isOpen;
+    private string title = "Confirm";
+    private string text = "";
+    private string yesText = "Yes";
+    private string noText = "No";
+    private string yesCss = "btn-primary";
+    private TaskCompletionSource<bool>? pending;
+
+    /// <summary>Shows the dialog and completes with true when the user confirms.</summary>
+    public Task<bool> ShowAsync(string message, string? dialogTitle = null, string? yes = null, string? no = null, bool danger = false)
+    {
+        pending?.TrySetResult(false);
+        pending = new TaskCompletionSource<bool>();
+        title = dialogTitle ?? "Confirm";
+        text = message;
+        yesText = yes ?? "Yes";
+        noText = no ?? "No";
+        yesCss = danger ? "btn-danger" : "btn-primary";
+        isOpen = true;
+        StateHasChanged();
+        return pending.Task;
+    }
+
+    private void Close(bool result)
+    {
+        isOpen = false;
+        pending?.TrySetResult(result);
+        pending = null;
+    }
+}

@@ -1,0 +1,148 @@
+@page "/tournaments/{Id:int}"
+@inject ITournamentRepository TournamentRepository
+@inject IRegionRepository RegionRepository
+@inject FlashMessageService Flash
+@inject NavigationManager Navigation
+
+<PageTitle>@(tournament?.TourneyNameDate ?? "Tournament") - 9-Tap Tour</PageTitle>
+
+<ConfirmDialog @ref="confirm" />
+
+@if (tournament == null)
+{
+    <div class="alert alert-warning">Tournament @Id was not found.</div>
+}
+else
+{
+    <TournamentHeader Tournament="tournament" />
+
+    <div class="row g-3 mt-1">
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-header">Details</div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-5">Date</dt><dd class="col-7">@tournament.Date.ToShortDateString()</dd>
+                        <dt class="col-5">Location</dt><dd class="col-7">@tournament.Location</dd>
+                        <dt class="col-5">Event</dt><dd class="col-7">@tournament.Event</dd>
+                        <dt class="col-5">Sponsors</dt><dd class="col-7">@tournament.Sponsors</dd>
+                        <dt class="col-5">Region</dt><dd class="col-7">@regionName</dd>
+                        <dt class="col-5">Squads</dt><dd class="col-7">@tournament.Squads</dd>
+                        <dt class="col-5">Entries</dt><dd class="col-7">@entryCount (@uniqueMembers unique bowlers)</dd>
+                        <dt class="col-5">Notes</dt><dd class="col-7" style="white-space: pre-line;">@tournament.Notes</dd>
+                    </dl>
+                </div>
+                <div class="card-footer d-flex gap-2">
+                    <a class="btn btn-sm btn-outline-primary" href="tournaments/edit/@tournament.Id">Edit</a>
+                    <button type="button" class="btn btn-sm btn-outline-danger ms-auto" @onclick="DeleteAsync">Delete tournament</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <a class="hub-tile card text-decoration-none h-100" href="scores/@tournament.Id">
+                        <div class="card-body">
+                            <h2 class="h5 card-title">Enter Scores</h2>
+                            <p class="card-text text-muted">Add, update, or remove bowlers' game scores by squad; live leaderboards.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <a class="hub-tile card text-decoration-none h-100" href="standings/@tournament.Id">
+                        <div class="card-body">
+                            <h2 class="h5 card-title">Standings Reports</h2>
+                            <p class="card-text text-muted">Series, game, and senior standings for printing or Excel.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <a class="hub-tile card text-decoration-none h-100" href="tournaments/@tournament.Id/stats">
+                        <div class="card-body">
+                            <h2 class="h5 card-title">Tournament Stats</h2>
+                            <p class="card-text text-muted">Per-bowler games, scratch totals, top-3, handicap, and bonus.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <a class="hub-tile card text-decoration-none h-100" href="results/@tournament.Id">
+                        <div class="card-body">
+                            <h2 class="h5 card-title">Results &amp; Payouts</h2>
+                            <p class="card-text text-muted">Winners list, earnings, progressive pot, and the check template export.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <a class="hub-tile card text-decoration-none h-100 @(tournament.IsTournamentFinalized ? "border-danger" : "")" href="finalize/@tournament.Id">
+                        <div class="card-body">
+                            <h2 class="h5 card-title">Finalize Tournament</h2>
+                            <p class="card-text text-muted">@(tournament.IsTournamentFinalized ? "Already finalized (read-only)." : "Review adjusted averages, director checks, and finalize member records.")</p>
+                        </div>
+                    </a>
+                </div>
+                @if (tournament.Doubles)
+                {
+                    <div class="col-md-6">
+                        <a class="hub-tile card text-decoration-none h-100" href="doubles/@tournament.Id">
+                            <div class="card-body">
+                                <h2 class="h5 card-title">Doubles Pairings</h2>
+                                <p class="card-text text-muted">Manage partner plans and claims, import bowlers, fix discrepancies.</p>
+                            </div>
+                        </a>
+                    </div>
+                }
+                <div class="col-md-6">
+                    <a class="hub-tile card text-decoration-none h-100" href="print/tournaments/@tournament.Id/recaps" target="_blank">
+                        <div class="card-body">
+                            <h2 class="h5 card-title">Print Recap Cards</h2>
+                            <p class="card-text text-muted">One recap card per bowler in this tournament, ordered by last name.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private ConfirmDialog confirm = default!;
+    private Tournament? tournament;
+    private string regionName = string.Empty;
+    private int entryCount;
+    private int uniqueMembers;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        tournament = TournamentRepository.GetTourneyByID(Id);
+        if (tournament == null)
+        {
+            return;
+        }
+        regionName = RegionRepository.GetById(tournament.RegionId)?.Name ?? string.Empty;
+        entryCount = TournamentRepository.GetTotalNumberParticipantsInTournament(tournament);
+        uniqueMembers = TournamentRepository.GetUniqueTourMembers(tournament).Count;
+    }
+
+    private async Task DeleteAsync()
+    {
+        if (tournament == null)
+        {
+            return;
+        }
+
+        bool ok = await confirm.ShowAsync(
+            $"Delete {tournament.TourneyNameDate} and all {entryCount} of its entries?\nThis cannot be undone.",
+            "Delete tournament", "Delete", "Cancel", danger: true);
+        if (!ok)
+        {
+            return;
+        }
+
+        TournamentRepository.DeleteTournament(tournament);
+        Flash.Success($"{tournament.TourneyNameDate} deleted.");
+        Navigation.NavigateTo("tournaments");
+    }
+}

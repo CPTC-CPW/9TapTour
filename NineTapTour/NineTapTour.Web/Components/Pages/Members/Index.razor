@@ -1,0 +1,198 @@
+@page "/members"
+@inject IMemberRepository MemberRepository
+
+<PageTitle>Members - 9-Tap Tour</PageTitle>
+
+<PageHeader Title="Member Search">
+    <Actions>
+        <a class="btn btn-primary" href="members/edit">New member</a>
+        <a class="btn btn-outline-secondary" href="members/labels">Mailing labels</a>
+    </Actions>
+</PageHeader>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="row g-2 align-items-end">
+            <div class="col-sm-2">
+                <label class="form-label" for="f-number">Member #</label>
+                <input id="f-number" type="number" class="form-control form-control-sm" @bind="number" @bind:event="oninput" @onkeydown="OnKeyDown" />
+            </div>
+            <div class="col-sm-3">
+                <label class="form-label" for="f-first">First name</label>
+                <input id="f-first" class="form-control form-control-sm" @bind="firstName" @bind:event="oninput" @onkeydown="OnKeyDown" />
+            </div>
+            <div class="col-sm-3">
+                <label class="form-label" for="f-last">Last name</label>
+                <input id="f-last" class="form-control form-control-sm" @bind="lastName" @bind:event="oninput" @onkeydown="OnKeyDown" />
+            </div>
+            <div class="col-sm-2">
+                <label class="form-label" for="f-active">Active</label>
+                <select id="f-active" class="form-select form-select-sm" @bind="activeFilter">
+                    <option value="either">Either</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="col-sm-2 d-flex gap-2">
+                <button type="button" class="btn btn-primary btn-sm" @onclick="Search">Search</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="ClearFilters">Clear</button>
+            </div>
+        </div>
+        <div class="row g-2 align-items-end mt-1">
+            <div class="col-sm-2">
+                <label class="form-label" for="f-avg">Average</label>
+                <input id="f-avg" type="number" class="form-control form-control-sm" @bind="average" @onkeydown="OnKeyDown" />
+            </div>
+            <div class="col-sm-2">
+                <label class="form-label" for="f-hdcp">Handicap</label>
+                <input id="f-hdcp" type="number" class="form-control form-control-sm" @bind="handicap" @onkeydown="OnKeyDown" />
+            </div>
+            <div class="col-sm-2">
+                <label class="form-label" for="f-bonus">Bonus</label>
+                <input id="f-bonus" type="number" class="form-control form-control-sm" @bind="bonus" @onkeydown="OnKeyDown" />
+            </div>
+            <div class="col-sm-6 text-end">
+                <div class="form-check form-check-inline">
+                    <input id="f-adv" type="checkbox" class="form-check-input" @bind="advancedView" />
+                    <label class="form-check-label" for="f-adv">Advanced view</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (results == null)
+{
+    <p class="text-muted">Enter search criteria and press Search. Leave everything blank to list every member.</p>
+}
+else if (results.Count == 0)
+{
+    <div class="alert alert-info">There are no members with that information.</div>
+}
+else
+{
+    <p class="text-muted small">@results.Count member(s)</p>
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle grid-sm">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Last name</th>
+                    <th>First name</th>
+                    <th>Region</th>
+                    <th class="text-end">Average</th>
+                    <th class="text-end">Handicap</th>
+                    <th class="text-end">Bonus</th>
+                    <th class="text-end">Money earned</th>
+                    @if (advancedView)
+                    {
+                        <th>Active</th>
+                        <th>MI</th>
+                        <th>DOB</th>
+                        <th>Gender</th>
+                        <th>Street</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Zip</th>
+                        <th>Phone</th>
+                        <th>Phone 2</th>
+                        <th>Email</th>
+                        <th>Joined</th>
+                        <th>Rejoined</th>
+                        <th>Last bowled</th>
+                        <th>Last payment</th>
+                        <th>Lifetime</th>
+                        <th>Senior</th>
+                        <th>Referrals</th>
+                        <th>Notes</th>
+                    }
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Member m in results)
+                {
+                    <tr>
+                        <td>@m.Number</td>
+                        <td>@m.LastName</td>
+                        <td>@m.FirstName</td>
+                        <td>@m.Region?.Name</td>
+                        <td class="text-end">@m.Average</td>
+                        <td class="text-end">@m.Handicap</td>
+                        <td class="text-end">@m.Bonus</td>
+                        <td class="text-end">@m.MoneyEarned.ToString("C")</td>
+                        @if (advancedView)
+                        {
+                            <td>@(m.IsActive ? "Yes" : "No")</td>
+                            <td>@m.MiddleInitial</td>
+                            <td>@m.DateOfBirth?.ToShortDateString()</td>
+                            <td>@m.Gender</td>
+                            <td>@m.Street</td>
+                            <td>@m.City</td>
+                            <td>@m.State</td>
+                            <td>@m.PostalCode</td>
+                            <td>@m.PrimaryPhone</td>
+                            <td>@m.SecondaryPhone</td>
+                            <td>@m.Email</td>
+                            <td>@m.JoinDate?.ToShortDateString()</td>
+                            <td>@m.RejoinDate?.ToShortDateString()</td>
+                            <td>@m.LastBowled?.ToShortDateString()</td>
+                            <td>@m.LastPayment?.ToShortDateString()</td>
+                            <td>@(m.IsLifetimeMember ? "Yes" : "")</td>
+                            <td>@(m.IsSenior ? "Yes" : "")</td>
+                            <td>@m.Referrals</td>
+                            <td>@m.Notes</td>
+                        }
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary" href="members/edit/@m.Number">Edit</a>
+                            <a class="btn btn-sm btn-outline-secondary" href="members/@m.Number/stats">Stats</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private int? number;
+    private string? firstName;
+    private string? lastName;
+    private string activeFilter = "either";
+    private int? average;
+    private int? handicap;
+    private int? bonus;
+    private bool advancedView;
+    private List<Member>? results;
+
+    private void Search()
+    {
+        bool? isActive = activeFilter switch
+        {
+            "yes" => true,
+            "no" => false,
+            _ => null,
+        };
+        results = MemberRepository.Search(new MemberSearchCriteria(number, firstName, lastName, isActive, average, handicap, bonus));
+    }
+
+    private void ClearFilters()
+    {
+        number = null;
+        firstName = null;
+        lastName = null;
+        activeFilter = "either";
+        average = null;
+        handicap = null;
+        bonus = null;
+        results = null;
+    }
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            Search();
+        }
+    }
+}

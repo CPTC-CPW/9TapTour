@@ -29,4 +29,7 @@ public interface ITournamentRepository
     List<Member> GetAllActiveMembers();
     void DeleteTournament(Tournament tourn);
     List<WinnerListMemberViewModel> GetWinnerListMemberData(int tournamentId);
+
+    /// <summary>Tournaments matching the filters, newest first, with Region loaded.</summary>
+    List<Tournament> Search(Models.TournamentSearchCriteria criteria);
 }

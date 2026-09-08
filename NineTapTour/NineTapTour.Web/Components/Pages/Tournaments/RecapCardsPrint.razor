@@ -1,0 +1,37 @@
+@page "/print/tournaments/{Id:int}/recaps"
+@using NineTapTour.Core.Printing
+@layout PrintLayout
+@attribute [ExcludeFromInteractiveRouting]
+@inject ITournamentRepository TournamentRepository
+
+<PageTitle>Recap Cards</PageTitle>
+
+@if (tournament == null)
+{
+    <p>Tournament @Id was not found.</p>
+}
+else
+{
+    <p class="no-print text-muted">@members.Count recap card(s) for @tournament.TourneyNameDate, ordered by last name.</p>
+    @foreach (Member m in members)
+    {
+        <RecapCard Card="PrintContentBuilder.BuildRecapCard(m)" />
+    }
+}
+
+@code {
+    private Tournament? tournament;
+    private List<Member> members = [];
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        tournament = TournamentRepository.GetTourneyByID(Id);
+        if (tournament != null)
+        {
+            members = PrintContentBuilder.OrderMembersForRecaps(TournamentRepository.GetUniqueTourMembers(tournament));
+        }
+    }
+}

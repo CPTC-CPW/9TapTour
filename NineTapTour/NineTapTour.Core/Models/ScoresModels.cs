@@ -38,3 +38,10 @@ public record ScoreEntryResult(bool Success, string ErrorMessage, Member Member,
 /// Scratch and handicap series totals for a single bowler's entry.
 /// </summary>
 public record ScoreTotals(int ScratchTotal, int HandicapTotal);
+
+/// <summary>
+/// Outcome of removing a bowler's entry from a squad. StatsRestored is false
+/// when the member has no remaining history to restore handicap/bonus/average
+/// from (the desktop showed "Current Stats Not added to Tournament yet.").
+/// </summary>
+public record RemoveEntryResult(bool Removed, bool StatsRestored, string Message);

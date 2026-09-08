@@ -1,0 +1,60 @@
+@page "/print/members/labels"
+@using NineTapTour.Core.Printing
+@layout PrintLayout
+@attribute [ExcludeFromInteractiveRouting]
+@inject IMemberRepository MemberRepository
+
+<PageTitle>Mailing Labels</PageTitle>
+
+@if (members.Count == 0)
+{
+    <p>No members were selected.</p>
+}
+else
+{
+    @foreach (List<LabelContent?> sheet in sheets)
+    {
+        <div class="label-sheet">
+            @foreach (LabelContent? label in sheet)
+            {
+                <div class="label-cell">@(label == null ? "" : $"{label.NameLine}\n{label.StreetLine}\n{label.CityStateZipLine}")</div>
+            }
+        </div>
+    }
+}
+
+@code {
+    private const int PageSize = 30;
+
+    private List<Member> members = [];
+    private List<List<LabelContent?>> sheets = [];
+
+    [SupplyParameterFromQuery]
+    public string? Ids { get; set; }
+
+    [SupplyParameterFromQuery]
+    public int? Start { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        HashSet<int> ids = [.. (Ids ?? string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse)];
+        Dictionary<int, Member> byId = MemberRepository.GetMemberList().Where(m => ids.Contains(m.Id)).ToDictionary(m => m.Id);
+        // Preserve the order the picker used.
+        members = [.. ids.Where(byId.ContainsKey).Select(id => byId[id])];
+
+        int offset = Math.Clamp((Start ?? 1) - 1, 0, PageSize - 1);
+        List<LabelContent?> cells = [.. Enumerable.Repeat<LabelContent?>(null, offset)];
+        cells.AddRange(members.Select(m => (LabelContent?)PrintContentBuilder.BuildLabelLines(m)));
+
+        sheets = [];
+        for (int i = 0; i < cells.Count; i += PageSize)
+        {
+            List<LabelContent?> sheet = [.. cells.Skip(i).Take(PageSize)];
+            while (sheet.Count < PageSize)
+            {
+                sheet.Add(null);
+            }
+            sheets.Add(sheet);
+        }
+    }
+}

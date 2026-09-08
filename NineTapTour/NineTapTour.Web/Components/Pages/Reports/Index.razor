@@ -1,0 +1,255 @@
+@page "/reports"
+@using NineTapTour.Core.Export
+@inject IReportsService Reports
+@inject IMemberRepository MemberRepository
+@inject IClientReportsExcelExporter Exporter
+@inject ExcelDownload Download
+@inject FlashMessageService Flash
+
+<PageTitle>Reports - 9-Tap Tour</PageTitle>
+
+<PageHeader Title="Reports" Subtitle="Individual member and tour-wide statistics over a career, a year, or a range of years." />
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="scope" id="sc-ind" checked="@(scope == ReportScope.Individual)" @onchange="() => SetScope(ReportScope.Individual)" /><label class="form-check-label" for="sc-ind">Individual</label></div>
+                    <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="scope" id="sc-tour" checked="@(scope == ReportScope.TourWide)" @onchange="() => SetScope(ReportScope.TourWide)" /><label class="form-check-label" for="sc-tour">Tour-wide</label></div>
+                </div>
+
+                @if (scope == ReportScope.Individual)
+                {
+                    <div class="mb-3">
+                        <label class="form-label" for="r-member">Member</label>
+                        <input id="r-member" class="form-control form-control-sm mb-1" placeholder="Search by number or name" @bind="memberFilter" @bind:event="oninput" />
+                        <select class="form-select" size="8" @onchange="OnMemberSelected">
+                            @foreach (Member m in FilteredMembers)
+                            {
+                                <option value="@m.Number" selected="@(selectedMember?.Number == m.Number)">@m</option>
+                            }
+                        </select>
+                        @if (selectedMember != null)
+                        {
+                            <div class="small text-muted mt-1">Selected: @selectedMember</div>
+                        }
+                    </div>
+                }
+
+                <div class="mb-3">
+                    <label class="form-label" for="r-category">Category</label>
+                    <select id="r-category" class="form-select" @bind="category">
+                        @foreach (string c in Categories)
+                        {
+                            <option value="@c">@c</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-check"><input class="form-check-input" type="radio" name="period" id="p-career" checked="@(period == Period.Career)" @onchange="() => period = Period.Career" /><label class="form-check-label" for="p-career">Career</label></div>
+                    <div class="form-check d-flex align-items-center gap-2"><input class="form-check-input" type="radio" name="period" id="p-year" checked="@(period == Period.Year)" @onchange="() => period = Period.Year" /><label class="form-check-label" for="p-year">Year</label>
+                        <select class="form-select form-select-sm w-auto" @bind="year" disabled="@(period != Period.Year)">
+                            @foreach (int y in years) { <option value="@y">@y</option> }
+                        </select>
+                    </div>
+                    <div class="form-check d-flex align-items-center gap-2"><input class="form-check-input" type="radio" name="period" id="p-range" checked="@(period == Period.Range)" @onchange="() => period = Period.Range" /><label class="form-check-label" for="p-range">Years</label>
+                        <select class="form-select form-select-sm w-auto" @bind="yearFrom" disabled="@(period != Period.Range)">
+                            @foreach (int y in years) { <option value="@y">@y</option> }
+                        </select>
+                        <span>to</span>
+                        <select class="form-select form-select-sm w-auto" @bind="yearTo" disabled="@(period != Period.Range)">
+                            @foreach (int y in years) { <option value="@y">@y</option> }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-5">
+                        <label class="form-label" for="r-top">Show top</label>
+                        <input id="r-top" type="number" min="1" class="form-control form-control-sm" @bind="topN" placeholder="all" />
+                    </div>
+                    <div class="col-7 pt-4">
+                        <div class="form-check"><input id="r-pots" type="checkbox" class="form-check-input" @bind="includeSidePots" /><label class="form-check-label" for="r-pots">Include side pots</label></div>
+                        <div class="form-check"><input id="r-imported" type="checkbox" class="form-check-input" @bind="includeImported" /><label class="form-check-label" for="r-imported">Include imported history</label></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex gap-2">
+                <button type="button" class="btn btn-primary" @onclick="Run">Run report</button>
+                <button type="button" class="btn btn-outline-primary" @onclick="ExportAsync" disabled="@(table == null || table.IsEmpty || exporting)">Export to Excel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        @if (table == null)
+        {
+            <div class="text-muted">Choose the report options and press Run report.</div>
+        }
+        else
+        {
+            <h2 class="h6">@table.Title</h2>
+            @if (table.IsEmpty)
+            {
+                <div class="alert alert-info">No finalized tournament entries were found for the selected criteria.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped table-hover grid-sm">
+                        <thead>
+                            <tr>
+                                @foreach (ReportColumn c in table.Columns)
+                                {
+                                    <th class="@(c.Kind == ReportColumnKind.Text ? "" : "text-end")">@c.Header</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (object?[] row in table.Rows)
+                            {
+                                <tr>
+                                    @for (int i = 0; i < table.Columns.Count; i++)
+                                    {
+                                        ReportColumn c = table.Columns[i];
+                                        <td class="@(c.Kind == ReportColumnKind.Text ? "" : "text-end")">@Format(c, i < row.Length ? row[i] : null)</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    private enum Period { Career, Year, Range }
+
+    private ReportScope scope = ReportScope.Individual;
+    private string category = ReportsService.CategorySummary;
+    private Period period = Period.Career;
+    private List<int> years = [];
+    private int year;
+    private int yearFrom;
+    private int yearTo;
+    private int? topN;
+    private bool includeSidePots;
+    private bool includeImported = true;
+    private List<Member> allMembers = [];
+    private string memberFilter = string.Empty;
+    private Member? selectedMember;
+    private ReportTable? table;
+    private bool exporting;
+
+    private IReadOnlyList<string> Categories => scope == ReportScope.Individual ? Reports.IndividualCategories : Reports.TourCategories;
+
+    private IEnumerable<Member> FilteredMembers
+    {
+        get
+        {
+            string term = memberFilter.Trim();
+            if (term.Length == 0)
+            {
+                return allMembers;
+            }
+            return allMembers.Where(m => m.Number.ToString().StartsWith(term, StringComparison.Ordinal)
+                || $"{m.FirstName} {m.LastName}".Contains(term, StringComparison.OrdinalIgnoreCase)
+                || $"{m.LastName}, {m.FirstName}".Contains(term, StringComparison.OrdinalIgnoreCase));
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        years = Reports.GetTournamentYears();
+        year = years.FirstOrDefault(DateTime.Now.Year);
+        yearFrom = years.LastOrDefault(year);
+        yearTo = year;
+        allMembers = [.. MemberRepository.GetMemberList().OrderBy(m => m.LastName).ThenBy(m => m.FirstName)];
+    }
+
+    private void SetScope(ReportScope newScope)
+    {
+        scope = newScope;
+        if (!Categories.Contains(category))
+        {
+            category = Categories[0];
+        }
+    }
+
+    private void OnMemberSelected(ChangeEventArgs e)
+    {
+        selectedMember = int.TryParse(e.Value?.ToString(), out int number) ? allMembers.FirstOrDefault(m => m.Number == number) : null;
+    }
+
+    private void Run()
+    {
+        if (scope == ReportScope.Individual && selectedMember == null)
+        {
+            Flash.Warning("Please search for and select a member for an individual report.");
+            return;
+        }
+        if (period != Period.Career && years.Count == 0)
+        {
+            Flash.Warning("There are no tournament years to report on.");
+            return;
+        }
+
+        (int? start, int? end) = period switch
+        {
+            Period.Year => (year, year),
+            Period.Range => (yearFrom, yearTo),
+            _ => ((int?)null, (int?)null),
+        };
+
+        try
+        {
+            table = Reports.Run(new ReportRequest(scope, category, selectedMember?.Number, start, end, topN is > 0 ? topN : null, includeSidePots, includeImported));
+        }
+        catch (ArgumentException ex)
+        {
+            Flash.Error(ex.Message);
+        }
+    }
+
+    private async Task ExportAsync()
+    {
+        if (table == null || table.IsEmpty)
+        {
+            Flash.Warning("Run a report before exporting.");
+            return;
+        }
+
+        exporting = true;
+        try
+        {
+            using MemoryStream output = new();
+            Exporter.Export(table, output);
+            await Download.SendAsync(Exporter.BuildFileName(table), output);
+            Flash.Success("Excel file created.");
+        }
+        catch (Exception ex)
+        {
+            Flash.Error("An error occurred during the export process: " + ex.Message);
+        }
+        finally
+        {
+            exporting = false;
+        }
+    }
+
+    private static string Format(ReportColumn column, object? value)
+    {
+        return value switch
+        {
+            null => string.Empty,
+            decimal d => d.ToString("C2"),
+            double dbl => dbl.ToString("N2"),
+            DateTime date => date.ToString("M/d/yyyy"),
+            _ => value.ToString() ?? string.Empty,
+        };
+    }
+}

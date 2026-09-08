@@ -1,0 +1,28 @@
+@page "/print/members/{Number:int}/recap"
+@using NineTapTour.Core.Printing
+@layout PrintLayout
+@attribute [ExcludeFromInteractiveRouting]
+@inject IMemberRepository MemberRepository
+
+<PageTitle>Recap Card - Member @Number</PageTitle>
+
+@if (member == null || member.Id == 0)
+{
+    <p>Member @Number was not found.</p>
+}
+else
+{
+    <RecapCard Card="PrintContentBuilder.BuildRecapCard(member)" />
+}
+
+@code {
+    private Member? member;
+
+    [Parameter]
+    public int Number { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        member = MemberRepository.GetMember(Number);
+    }
+}

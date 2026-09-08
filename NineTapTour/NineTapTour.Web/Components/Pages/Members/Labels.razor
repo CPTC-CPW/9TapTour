@@ -1,0 +1,140 @@
+@page "/members/labels"
+@inject IMemberRepository MemberRepository
+@inject NavigationManager Navigation
+
+<PageTitle>Mailing Labels - 9-Tap Tour</PageTitle>
+
+<PageHeader Title="Mailing Labels" Subtitle="Pick the members to print, 30 labels per sheet (3 across, 10 down)." />
+
+<div class="row g-3">
+    <div class="col-md-5">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <strong>Members</strong>
+            <div class="form-check">
+                <input id="l-inactive" type="checkbox" class="form-check-input" @bind="showInactive" @bind:after="ApplyFilter" />
+                <label class="form-check-label" for="l-inactive">Show inactive</label>
+            </div>
+        </div>
+        <input class="form-control form-control-sm mb-1" placeholder="Filter by name or number" @bind="filter" @bind:event="oninput" @bind:after="ApplyFilter" />
+        <select class="form-select" multiple size="18" @onchange="OnSourceSelectionChanged">
+            @foreach (Member m in visible)
+            {
+                <option value="@m.Id">@m</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-flex flex-column justify-content-center gap-2">
+        <button type="button" class="btn btn-outline-primary" @onclick="AddSelected" disabled="@(sourceSelection.Count == 0)">Add &raquo;</button>
+        <button type="button" class="btn btn-outline-primary" @onclick="AddAllVisible" disabled="@(visible.Count == 0)">Add all shown</button>
+        <button type="button" class="btn btn-outline-secondary" @onclick="RemoveSelected" disabled="@(targetSelection.Count == 0)">&laquo; Remove</button>
+        <button type="button" class="btn btn-outline-secondary" @onclick="ClearAll" disabled="@(labels.Count == 0)">Clear all</button>
+    </div>
+    <div class="col-md-5">
+        <strong>Print list (@labels.Count)</strong>
+        <select class="form-select mt-1" multiple size="19" @onchange="OnTargetSelectionChanged">
+            @foreach (Member m in labels)
+            {
+                <option value="@m.Id">@m</option>
+            }
+        </select>
+    </div>
+</div>
+
+<div class="row g-2 align-items-end mt-3">
+    <div class="col-sm-3">
+        <label class="form-label" for="l-start">Start at label position (1-30)</label>
+        <input id="l-start" type="number" min="1" max="30" class="form-control" @bind="startPosition" />
+    </div>
+    <div class="col-sm-9">
+        <button type="button" class="btn btn-primary" @onclick="OpenPrint" disabled="@(labels.Count == 0)">Open print sheet</button>
+    </div>
+</div>
+
+@code {
+    private List<Member> all = [];
+    private List<Member> visible = [];
+    private readonly List<Member> labels = [];
+    private HashSet<int> sourceSelection = [];
+    private HashSet<int> targetSelection = [];
+    private bool showInactive;
+    private string filter = string.Empty;
+    private int startPosition = 1;
+
+    protected override void OnInitialized()
+    {
+        all = MemberRepository.GetMemberList();
+        ApplyFilter();
+    }
+
+    private void ApplyFilter()
+    {
+        IEnumerable<Member> query = showInactive ? all : all.Where(m => m.IsActive);
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            string term = filter.Trim();
+            query = query.Where(m => m.Number.ToString().StartsWith(term)
+                || ($"{m.FirstName} {m.LastName}").Contains(term, StringComparison.OrdinalIgnoreCase)
+                || ($"{m.LastName}, {m.FirstName}").Contains(term, StringComparison.OrdinalIgnoreCase));
+        }
+        visible = [.. query.OrderBy(m => m.LastName).ThenBy(m => m.FirstName)];
+        sourceSelection.Clear();
+    }
+
+    private void OnSourceSelectionChanged(ChangeEventArgs e)
+    {
+        sourceSelection = ParseSelection(e.Value);
+    }
+
+    private void OnTargetSelectionChanged(ChangeEventArgs e)
+    {
+        targetSelection = ParseSelection(e.Value);
+    }
+
+    private static HashSet<int> ParseSelection(object? value)
+    {
+        return value is string[] values
+            ? [.. values.Select(int.Parse)]
+            : value is string single && int.TryParse(single, out int id) ? [id] : [];
+    }
+
+    private void AddSelected()
+    {
+        foreach (Member m in visible.Where(m => sourceSelection.Contains(m.Id)))
+        {
+            if (!labels.Contains(m))
+            {
+                labels.Add(m);
+            }
+        }
+    }
+
+    private void AddAllVisible()
+    {
+        foreach (Member m in visible)
+        {
+            if (!labels.Contains(m))
+            {
+                labels.Add(m);
+            }
+        }
+    }
+
+    private void RemoveSelected()
+    {
+        labels.RemoveAll(m => targetSelection.Contains(m.Id));
+        targetSelection.Clear();
+    }
+
+    private void ClearAll()
+    {
+        labels.Clear();
+        targetSelection.Clear();
+    }
+
+    private void OpenPrint()
+    {
+        string ids = string.Join(",", labels.Select(m => m.Id));
+        int start = Math.Clamp(startPosition, 1, 30);
+        Navigation.NavigateTo($"print/members/labels?ids={ids}&start={start}", forceLoad: true);
+    }
+}

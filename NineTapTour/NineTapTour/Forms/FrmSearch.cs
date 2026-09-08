@@ -177,6 +177,15 @@ public partial class FrmSearch : Form
         dtagrdResults.Columns["Id"].Visible = false;
         dtagrdResults.Columns["SSN"].Visible = false;
 
+        // Regions are managed on the website; the desktop app never shows them.
+        foreach (string regionColumn in new[] { "RegionId", "Region" })
+        {
+            if (dtagrdResults.Columns.Contains(regionColumn))
+            {
+                dtagrdResults.Columns[regionColumn].Visible = false;
+            }
+        }
+
         //checks if Advanced View is not checked
         if (!chkAdvancedView.Checked)
         {

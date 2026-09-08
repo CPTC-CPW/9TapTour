@@ -1,0 +1,376 @@
+@page "/finalize/{TournamentId:int}"
+@using NineTapTour.Core.Calculations
+@inject ITournamentRepository TournamentRepository
+@inject IFinalizeGridService FinalizeService
+@inject FlashMessageService Flash
+
+<PageTitle>Finalize - 9-Tap Tour</PageTitle>
+
+<ConfirmDialog @ref="confirm" />
+
+@if (tournament == null)
+{
+    <div class="alert alert-warning">Tournament @TournamentId was not found.</div>
+}
+else
+{
+    <TournamentHeader Tournament="tournament" />
+
+    @if (grid == null)
+    {
+        <div class="d-flex align-items-center gap-2 my-4">
+            <div class="spinner-border text-primary" role="status"></div>
+            <span>Loading the finalize grid (this can take a while for large tournaments)...</span>
+        </div>
+    }
+    else
+    {
+        @if (grid.IsFinalized)
+        {
+            <div class="finalized-banner mb-2">THIS TOURNAMENT HAS ALREADY BEEN FINALIZED</div>
+        }
+
+        <div class="d-flex flex-wrap gap-2 align-items-center mb-2 no-print">
+            @if (grid.IsDoubles)
+            {
+                <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="() => teamView = !teamView">@(teamView ? "Individual view" : "Team view")</button>
+            }
+            <span class="text-muted small">Cash line: @(grid.CashLine > 0 ? grid.CashLine.ToString() : "none") &middot; @grid.Rows.Count entries</span>
+            @if (busy)
+            {
+                <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
+            }
+            <button type="button" class="btn btn-danger ms-auto" @onclick="FinalizeAsync" disabled="@(grid.IsFinalized || busy)">Finalize tournament</button>
+        </div>
+
+        @if (teamView)
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered grid-sm">
+                    <thead class="table-light">
+                        <tr><th>Place</th><th>Member 1</th><th>Member 2</th><th>M1 scratch</th><th>M2 scratch</th><th>Combined HDCP</th><th>M1 bonus</th><th>M2 bonus</th><th>M1 earnings</th><th>M2 earnings</th></tr>
+                    </thead>
+                    <tbody>
+                        @{ int t = 0; }
+                        @foreach (FinalizeTeamRow team in FinalizeService.BuildTeamView(grid))
+                        {
+                            <tr class="@(t++ % 2 == 1 ? "team-band-1" : "")">
+                                <td>@team.Place</td><td>@team.Member1</td><td>@team.Member2</td><td>@team.Scratch1</td><td>@team.Scratch2</td>
+                                <td>@team.HdcpTotal</td><td>@team.Bonus1</td><td>@team.Bonus2</td><td>@team.Earnings1</td><td>@team.Earnings2</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered grid-sm align-middle finalize-grid">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Standing</th>
+                            <th>Member #</th>
+                            <th>Name</th>
+                            <th>Game 1</th><th></th>
+                            <th>Game 2</th><th></th>
+                            @if (grid.ShowGame3) { <th>Game 3</th><th></th> }
+                            @if (grid.ShowGame4) { <th>Game 4</th><th></th> }
+                            <th>Scratch total</th>
+                            <th>HDCP total</th>
+                            <th>Entry AVG</th>
+                            <th>30 entry AVG</th>
+                            <th>ADJ AVG</th>
+                            <th>Director check</th>
+                            <th>Squad</th>
+                            <th>HDCP</th>
+                            <th>New HDCP</th>
+                            <th>Bonus</th>
+                            <th>New bonus</th>
+                            <th>Earnings</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (FinalizeGridRow row in grid.Rows)
+                        {
+                            FinalizeGridRow r = row;
+                            bool ro = grid.IsFinalized || busy;
+                            <tr class="@RowClass(r)" @onclick="() => ShowDetail(r)">
+                                <td>@r.Standing</td>
+                                <td>@r.MemberNumber</td>
+                                <td class="text-nowrap">@r.Name</td>
+                                <td class="@(r.Sandbagging[0] ? "sandbagging" : "")"><input type="number" class="form-control form-control-sm" value="@r.Game1" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.Game1, e)" @onclick:stopPropagation /></td>
+                                <td><input type="checkbox" class="form-check-input" checked="@r.UseGame1" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.UseGame1, e)" @onclick:stopPropagation /></td>
+                                <td class="@(r.Sandbagging[1] ? "sandbagging" : "")"><input type="number" class="form-control form-control-sm" value="@r.Game2" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.Game2, e)" @onclick:stopPropagation /></td>
+                                <td><input type="checkbox" class="form-check-input" checked="@r.UseGame2" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.UseGame2, e)" @onclick:stopPropagation /></td>
+                                @if (grid.ShowGame3)
+                                {
+                                    <td class="@(r.Sandbagging[2] ? "sandbagging" : "")"><input type="number" class="form-control form-control-sm" value="@r.Game3" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.Game3, e)" @onclick:stopPropagation /></td>
+                                    <td><input type="checkbox" class="form-check-input" checked="@r.UseGame3" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.UseGame3, e)" @onclick:stopPropagation /></td>
+                                }
+                                @if (grid.ShowGame4)
+                                {
+                                    <td class="@(r.Sandbagging[3] ? "sandbagging" : "")"><input type="number" class="form-control form-control-sm" value="@r.Game4" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.Game4, e)" @onclick:stopPropagation /></td>
+                                    <td><input type="checkbox" class="form-check-input" checked="@r.UseGame4" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.UseGame4, e)" @onclick:stopPropagation /></td>
+                                }
+                                <td>@r.ScratchTotal</td>
+                                <td>@r.HdcpTotal</td>
+                                <td>@r.EntryAvg</td>
+                                <td>@r.ThirtyEntryAvg?.ToString("0.#")</td>
+                                <td><input type="number" class="form-control form-control-sm" value="@r.AdjAvg" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.AdjAvg, e)" @onclick:stopPropagation /></td>
+                                <td class="text-center"><input type="checkbox" class="form-check-input" checked="@r.DirectorCheck" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.DirectorCheck, e)" @onclick:stopPropagation /></td>
+                                <td>@r.Squad</td>
+                                <td>@r.Hdcp</td>
+                                <td>@r.NewHdcp</td>
+                                <td><input type="number" min="0" max="5" class="form-control form-control-sm" value="@r.Bonus" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.Bonus, e)" @onclick:stopPropagation /></td>
+                                <td>
+                                    @if (grid.IsTwoDay)
+                                    {
+                                        <input type="number" min="0" max="5" class="form-control form-control-sm" value="@r.NewBonus" disabled="@ro" @onchange="e => EditNewBonusAsync(r, e)" @onclick:stopPropagation />
+                                    }
+                                    else
+                                    {
+                                        @r.NewBonus
+                                    }
+                                </td>
+                                <td><input type="number" step="0.01" class="form-control form-control-sm" value="@r.Earnings" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.Earnings, e)" @onclick:stopPropagation /></td>
+                                <td><input class="form-control form-control-sm" style="min-width: 10rem;" value="@r.Notes" disabled="@ro" @onchange="e => EditAsync(r, FinalizeEditField.Notes, e)" @onclick:stopPropagation /></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-muted small">Rows outlined in red need a Director Check and a non-zero ADJ AVG before finalizing. Yellow scores are 40+ pins under the bowler's league average. ADJ AVG, Bonus, and Director Check apply to all of a member's entries.</p>
+        }
+
+        @if (detail != null)
+        {
+            <div class="card mt-3">
+                <div class="card-header">
+                    <strong>Mem# @detail.MemberNumber</strong> &nbsp; @detail.MemberName &nbsp; <span class="text-muted">AVG @detail.LeagueAverage</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered grid-sm mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>@detail.ColumnHeaders["Games"]</th>
+                                <th>Date</th>
+                                <th>@detail.ColumnHeaders["Game1"]</th>
+                                <th>@detail.ColumnHeaders["Game2"]</th>
+                                <th>@detail.ColumnHeaders["Game3"]</th>
+                                <th>@detail.ColumnHeaders["Game4"]</th>
+                                <th>@detail.ColumnHeaders["Scratch"]</th>
+                                <th>@detail.ColumnHeaders["WHdcp"]</th>
+                                <th>@detail.ColumnHeaders["Entry"]</th>
+                                <th>@detail.ColumnHeaders["ThirtyAvg"]</th>
+                                <th>Adjusted AVG</th>
+                                <th>Handicap</th>
+                                <th>Bonus</th>
+                                <th>Place</th>
+                                <th>@detail.ColumnHeaders["Earnings"]</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (FinalizeDetailRow d in detail.Rows)
+                            {
+                                <tr class="@(d.IsCurrent ? "current-entry" : "")">
+                                    <td>@d.Games</td>
+                                    <td>@d.Date.ToShortDateString()</td>
+                                    <td>@d.Game1</td><td>@d.Game2</td><td>@d.Game3</td><td>@d.Game4</td>
+                                    <td>@d.Scratch</td>
+                                    <td>@d.WithHandicap</td>
+                                    <td>@d.Entry</td>
+                                    <td class="@(d.HighlightThirtyAverage ? "highlight-avg30" : "")">@d.ThirtyAverage?.ToString("0.#")</td>
+                                    <td>@d.AdjustedAvg</td>
+                                    <td>@d.Handicap</td>
+                                    <td class="@(d.HighlightBonus ? "highlight-bonus" : "")">@d.Bonus</td>
+                                    <td>@d.Place</td>
+                                    <td>@d.Earnings?.ToString("0.00")</td>
+                                    <td>@d.Notes</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
+}
+
+@code {
+    private ConfirmDialog confirm = default!;
+    private Tournament? tournament;
+    private FinalizeGridModel? grid;
+    private FinalizeDetailModel? detail;
+    private int? detailMember;
+    private readonly Dictionary<int, int> newBonusOverrides = [];
+    private bool teamView;
+    private bool busy;
+
+    [Parameter]
+    public int TournamentId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        tournament = TournamentRepository.GetTourneyByID(TournamentId);
+        grid = null;
+        detail = null;
+        if (tournament != null)
+        {
+            await ReloadAsync();
+        }
+    }
+
+    private async Task ReloadAsync()
+    {
+        busy = true;
+        try
+        {
+            // The grid load runs many per-member queries; keep the circuit responsive.
+            grid = await Task.Run(() => FinalizeService.BuildGrid(TournamentId, newBonusOverrides));
+            if (detailMember is int member)
+            {
+                detail = FinalizeService.BuildDetail(grid, member);
+            }
+        }
+        finally
+        {
+            busy = false;
+        }
+    }
+
+    private static string RowClass(FinalizeGridRow row)
+    {
+        List<string> classes = ["selectable-row"];
+        if (!row.IsValid) classes.Add("row-invalid");
+        if (row.TeamIndex >= 0 && row.TeamIndex % 2 == 1) classes.Add("team-band-1");
+        return string.Join(" ", classes);
+    }
+
+    private void ShowDetail(FinalizeGridRow row)
+    {
+        if (grid == null)
+        {
+            return;
+        }
+        detailMember = row.MemberNumber;
+        detail = FinalizeService.BuildDetail(grid, row.MemberNumber);
+    }
+
+    private async Task EditAsync(FinalizeGridRow row, FinalizeEditField field, ChangeEventArgs e)
+    {
+        if (grid == null || grid.IsFinalized)
+        {
+            return;
+        }
+
+        string text = e.Value?.ToString() ?? string.Empty;
+        int? game1 = row.Game1, game2 = row.Game2, game3 = row.Game3, game4 = row.Game4;
+        bool use1 = row.UseGame1, use2 = row.UseGame2, use3 = row.UseGame3, use4 = row.UseGame4;
+        int adjAvg = row.AdjAvg;
+        bool director = row.DirectorCheck;
+        int bonus = row.Bonus;
+        decimal? earnings = row.Earnings;
+        string? notes = row.Notes;
+
+        switch (field)
+        {
+            case FinalizeEditField.Game1: game1 = ParseInt(text); break;
+            case FinalizeEditField.Game2: game2 = ParseInt(text); break;
+            case FinalizeEditField.Game3: game3 = ParseInt(text); break;
+            case FinalizeEditField.Game4: game4 = ParseInt(text); break;
+            case FinalizeEditField.UseGame1: use1 = ParseBool(e.Value); break;
+            case FinalizeEditField.UseGame2: use2 = ParseBool(e.Value); break;
+            case FinalizeEditField.UseGame3: use3 = ParseBool(e.Value); break;
+            case FinalizeEditField.UseGame4: use4 = ParseBool(e.Value); break;
+            case FinalizeEditField.AdjAvg: adjAvg = ParseInt(text) ?? 0; break;
+            case FinalizeEditField.DirectorCheck: director = ParseBool(e.Value); break;
+            case FinalizeEditField.Bonus: bonus = TournamentCalculations.ValidateBonusPins(ParseInt(text) ?? 0); break;
+            case FinalizeEditField.Earnings: earnings = decimal.TryParse(text, out decimal d) ? d : null; break;
+            case FinalizeEditField.Notes: notes = string.IsNullOrWhiteSpace(text) ? null : text; break;
+        }
+
+        FinalizeRowEdit edit = new(row.GameId, field, game1, game2, game3, game4, use1, use2, use3, use4,
+            adjAvg, director, bonus, earnings, notes);
+
+        busy = true;
+        try
+        {
+            grid = await Task.Run(() => FinalizeService.ApplyRowEdit(TournamentId, edit, newBonusOverrides));
+            if (detailMember is int member)
+            {
+                detail = FinalizeService.BuildDetail(grid, member);
+            }
+        }
+        catch (Exception ex)
+        {
+            Flash.Error("The edit could not be saved: " + ex.Message);
+        }
+        finally
+        {
+            busy = false;
+        }
+    }
+
+    private async Task EditNewBonusAsync(FinalizeGridRow row, ChangeEventArgs e)
+    {
+        int? typed = ParseInt(e.Value?.ToString());
+        if (typed.HasValue)
+        {
+            newBonusOverrides[row.MemberNumber] = TournamentCalculations.ValidateBonusPins(typed.Value);
+        }
+        else
+        {
+            newBonusOverrides.Remove(row.MemberNumber);
+        }
+        await ReloadAsync();
+    }
+
+    private async Task FinalizeAsync()
+    {
+        if (grid == null)
+        {
+            return;
+        }
+
+        bool ok = await confirm.ShowAsync(
+            "Finalize this tournament? Member averages, handicaps, and bonus pins will be updated and the entries locked.",
+            "Finalize tournament", "Finalize", "Cancel", danger: true);
+        if (!ok)
+        {
+            return;
+        }
+
+        busy = true;
+        try
+        {
+            FinalizeOutcome outcome = await Task.Run(() => FinalizeService.Finalize(TournamentId, newBonusOverrides));
+            if (outcome.Success)
+            {
+                Flash.Success(outcome.Message);
+                tournament = TournamentRepository.GetTourneyByID(TournamentId);
+            }
+            else
+            {
+                Flash.Error(outcome.Message);
+            }
+        }
+        finally
+        {
+            busy = false;
+        }
+        await ReloadAsync();
+    }
+
+    private static int? ParseInt(string? text)
+    {
+        return int.TryParse(text, out int value) ? value : null;
+    }
+
+    private static bool ParseBool(object? value)
+    {
+        return value is bool b ? b : bool.TryParse(value?.ToString(), out bool parsed) && parsed;
+    }
+}

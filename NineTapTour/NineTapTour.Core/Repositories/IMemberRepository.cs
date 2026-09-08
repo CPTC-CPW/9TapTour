@@ -20,4 +20,13 @@ public interface IMemberRepository
     int GetMemberIdByNumber(int memberNumber);
     int GetMemberNumberbyID(int memberID);
     int GetLastMemberNumber();
+
+    /// <summary>Members matching the search filters, ordered by number, with Region loaded.</summary>
+    List<Member> Search(Models.MemberSearchCriteria criteria);
+
+    /// <summary>Active members who last bowled on or before the date (or never), ordered by number.</summary>
+    List<Member> GetInactiveCandidates(System.DateTime lastBowledOnOrBefore);
+
+    /// <summary>Marks the members inactive; returns how many were updated.</summary>
+    int SetInactive(IEnumerable<int> memberIds);
 }

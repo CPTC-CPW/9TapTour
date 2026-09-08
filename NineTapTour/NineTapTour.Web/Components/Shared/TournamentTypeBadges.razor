@@ -1,0 +1,29 @@
+@if (Tournament.Doubles)
+{
+    <span class="badge text-bg-info">Doubles</span>
+}
+@if (Tournament.ThreeOutOf4)
+{
+    <span class="badge text-bg-secondary">3 of 4</span>
+}
+@if (Tournament.IsOnlyThreeGames)
+{
+    <span class="badge text-bg-secondary">3 games</span>
+}
+@if (Tournament.IsTwoDay)
+{
+    <span class="badge text-bg-warning">2-day</span>
+}
+@if (Tournament.IsImported)
+{
+    <span class="badge text-bg-light border">Imported</span>
+}
+@if (Tournament.IsTournamentFinalized)
+{
+    <span class="badge text-bg-danger">Finalized</span>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public Tournament Tournament { get; set; } = default!;
+}

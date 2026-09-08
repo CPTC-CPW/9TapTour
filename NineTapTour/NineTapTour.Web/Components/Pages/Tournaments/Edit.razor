@@ -1,0 +1,241 @@
+@page "/tournaments/edit"
+@page "/tournaments/edit/{Id:int}"
+@inject ITournamentRepository TournamentRepository
+@inject IRegionRepository RegionRepository
+@inject FlashMessageService Flash
+@inject NavigationManager Navigation
+
+<PageTitle>@(Id == null ? "New tournament" : "Edit tournament") - 9-Tap Tour</PageTitle>
+
+<PageHeader Title="@(Id == null ? "New Tournament" : $"Editing {existing?.TourneyNameDate}")" />
+
+<ConfirmDialog @ref="confirm" />
+
+@if (notFound)
+{
+    <div class="alert alert-warning">That tournament no longer exists.</div>
+}
+else
+{
+    @if (errors.Count > 0)
+    {
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach (string error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <EditForm Model="input" OnSubmit="SaveAsync" FormName="tournament-edit">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label" for="t-date">Date *</label>
+                    <InputDate id="t-date" class="form-control" @bind-Value="input.Date" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="t-location">Location *</label>
+                    <InputText id="t-location" class="form-control" @bind-Value="input.Location" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="t-event">Event</label>
+                    <InputText id="t-event" class="form-control" @bind-Value="input.Event" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="t-sponsors">Sponsors</label>
+                    <InputText id="t-sponsors" class="form-control" @bind-Value="input.Sponsors" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="t-region">Region *</label>
+                    <RegionSelect Id="t-region" @bind-Value="input.RegionId" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="t-squads">Squads (1-8)</label>
+                    <InputNumber id="t-squads" class="form-control" @bind-Value="input.Squads" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <fieldset class="mb-3" disabled="@(Id != null)">
+                    <legend class="h6">Tournament type @(Id != null ? "(cannot change after creation)" : "")</legend>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="type" id="type-singles" checked="@(input.Type == TournamentType.Singles)" @onchange="() => SetType(TournamentType.Singles)" />
+                        <label class="form-check-label" for="type-singles">Singles (4 games)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="type" id="type-doubles" checked="@(input.Type == TournamentType.Doubles)" @onchange="() => SetType(TournamentType.Doubles)" />
+                        <label class="form-check-label" for="type-doubles">Doubles (2 games each, 5 squads by default)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="type" id="type-3of4" checked="@(input.Type == TournamentType.ThreeOutOf4)" @onchange="() => SetType(TournamentType.ThreeOutOf4)" />
+                        <label class="form-check-label" for="type-3of4">3 out of 4 (lowest game dropped)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="type" id="type-3game" checked="@(input.Type == TournamentType.ThreeGame)" @onchange="() => SetType(TournamentType.ThreeGame)" />
+                        <label class="form-check-label" for="type-3game">3 game only</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="type" id="type-twoday" checked="@(input.Type == TournamentType.TwoDay)" @onchange="() => SetType(TournamentType.TwoDay)" />
+                        <label class="form-check-label" for="type-twoday">2-day championship</label>
+                    </div>
+                    @if (input.Type == TournamentType.TwoDay)
+                    {
+                        <div class="ms-4 mt-1">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="twoDayGames" id="two-3" checked="@input.TwoDayThreeGames" @onchange="() => input.TwoDayThreeGames = true" />
+                                <label class="form-check-label" for="two-3">3 games</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="twoDayGames" id="two-4" checked="@(!input.TwoDayThreeGames)" @onchange="() => input.TwoDayThreeGames = false" />
+                                <label class="form-check-label" for="two-4">4 games</label>
+                            </div>
+                        </div>
+                    }
+                </fieldset>
+                <div class="mb-3">
+                    <label class="form-label" for="t-notes">Notes</label>
+                    <InputTextArea id="t-notes" class="form-control" rows="5" @bind-Value="input.Notes" />
+                </div>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">@(Id == null ? "Create tournament" : "Update tournament")</button>
+            <a class="btn btn-secondary" href="@(Id == null ? "tournaments" : $"tournaments/{Id}")">Cancel</a>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private enum TournamentType { Singles, Doubles, ThreeOutOf4, ThreeGame, TwoDay }
+
+    private sealed class TournamentInput
+    {
+        public DateTime? Date { get; set; } = DateTime.Today;
+        public string Location { get; set; } = string.Empty;
+        public string? Event { get; set; }
+        public string? Sponsors { get; set; }
+        public string? Notes { get; set; }
+        public int Squads { get; set; } = 4;
+        public int RegionId { get; set; }
+        public TournamentType Type { get; set; } = TournamentType.Singles;
+        public bool TwoDayThreeGames { get; set; } = true;
+    }
+
+    private ConfirmDialog confirm = default!;
+    private readonly TournamentInput input = new();
+    private readonly List<string> errors = [];
+    private Tournament? existing;
+    private bool notFound;
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Id is int id)
+        {
+            existing = TournamentRepository.GetTourneyByID(id);
+            if (existing == null)
+            {
+                notFound = true;
+                return;
+            }
+            input.Date = existing.Date;
+            input.Location = existing.Location;
+            input.Event = existing.Event;
+            input.Sponsors = existing.Sponsors;
+            input.Notes = existing.Notes;
+            input.Squads = existing.Squads;
+            input.RegionId = existing.RegionId;
+            input.Type = existing.Doubles ? TournamentType.Doubles
+                : existing.IsTwoDay ? TournamentType.TwoDay
+                : existing.IsOnlyThreeGames ? TournamentType.ThreeGame
+                : existing.ThreeOutOf4 ? TournamentType.ThreeOutOf4
+                : TournamentType.Singles;
+            input.TwoDayThreeGames = existing.IsOnlyThreeGames;
+        }
+        else if (input.RegionId == 0)
+        {
+            input.RegionId = RegionRepository.GetDefault().Id;
+        }
+    }
+
+    private void SetType(TournamentType type)
+    {
+        input.Type = type;
+        if (type == TournamentType.Doubles)
+        {
+            input.Squads = 5;   // doubles tournaments default to 5 squads
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        errors.Clear();
+        if (input.Date == null)
+        {
+            errors.Add("Date is required.");
+        }
+        if (string.IsNullOrWhiteSpace(input.Location))
+        {
+            errors.Add("Location is required.");
+        }
+        if (input.Squads < 1 || input.Squads > 8)
+        {
+            errors.Add("Squads must be between 1 - 8.");
+        }
+        if (input.RegionId == 0)
+        {
+            errors.Add("Region is required.");
+        }
+        if (errors.Count > 0)
+        {
+            return;
+        }
+
+        if (existing == null)
+        {
+            Tournament created = new()
+            {
+                Date = input.Date!.Value.Date,
+                Location = input.Location.Trim(),
+                Event = input.Event ?? string.Empty,
+                Sponsors = input.Sponsors ?? string.Empty,
+                Notes = input.Notes ?? string.Empty,
+                Squads = input.Squads,
+                RegionId = input.RegionId,
+                Doubles = input.Type == TournamentType.Doubles,
+                ThreeOutOf4 = input.Type is TournamentType.ThreeOutOf4 or TournamentType.ThreeGame
+                    || (input.Type == TournamentType.TwoDay && input.TwoDayThreeGames),
+                IsOnlyThreeGames = input.Type == TournamentType.ThreeGame
+                    || (input.Type == TournamentType.TwoDay && input.TwoDayThreeGames),
+                IsTwoDay = input.Type == TournamentType.TwoDay,
+            };
+            TournamentRepository.AddTournament(created);
+            Flash.Success("Tournament Created Successfully.");
+            Navigation.NavigateTo($"scores/{created.Id}");
+            return;
+        }
+
+        bool ok = await confirm.ShowAsync("Are you sure you want to modify this tournament?", "Confirm Edit", "Modify", "Cancel");
+        if (!ok)
+        {
+            return;
+        }
+
+        // Like the desktop editor, only the descriptive fields change on an existing tournament.
+        Tournament current = TournamentRepository.GetTourneyByID(existing.Id);
+        current.Date = input.Date!.Value.Date;
+        current.Location = input.Location.Trim();
+        current.Event = input.Event ?? string.Empty;
+        current.Sponsors = input.Sponsors ?? string.Empty;
+        current.Notes = input.Notes ?? string.Empty;
+        current.Squads = input.Squads;
+        current.RegionId = input.RegionId;
+        TournamentRepository.UpdateTournament(current);
+        Flash.Success("Tournament modified.");
+        Navigation.NavigateTo($"tournaments/{current.Id}");
+    }
+}

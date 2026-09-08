@@ -1,0 +1,225 @@
+@page "/results/{TournamentId:int}"
+@inject ITournamentRepository TournamentRepository
+@inject IResultsService ResultsService
+@inject ExcelDownload Download
+@inject FlashMessageService Flash
+@inject NavigationManager Navigation
+
+<PageTitle>Results - 9-Tap Tour</PageTitle>
+
+<ConfirmDialog @ref="confirm" />
+<UnsavedChangesGuard IsDirty="isDirty" />
+
+@if (tournament == null)
+{
+    <div class="alert alert-warning">Tournament @TournamentId was not found.</div>
+}
+else
+{
+    <TournamentHeader Tournament="tournament" />
+
+    <div class="card mb-3">
+        <div class="card-body d-flex flex-wrap align-items-end gap-2">
+            <div>
+                <label class="form-label" for="r-count">How many @(tournament.Doubles ? "teams" : "winners") would you like places for?</label>
+                <input id="r-count" type="number" min="1" class="form-control" style="max-width: 10rem;" @bind="requestedCount" @onkeydown="OnCountKeyDown" />
+            </div>
+            <button type="button" class="btn btn-primary" @onclick="Build">Build results</button>
+            @if (grid != null)
+            {
+                <span class="text-muted small ms-2">@grid.TotalEntries entries, @grid.CompEntries comp</span>
+                @if (tournament.Doubles)
+                {
+                    <button type="button" class="btn btn-outline-secondary ms-auto" @onclick="() => teamView = !teamView">@(teamView ? "Individual view" : "Team view")</button>
+                }
+            }
+        </div>
+    </div>
+
+    @if (grid != null)
+    {
+        @if (teamView)
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered grid-sm">
+                    <thead class="table-light">
+                        <tr><th>Place</th><th>Member 1</th><th>M1 H/B</th><th>Member 2</th><th>M2 H/B</th><th>Combined total</th><th>M1 earnings</th><th>M2 earnings</th></tr>
+                    </thead>
+                    <tbody>
+                        @{ int t = 0; }
+                        @foreach (TeamResultRow team in ResultsService.BuildTeamView(grid))
+                        {
+                            <tr class="@(t++ % 2 == 1 ? "team-band-1" : "")">
+                                <td>@team.PlaceDisplay</td>
+                                <td>@team.Member1Name</td>
+                                <td>@team.Member1HandicapDisplay</td>
+                                <td>@team.Member2Name</td>
+                                <td>@team.Member2HandicapDisplay</td>
+                                <td>@team.CombinedTotal</td>
+                                <td>@team.Earnings1.ToString("C2")</td>
+                                <td>@team.Earnings2.ToString("C2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered grid-sm align-middle">
+                    <thead class="table-light">
+                        <tr><th>Place</th><th>Full name</th><th>H/B*</th><th>Total score</th><th style="width: 9rem;">Earnings</th><th style="width: 9rem;">Progressive pot</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (ResultRow row in grid.Rows)
+                        {
+                            <tr class="@(row.IsFiller ? "text-muted" : "")">
+                                <td>@row.PlaceDisplay</td>
+                                <td>@row.FullName</td>
+                                <td>@row.HandicapDisplay</td>
+                                <td>@row.TotalScoreDisplay</td>
+                                <td><input type="number" step="0.01" class="form-control form-control-sm" @bind="row.Earnings" @bind:after="MarkDirty" /></td>
+                                <td><input class="form-control form-control-sm" @bind="row.ProgressivePotText" @bind:after="MarkDirty" /></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-muted small">* Handicap + bonus. A progressive pot that is not a number is kept as a note on the game.</p>
+        }
+
+        <div class="card mt-3">
+            <div class="card-body d-flex flex-wrap align-items-end gap-3">
+                <button type="button" class="btn btn-primary" @onclick="Save" disabled="@saving">Save results</button>
+                <div>
+                    <label class="form-label" for="r-template">Client check template (.xlsx / .xlsm)</label>
+                    <InputFile id="r-template" OnChange="OnTemplateSelected" accept=".xlsx,.xlsm" class="form-control form-control-sm" />
+                </div>
+                <button type="button" class="btn btn-outline-primary" @onclick="ExportAsync" disabled="@(templateFile == null || exporting)">Save and export to Excel</button>
+                @if (templateFile != null)
+                {
+                    <span class="small text-muted">Template: @templateFile.Name</span>
+                }
+            </div>
+            <div class="card-footer small text-muted">
+                Export reads earnings and progressive pots already typed into the template, saves them, then fills the template and downloads it. The file keeps the template's extension so macros survive.
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private ConfirmDialog confirm = default!;
+    private Tournament? tournament;
+    private int requestedCount;
+    private ResultsGridModel? grid;
+    private bool teamView;
+    private bool isDirty;
+    private bool saving;
+    private bool exporting;
+    private IBrowserFile? templateFile;
+
+    [Parameter]
+    public int TournamentId { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        tournament = TournamentRepository.GetTourneyByID(TournamentId);
+        if (tournament?.IsTwoDay == true)
+        {
+            Navigation.NavigateTo($"results/{TournamentId}/two-day", replace: true);
+        }
+    }
+
+    private void OnCountKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            Build();
+        }
+    }
+
+    private void Build()
+    {
+        if (requestedCount <= 0)
+        {
+            Flash.Warning("Please Enter Number Of Winners");
+            return;
+        }
+        grid = ResultsService.BuildResults(TournamentId, requestedCount);
+        teamView = false;
+        isDirty = false;
+    }
+
+    private void MarkDirty()
+    {
+        isDirty = true;
+    }
+
+    private List<ResultRowSave> CurrentRows()
+    {
+        return [.. grid!.Rows.Select(r => new ResultRowSave(r.GameId, r.PlaceDisplay, r.Earnings, r.ProgressivePotText))];
+    }
+
+    private void Save()
+    {
+        if (grid == null)
+        {
+            return;
+        }
+        saving = true;
+        try
+        {
+            ResultsSaveOutcome outcome = ResultsService.SaveResults(TournamentId, CurrentRows());
+            Flash.Success($"Saved place standings and earnings for {outcome.SavedCount} bowler(s).");
+            foreach (string error in outcome.Errors)
+            {
+                Flash.Warning(error);
+            }
+            isDirty = false;
+            grid = ResultsService.BuildResults(TournamentId, requestedCount);
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+
+    private void OnTemplateSelected(InputFileChangeEventArgs e)
+    {
+        templateFile = e.File;
+    }
+
+    private async Task ExportAsync()
+    {
+        if (grid == null || templateFile == null || tournament == null)
+        {
+            return;
+        }
+
+        exporting = true;
+        try
+        {
+            using TempFileScope template = await TempFileScope.FromBrowserFileAsync(templateFile);
+            using MemoryStream output = new();
+            ResultsExportOutcome outcome = ResultsService.Export(TournamentId, template.Path, output, CurrentRows(), teamView);
+            await Download.SendAsync(outcome.FileName, output);
+            Flash.Success($"Excel file created: {outcome.FileName}");
+            foreach (string error in outcome.Save.Errors)
+            {
+                Flash.Warning(error);
+            }
+            isDirty = false;
+            grid = ResultsService.BuildResults(TournamentId, requestedCount);
+        }
+        catch (Exception ex)
+        {
+            Flash.Error("Export failed. The template must have at least 20 bowlers and 4 money winners. " + ex.Message);
+        }
+        finally
+        {
+            exporting = false;
+        }
+    }
+}

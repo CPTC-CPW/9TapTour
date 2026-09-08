@@ -1,0 +1,105 @@
+@implements IDisposable
+@inject NavigationManager NavigationManager
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark site-navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="">
+            <img src="img/9taplogo1.png" alt="" class="brand-logo me-2" />
+            9-Tap Tour
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <AuthorizeView>
+                <Authorized>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">Home</NavLink>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Members</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="members">Search</a></li>
+                                <li><a class="dropdown-item" href="members/edit">New Member</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" href="members/deactivate">Deactivate by Last Bowled</a></li>
+                                <li><a class="dropdown-item" href="members/labels">Mailing Labels</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tournaments</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="tournaments">Tournament List</a></li>
+                                <li><a class="dropdown-item" href="tournaments/edit">New Tournament</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="reports">Reports</NavLink>
+                        </li>
+                        <AuthorizeView Policy="@NineTapTour.Web.Startup.WebServiceConfiguration.AdminOnlyPolicy" Context="adminContext">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="admin/regions">Regions</a></li>
+                                    <li><a class="dropdown-item" href="admin/users">Users</a></li>
+                                </ul>
+                            </li>
+                        </AuthorizeView>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="about">About</NavLink>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @context.User.Identity?.Name
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="Account/Manage/ChangePassword">Change Password</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <form action="Account/Logout" method="post">
+                                        <AntiforgeryToken />
+                                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                                        <button type="submit" class="dropdown-item">Log out</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </Authorized>
+                <NotAuthorized>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="Account/Login">Log in</NavLink>
+                        </li>
+                    </ul>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </div>
+</nav>
+
+@code {
+    private string? currentUrl;
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

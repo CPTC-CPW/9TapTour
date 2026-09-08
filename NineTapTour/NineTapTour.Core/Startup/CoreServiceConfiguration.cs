@@ -18,6 +18,7 @@ public static class CoreServiceConfiguration
     {
         services.AddDbContextFactory<NineTapDb>(options => options.UseSqlServer(connectionString));
 
+        services.AddSingleton<IRegionRepository, RegionRepository>();
         services.AddSingleton<IMemberRepository, MemberRepository>();
         services.AddSingleton<IGameRepository, GameRepository>();
         services.AddSingleton<ITournamentRepository, TournamentRepository>();
@@ -38,6 +39,12 @@ public static class CoreServiceConfiguration
         services.AddSingleton<IStatsService, StatsService>();
         services.AddSingleton<IDoublesPairingService, DoublesPairingService>();
         services.AddSingleton<ISeriesReportExcelExporter, SeriesReportExcelExporter>();
+        services.AddSingleton<IStandingsReportExcelExporter, StandingsReportExcelExporter>();
+        services.AddSingleton<IClientReportsExcelExporter, ClientReportsExcelExporter>();
+        services.AddSingleton<IReportsService, ReportsService>();
+        services.AddSingleton<IMemberEditorService, MemberEditorService>();
+        services.AddSingleton<IResultsService, ResultsService>();
+        services.AddSingleton<IFinalizeGridService, FinalizeGridService>();
 
         services.AddSingleton<IMemberImportService, MemberImportService>();
         services.AddSingleton<IMemberHistoryImportService, MemberHistoryImportService>();

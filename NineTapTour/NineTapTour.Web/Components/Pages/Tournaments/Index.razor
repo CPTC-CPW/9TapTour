@@ -1,0 +1,132 @@
+@page "/tournaments"
+@inject ITournamentRepository TournamentRepository
+
+<PageTitle>Tournaments - 9-Tap Tour</PageTitle>
+
+<PageHeader Title="Tournaments">
+    <Actions>
+        <a class="btn btn-primary" href="tournaments/edit">New tournament</a>
+    </Actions>
+</PageHeader>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="row g-2 align-items-end">
+            <div class="col-sm-2">
+                <label class="form-label" for="t-year">Year</label>
+                <select id="t-year" class="form-select form-select-sm" @bind="year">
+                    <option value="">All years</option>
+                    @foreach (int y in years)
+                    {
+                        <option value="@y">@y</option>
+                    }
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <label class="form-label" for="t-location">Location</label>
+                <input id="t-location" class="form-control form-control-sm" @bind="location" @onkeydown="OnKeyDown" />
+            </div>
+            <div class="col-sm-3">
+                <label class="form-label" for="t-event">Event</label>
+                <input id="t-event" class="form-control form-control-sm" @bind="eventName" @onkeydown="OnKeyDown" />
+            </div>
+            <div class="col-sm-2">
+                <label class="form-label" for="t-from">From</label>
+                <input id="t-from" type="date" class="form-control form-control-sm" @bind="from" />
+            </div>
+            <div class="col-sm-2">
+                <label class="form-label" for="t-to">To</label>
+                <input id="t-to" type="date" class="form-control form-control-sm" @bind="to" />
+            </div>
+        </div>
+        <div class="mt-2 d-flex gap-2">
+            <button type="button" class="btn btn-primary btn-sm" @onclick="Search">Search</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="Clear">Clear</button>
+        </div>
+    </div>
+</div>
+
+@if (results.Count == 0)
+{
+    <div class="alert alert-info">No tournaments match.</div>
+}
+else
+{
+    <p class="text-muted small">@results.Count tournament(s)</p>
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Event</th>
+                    <th>Region</th>
+                    <th>Squads</th>
+                    <th>Type</th>
+                    <th>Sponsors</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Tournament t in results)
+                {
+                    <tr>
+                        <td class="text-nowrap">@t.Date.ToShortDateString()</td>
+                        <td>@t.Location</td>
+                        <td>@t.Event</td>
+                        <td>@t.Region?.Name</td>
+                        <td>@t.Squads</td>
+                        <td><TournamentTypeBadges Tournament="t" /></td>
+                        <td>@t.Sponsors</td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary" href="tournaments/@t.Id">Open</a>
+                            <a class="btn btn-sm btn-outline-secondary" href="scores/@t.Id">Scores</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<int> years = [];
+    private string year = string.Empty;
+    private string? location;
+    private string? eventName;
+    private DateTime? from;
+    private DateTime? to;
+    private List<Tournament> results = [];
+
+    protected override void OnInitialized()
+    {
+        int current = DateTime.Now.Year + 1;
+        years = [.. Enumerable.Range(0, 25).Select(i => current - i)];
+        year = DateTime.Now.Year.ToString();
+        Search();
+    }
+
+    private void Search()
+    {
+        int? selectedYear = int.TryParse(year, out int y) ? y : null;
+        results = TournamentRepository.Search(new TournamentSearchCriteria(location, eventName, from, to, selectedYear));
+    }
+
+    private void Clear()
+    {
+        year = string.Empty;
+        location = null;
+        eventName = null;
+        from = null;
+        to = null;
+        Search();
+    }
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            Search();
+        }
+    }
+}

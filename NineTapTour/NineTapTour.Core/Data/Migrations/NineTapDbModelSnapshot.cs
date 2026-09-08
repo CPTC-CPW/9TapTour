@@ -271,6 +271,9 @@ namespace NineTapTour.Core.Data.Migrations
                     b.Property<int?>("Referrals")
                         .HasColumnType("int");
 
+                    b.Property<int>("RegionId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("RejoinDate")
                         .HasColumnType("datetime2");
 
@@ -288,6 +291,8 @@ namespace NineTapTour.Core.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RegionId");
 
                     b.ToTable("Members");
                 });
@@ -326,6 +331,27 @@ namespace NineTapTour.Core.Data.Migrations
                     b.ToTable("Participants");
                 });
 
+            modelBuilder.Entity("NineTapTour.Core.Entities.Region", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Regions");
+                });
+
             modelBuilder.Entity("NineTapTour.Core.Entities.Tournament", b =>
                 {
                     b.Property<int>("Id")
@@ -362,6 +388,9 @@ namespace NineTapTour.Core.Data.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RegionId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Sponsors")
                         .HasColumnType("nvarchar(max)");
 
@@ -372,6 +401,8 @@ namespace NineTapTour.Core.Data.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RegionId");
 
                     b.ToTable("Tournaments");
                 });
@@ -449,6 +480,17 @@ namespace NineTapTour.Core.Data.Migrations
                     b.Navigation("Tournament");
                 });
 
+            modelBuilder.Entity("NineTapTour.Core.Entities.Member", b =>
+                {
+                    b.HasOne("NineTapTour.Core.Entities.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Region");
+                });
+
             modelBuilder.Entity("NineTapTour.Core.Entities.Participant", b =>
                 {
                     b.HasOne("NineTapTour.Core.Entities.Game", "Game")
@@ -472,6 +514,17 @@ namespace NineTapTour.Core.Data.Migrations
                     b.Navigation("Member");
 
                     b.Navigation("Tournament");
+                });
+
+            modelBuilder.Entity("NineTapTour.Core.Entities.Tournament", b =>
+                {
+                    b.HasOne("NineTapTour.Core.Entities.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Region");
                 });
 
             modelBuilder.Entity("NineTapTour.Core.Entities.Game", b =>

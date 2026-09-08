@@ -1,0 +1,227 @@
+@page "/admin/users/edit"
+@page "/admin/users/edit/{Id}"
+@using System.ComponentModel.DataAnnotations
+@using System.Security.Claims
+@inject UserManager<ApplicationUser> UserManager
+@inject FlashMessageService Flash
+@inject NavigationManager Navigation
+
+<PageTitle>@(IsNew ? "New user" : "Edit user") - 9-Tap Tour</PageTitle>
+
+<PageHeader Title="@(IsNew ? "New user" : "Edit user")" />
+
+<ConfirmDialog @ref="confirm" />
+
+@if (notFound)
+{
+    <div class="alert alert-warning">That user no longer exists.</div>
+    <a class="btn btn-secondary" href="admin/users">Back to users</a>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6 col-lg-4">
+            <EditForm Model="model" OnValidSubmit="SaveAsync" FormName="user-edit">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="text-danger" />
+                @foreach (string error in serverErrors)
+                {
+                    <div class="text-danger">@error</div>
+                }
+
+                <div class="mb-3">
+                    <label for="userName" class="form-label">User name</label>
+                    <InputText id="userName" class="form-control" @bind-Value="model.UserName" autocomplete="off" />
+                </div>
+                <div class="form-check mb-3">
+                    <InputCheckbox id="isAdmin" class="form-check-input" @bind-Value="model.IsAdmin" />
+                    <label for="isAdmin" class="form-check-label">Administrator (manage regions and users, see SSNs)</label>
+                </div>
+
+                <fieldset class="mb-3">
+                    <legend class="h6">@(IsNew ? "Password" : "Reset password (leave blank to keep)")</legend>
+                    <div class="mb-2">
+                        <InputText id="password" type="password" class="form-control" @bind-Value="model.Password" autocomplete="new-password" placeholder="Password" />
+                    </div>
+                    <div>
+                        <InputText id="confirmPassword" type="password" class="form-control" @bind-Value="model.ConfirmPassword" autocomplete="new-password" placeholder="Confirm password" />
+                    </div>
+                    <ValidationMessage For="() => model.ConfirmPassword" class="text-danger" />
+                </fieldset>
+
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a class="btn btn-secondary ms-2" href="admin/users">Cancel</a>
+                @if (!IsNew)
+                {
+                    <button type="button" class="btn btn-outline-danger float-end" @onclick="DeleteAsync">Delete user</button>
+                }
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    private ConfirmDialog confirm = default!;
+    private readonly UserInput model = new();
+    private readonly List<string> serverErrors = [];
+    private ApplicationUser? user;
+    private bool notFound;
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    private bool IsNew => string.IsNullOrEmpty(Id);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsNew)
+        {
+            return;
+        }
+
+        user = await UserManager.FindByIdAsync(Id!);
+        if (user == null)
+        {
+            notFound = true;
+            return;
+        }
+
+        model.UserName = user.UserName ?? string.Empty;
+        model.IsAdmin = await UserManager.IsInRoleAsync(user, WebServiceConfiguration.AdminRole);
+    }
+
+    private async Task SaveAsync()
+    {
+        serverErrors.Clear();
+
+        if (IsNew && string.IsNullOrEmpty(model.Password))
+        {
+            serverErrors.Add("A password is required for a new user.");
+            return;
+        }
+
+        if (IsNew)
+        {
+            ApplicationUser created = new() { UserName = model.UserName.Trim(), EmailConfirmed = true };
+            IdentityResult result = await UserManager.CreateAsync(created, model.Password!);
+            if (!Collect(result))
+            {
+                return;
+            }
+            user = created;
+        }
+        else
+        {
+            if (!string.Equals(user!.UserName, model.UserName.Trim(), StringComparison.Ordinal))
+            {
+                if (!Collect(await UserManager.SetUserNameAsync(user, model.UserName.Trim())))
+                {
+                    return;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(model.Password))
+            {
+                string token = await UserManager.GeneratePasswordResetTokenAsync(user);
+                if (!Collect(await UserManager.ResetPasswordAsync(user, token, model.Password)))
+                {
+                    return;
+                }
+            }
+        }
+
+        bool isAdmin = await UserManager.IsInRoleAsync(user!, WebServiceConfiguration.AdminRole);
+        if (model.IsAdmin && !isAdmin)
+        {
+            if (!Collect(await UserManager.AddToRoleAsync(user!, WebServiceConfiguration.AdminRole)))
+            {
+                return;
+            }
+        }
+        else if (!model.IsAdmin && isAdmin)
+        {
+            if (await IsLastAdminAsync(user!))
+            {
+                serverErrors.Add("This is the last administrator; promote another user before removing the role.");
+                return;
+            }
+            if (!Collect(await UserManager.RemoveFromRoleAsync(user!, WebServiceConfiguration.AdminRole)))
+            {
+                return;
+            }
+        }
+
+        Flash.Success($"User \"{model.UserName.Trim()}\" saved.");
+        Navigation.NavigateTo("admin/users");
+    }
+
+    private async Task DeleteAsync()
+    {
+        if (user == null)
+        {
+            return;
+        }
+
+        string? currentUserId = AuthenticationState == null
+            ? null
+            : (await AuthenticationState).User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId == user.Id)
+        {
+            Flash.Error("You cannot delete the account you are signed in with.");
+            return;
+        }
+
+        if (await UserManager.IsInRoleAsync(user, WebServiceConfiguration.AdminRole) && await IsLastAdminAsync(user))
+        {
+            Flash.Error("This is the last administrator and cannot be deleted.");
+            return;
+        }
+
+        bool ok = await confirm.ShowAsync($"Delete user \"{user.UserName}\"?", "Delete user", "Delete", "Cancel", danger: true);
+        if (!ok)
+        {
+            return;
+        }
+
+        if (Collect(await UserManager.DeleteAsync(user)))
+        {
+            Flash.Success($"User \"{user.UserName}\" deleted.");
+            Navigation.NavigateTo("admin/users");
+        }
+    }
+
+    private async Task<bool> IsLastAdminAsync(ApplicationUser candidate)
+    {
+        IList<ApplicationUser> admins = await UserManager.GetUsersInRoleAsync(WebServiceConfiguration.AdminRole);
+        return admins.Count <= 1 && admins.Any(a => a.Id == candidate.Id);
+    }
+
+    private bool Collect(IdentityResult result)
+    {
+        if (result.Succeeded)
+        {
+            return true;
+        }
+        serverErrors.AddRange(result.Errors.Select(e => e.Description));
+        return false;
+    }
+
+    private sealed class UserInput
+    {
+        [Required(ErrorMessage = "User name is required.")]
+        [StringLength(256)]
+        public string UserName { get; set; } = string.Empty;
+
+        public bool IsAdmin { get; set; }
+
+        [DataType(DataType.Password)]
+        public string? Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Compare(nameof(Password), ErrorMessage = "The password and confirmation do not match.")]
+        public string? ConfirmPassword { get; set; }
+    }
+}

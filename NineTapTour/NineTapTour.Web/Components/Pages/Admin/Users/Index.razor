@@ -1,0 +1,63 @@
+@page "/admin/users"
+@using Microsoft.EntityFrameworkCore
+@inject UserManager<ApplicationUser> UserManager
+
+<PageTitle>Users - 9-Tap Tour</PageTitle>
+
+<PageHeader Title="Users" Subtitle="Accounts that can sign in to the website.">
+    <Actions>
+        <a class="btn btn-primary" href="admin/users/edit">New user</a>
+    </Actions>
+</PageHeader>
+
+@if (rows == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>User name</th>
+                    <th>Role</th>
+                    <th>Locked out</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (UserRow row in rows)
+                {
+                    <tr>
+                        <td>@row.UserName</td>
+                        <td>@(row.IsAdmin ? "Admin" : "User")</td>
+                        <td>@(row.LockedOut ? "Yes" : "")</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary" href="admin/users/edit/@row.Id">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private sealed record UserRow(string Id, string UserName, bool IsAdmin, bool LockedOut);
+
+    private List<UserRow>? rows;
+
+    protected override async Task OnInitializedAsync()
+    {
+        List<ApplicationUser> users = await UserManager.Users.OrderBy(u => u.UserName).ToListAsync();
+        List<UserRow> result = [];
+        foreach (ApplicationUser user in users)
+        {
+            bool isAdmin = await UserManager.IsInRoleAsync(user, WebServiceConfiguration.AdminRole);
+            bool lockedOut = await UserManager.IsLockedOutAsync(user);
+            result.Add(new UserRow(user.Id, user.UserName ?? "", isAdmin, lockedOut));
+        }
+        rows = result;
+    }
+}

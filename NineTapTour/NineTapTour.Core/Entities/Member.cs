@@ -84,6 +84,16 @@ namespace NineTapTour.Core.Entities
         public decimal MoneyEarned { get; set; }
         #endregion
 
+        #region Region
+        /// <summary>
+        /// The member's home region. Required; the repositories apply the
+        /// default region when a caller (the desktop app, imports) leaves it 0.
+        /// </summary>
+        public int RegionId { get; set; }
+
+        public Region Region { get; set; }
+        #endregion
+
         public override string ToString()
         {
             // return "Member ID: " + Number + " Name: " + LastName + ", " + FirstName; 

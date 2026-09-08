@@ -26,5 +26,26 @@ namespace NineTapTourTests.Architecture
             Assert.AreEqual(0, offending.Count,
                 "NineTapTour.Core references UI assemblies: " + string.Join(", ", offending));
         }
+
+        /// <summary>
+        /// Core is shared by the desktop app and the Blazor website. ASP.NET
+        /// Core and Identity belong to the web project only, so Core must not
+        /// depend on them (Identity's DbContext lives in NineTapTour.Web).
+        /// </summary>
+        [TestMethod]
+        public void Core_DoesNotReferenceAspNetCoreOrIdentity()
+        {
+            var coreAssembly = typeof(NineTapTour.Core.Data.NineTapDb).Assembly;
+            string[] forbiddenPrefixes = ["Microsoft.AspNetCore", "Microsoft.Extensions.Identity"];
+
+            var offending = coreAssembly.GetReferencedAssemblies()
+                .Where(reference => forbiddenPrefixes.Any(prefix =>
+                    reference.Name!.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)))
+                .Select(reference => reference.Name)
+                .ToList();
+
+            Assert.AreEqual(0, offending.Count,
+                "NineTapTour.Core references web assemblies: " + string.Join(", ", offending));
+        }
     }
 }

@@ -1,0 +1,94 @@
+@page "/print/standings/{TournamentId:int}"
+@using NineTapTour.Core.Printing
+@layout PrintLayout
+@attribute [ExcludeFromInteractiveRouting]
+@inject ITournamentRepository TournamentRepository
+@inject IParticipantRepository ParticipantRepository
+@inject IScoresService ScoresService
+
+<PageTitle>Standings Report</PageTitle>
+
+@if (tournament == null)
+{
+    <p>Tournament @TournamentId was not found.</p>
+}
+else if (content == null || content.Pages.Count == 0)
+{
+    <p>There are no participants for this report.</p>
+}
+else
+{
+    @foreach (ReportPageContent page in content.Pages)
+    {
+        <div class="report-page">
+            <div>@content.TournamentLine</div>
+            <div class="report-title">@content.Title</div>
+            @if (content.SeriesSubtitle != null)
+            {
+                <div class="report-subtitle">@content.SeriesSubtitle</div>
+            }
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Place</th>
+                        <th class="num">Score</th>
+                        <th>Member #</th>
+                        <th>Name</th>
+                        <th>@(query.PrintDues ? "Paid through" : "")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="separator"><td colspan="5">**************************************************</td></tr>
+                    @for (int i = 0; i < page.Rows.Count; i++)
+                    {
+                        ReportRowContent row = page.Rows[i];
+                        <tr class="@(page.CutoffAfterRowIndex == i ? "cutoff" : "")">
+                            <td>@row.Placing</td>
+                            <td class="num">@row.Score</td>
+                            <td>@row.MemberNumber</td>
+                            <td>@row.Name</td>
+                            <td>@row.DuesText</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+
+@code {
+    private Tournament? tournament;
+    private StandingsQuery query = new();
+    private MemberReportContent? content;
+
+    [Parameter]
+    public int TournamentId { get; set; }
+
+    [SupplyParameterFromQuery] public string? Type { get; set; }
+    [SupplyParameterFromQuery] public bool? Handicap { get; set; }
+    [SupplyParameterFromQuery] public int? Qualify { get; set; }
+    [SupplyParameterFromQuery] public string? Squads { get; set; }
+    [SupplyParameterFromQuery] public int? Count { get; set; }
+    [SupplyParameterFromQuery] public bool? Dues { get; set; }
+    [SupplyParameterFromQuery] public int? Cutoff { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        tournament = TournamentRepository.GetTourneyByID(TournamentId);
+        if (tournament == null)
+        {
+            return;
+        }
+
+        query = StandingsQuery.FromQuery(Type, Handicap, Qualify, Squads, Count, Dues, Cutoff);
+        List<MemberScores> rows = query.LoadTop(tournament, ScoresService, ParticipantRepository);
+        if (rows.Count == 0)
+        {
+            content = null;
+            return;
+        }
+
+        content = PrintContentBuilder.BuildMemberReport(rows, tournament, query.ReportType, query.QualifySquad,
+            query.Squads.Count == 0 ? [] : [.. query.Squads], query.PrintDues, query.ManualCutoff);
+    }
+}

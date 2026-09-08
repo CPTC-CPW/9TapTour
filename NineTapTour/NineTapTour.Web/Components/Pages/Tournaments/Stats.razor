@@ -1,0 +1,82 @@
+@page "/tournaments/{Id:int}/stats"
+@inject ITournamentRepository TournamentRepository
+@inject IStatsService StatsService
+
+<PageTitle>Tournament Stats - 9-Tap Tour</PageTitle>
+
+@if (tournament == null)
+{
+    <div class="alert alert-warning">Tournament @Id was not found.</div>
+}
+else
+{
+    <TournamentHeader Tournament="tournament" />
+    <div class="d-flex justify-content-between align-items-center mb-2 no-print">
+        <h2 class="h5 mb-0">Tournament Stats</h2>
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.print()">Print</button>
+    </div>
+
+    @if (stats.Count == 0)
+    {
+        <div class="alert alert-info">No entries in this tournament yet.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-sm table-striped table-bordered grid-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Squad</th>
+                        <th>Scratch total</th>
+                        <th>Top 3 scores</th>
+                        <th>Game 1</th>
+                        <th>Game 2</th>
+                        <th>Game 3</th>
+                        <th>Game 4</th>
+                        <th>Handicap</th>
+                        <th>Bonus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (TournamentStatsList row in stats)
+                    {
+                        <tr>
+                            <td>@row.Id</td>
+                            <td>@row.FirstName</td>
+                            <td>@row.LastName</td>
+                            <td>@row.Squad</td>
+                            <td>@row.ScratchTotal</td>
+                            <td>@row.Top3Scores</td>
+                            <td>@row.Game1</td>
+                            <td>@row.Game2</td>
+                            <td>@row.Game3</td>
+                            <td>@row.Game4</td>
+                            <td>@row.Handicap</td>
+                            <td>@row.Bonus</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+
+@code {
+    private Tournament? tournament;
+    private List<TournamentStatsList> stats = [];
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        tournament = TournamentRepository.GetTourneyByID(Id);
+        if (tournament != null)
+        {
+            stats = StatsService.GetTournamentStats(tournament.Id, tournament.ThreeOutOf4);
+        }
+    }
+}
