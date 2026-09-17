@@ -30,12 +30,6 @@ public record UseGameFlags(bool Game1, bool Game2, bool Game3, bool Game4);
 public record BonusPreviewResult(int DisplayBonus, bool IsCashing, bool AwardedThirdEntryBonus);
 
 /// <summary>
-/// One finalized entry from a member's most recent prior tournament, used to derive
-/// the carry-forward handicap and bonus.
-/// </summary>
-public record PreviousEntrySnapshot(int AdjustedAvg, int Bonus, decimal MoneyWon);
-
-/// <summary>
 /// One historical finalized game record used when accumulating the 30-entry average window.
 /// </summary>
 public record HistoryGameEntry(

@@ -128,7 +128,7 @@ public partial class FrmTournamentResults : Form
         {
             // Create a List<ExcelMember> and populate it with this tournament's participants
             WinnersListResult winnersResult = winnersService.BuildWinnersList(
-                new WinnersListRequest(tourny.Id, tourny.Doubles, tourny.ThreeOutOf4));
+                new WinnersListRequest(tourny.Id, tourny.Doubles, tourny.ThreeOutOf4, tourny.IsTournamentFinalized));
             winners = winnersResult.Winners;
             totalTournamentEntries = winnersResult.TotalEntries;
             compEntries = winnersResult.CompEntries;

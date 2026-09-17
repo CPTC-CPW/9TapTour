@@ -283,39 +283,6 @@ namespace NineTapTourTests.Services
             Assert.AreEqual(new UseGameFlags(true, false, true, true), flags);
         }
 
-        // --- ComputePreviousHandicapAndBonus (carry-forward from prior tournament) ---
-
-        [TestMethod]
-        public void ComputePreviousHandicapAndBonus_NoCash_TakesMaxBonus()
-        {
-            var entries = new List<PreviousEntrySnapshot>
-            {
-                new(190, 2, 0),
-                new(0, 4, 0)
-            };
-            // hdcp from first entry with avg > 0: (220-190)*90/100 = 27; no cash -> max bonus 4
-            Assert.AreEqual((27, 4), service.ComputePreviousHandicapAndBonus(entries));
-        }
-
-        [TestMethod]
-        public void ComputePreviousHandicapAndBonus_Cashed_TakesMinBonus()
-        {
-            var entries = new List<PreviousEntrySnapshot>
-            {
-                new(200, 3, 50),
-                new(0, 1, 0)
-            };
-            // hdcp (220-200)*90/100 = 18; cashed -> min bonus 1
-            Assert.AreEqual((18, 1), service.ComputePreviousHandicapAndBonus(entries));
-        }
-
-        [TestMethod]
-        public void ComputePreviousHandicapAndBonus_NoAdjustedAvg_HandicapZero()
-        {
-            var entries = new List<PreviousEntrySnapshot> { new(0, 2, 0) };
-            Assert.AreEqual((0, 2), service.ComputePreviousHandicapAndBonus(entries));
-        }
-
         // --- ComputeBonusPreview (New Bonus: cash deduction + third-entry bonus) ---
 
         [DataTestMethod]
@@ -364,17 +331,18 @@ namespace NineTapTourTests.Services
             Assert.AreEqual(expectedThirdEntry, result.AwardedThirdEntryBonus);
         }
 
-        // --- ResolveDisplayHandicap (fallback chain in LoadTournamentGrid) ---
+        // --- ResolveDisplayHandicap (carry-in handicap for a grid row in LoadTournamentGrid) ---
 
         [DataTestMethod]
-        [DataRow(25, 30, 180, 25)]    // previous tournament handicap wins
-        [DataRow(null, 30, 180, 30)]  // no previous -> stored game handicap
-        [DataRow(0, 30, 180, 30)]     // previous exists but zero -> stored game handicap
-        [DataRow(null, 0, 180, 36)]   // nothing stored -> derived from adjAvg
-        [DataRow(null, 0, 0, 0)]      // nothing available -> zero
-        public void ResolveDisplayHandicap_UsesFallbackChain(int? previous, int stored, int adjAvg, int expected)
+        [DataRow(25, 30, 180, false, 25)]    // open tournament: the Member record's current handicap wins
+        [DataRow(0, 30, 180, false, 0)]      // open tournament: a 220+ bowler's zero handicap is a real value, not a missing one
+        [DataRow(null, 30, 180, false, 30)]  // member handicap never set -> stored game handicap
+        [DataRow(25, 30, 180, true, 30)]     // finalized: the Game.Handicap snapshot is authoritative
+        [DataRow(null, 0, 180, false, 36)]   // nothing stored -> derived from adjAvg
+        [DataRow(null, 0, 0, false, 0)]      // nothing available -> zero
+        public void ResolveDisplayHandicap_UsesFallbackChain(int? memberHandicap, int stored, int adjAvg, bool isFinalized, int expected)
         {
-            Assert.AreEqual(expected, service.ResolveDisplayHandicap(previous, stored, adjAvg));
+            Assert.AreEqual(expected, service.ResolveDisplayHandicap(memberHandicap, stored, adjAvg, isFinalized));
         }
 
         // --- ComputeEntryTotalScore (formerly BuildExcelMemberList arithmetic) ---

@@ -144,13 +144,14 @@ namespace NineTapTourTests.Services
     public class WinnersServiceComputeWinnersRowsTests
     {
         private static WinnerListMemberViewModel Bowler(int memberNumber, int? handicap, int memberBonus,
-            int? g1, int? g2, int? g3, int? g4, bool isComp = false)
+            int? g1, int? g2, int? g3, int? g4, bool isComp = false, int? memberHandicap = null)
         {
             return new WinnerListMemberViewModel
             {
                 MemberNumber = memberNumber,
                 BowlerName = $"Bowler {memberNumber}",
                 Handicap = handicap,
+                MemberHandicap = memberHandicap,
                 MemberBonus = memberBonus,
                 Game1 = g1,
                 Game2 = g2,
@@ -162,12 +163,14 @@ namespace NineTapTourTests.Services
         }
 
         [TestMethod]
-        public void PreviousHandicap_OverridesStoredHandicap()
+        public void OpenTournament_MemberHandicap_OverridesStoredGameHandicap()
         {
-            var bowlers = new List<WinnerListMemberViewModel> { Bowler(10, 20, 2, 100, 120, null, null) };
-            var prevHdcp = new Dictionary<int, int> { [10] = 15 };
+            // Issue #1291: the director edited the average on the member form after the
+            // entry was scored, so the Member record's handicap (15) must win over the
+            // handicap snapshot stored on the game (20).
+            var bowlers = new List<WinnerListMemberViewModel> { Bowler(10, 20, 2, 100, 120, null, null, memberHandicap: 15) };
 
-            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, prevHdcp, threeOutOf4: false);
+            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, isFinalized: false, threeOutOf4: false);
 
             Assert.AreEqual(15, result.Winners[0].Handicap);
             // 100 + 120 + 2 valid games * (15 hdcp + 2 bonus) = 254
@@ -175,11 +178,11 @@ namespace NineTapTourTests.Services
         }
 
         [TestMethod]
-        public void MissingPreviousHandicap_FallsBackToStoredHandicap()
+        public void FinalizedTournament_UsesStoredGameHandicap()
         {
-            var bowlers = new List<WinnerListMemberViewModel> { Bowler(10, 20, 2, 100, 120, null, null) };
+            var bowlers = new List<WinnerListMemberViewModel> { Bowler(10, 20, 2, 100, 120, null, null, memberHandicap: 15) };
 
-            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, new Dictionary<int, int>(), threeOutOf4: false);
+            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, isFinalized: true, threeOutOf4: false);
 
             Assert.AreEqual(20, result.Winners[0].Handicap);
             // 100 + 120 + 2 * (20 + 2) = 264
@@ -187,16 +190,28 @@ namespace NineTapTourTests.Services
         }
 
         [TestMethod]
-        public void ZeroPreviousHandicap_FallsBackToStoredHandicap()
+        public void MissingMemberHandicap_FallsBackToStoredHandicap()
         {
-            var bowlers = new List<WinnerListMemberViewModel> { Bowler(10, 20, 0, 100, null, null, null) };
-            var prevHdcp = new Dictionary<int, int> { [10] = 0 };
+            var bowlers = new List<WinnerListMemberViewModel> { Bowler(10, 20, 2, 100, 120, null, null) };
 
-            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, prevHdcp, threeOutOf4: false);
+            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, isFinalized: false, threeOutOf4: false);
 
             Assert.AreEqual(20, result.Winners[0].Handicap);
-            // 100 + 1 * 20 = 120
-            Assert.AreEqual(120, result.Winners[0].TotalScore);
+            // 100 + 120 + 2 * (20 + 2) = 264
+            Assert.AreEqual(264, result.Winners[0].TotalScore);
+        }
+
+        [TestMethod]
+        public void ZeroMemberHandicap_IsAScratchBowler_NotAMissingValue()
+        {
+            // A member averaging 220 or more legitimately carries 0 handicap pins.
+            var bowlers = new List<WinnerListMemberViewModel> { Bowler(10, 20, 0, 100, null, null, null, memberHandicap: 0) };
+
+            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, isFinalized: false, threeOutOf4: false);
+
+            Assert.AreEqual(0, result.Winners[0].Handicap);
+            // 100 + 1 * 0 = 100
+            Assert.AreEqual(100, result.Winners[0].TotalScore);
         }
 
         [TestMethod]
@@ -204,7 +219,7 @@ namespace NineTapTourTests.Services
         {
             var bowlers = new List<WinnerListMemberViewModel> { Bowler(10, 10, 1, 100, 90, 110, 120) };
 
-            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, new Dictionary<int, int>(), threeOutOf4: true);
+            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, isFinalized: false, threeOutOf4: true);
 
             // Lowest game (90) is dropped: 100 + 110 + 120 + 3 * (10 + 1) = 363
             Assert.AreEqual(363, result.Winners[0].TotalScore);
@@ -217,7 +232,7 @@ namespace NineTapTourTests.Services
         {
             var bowlers = new List<WinnerListMemberViewModel> { Bowler(10, 10, 1, 100, null, 110, 120) };
 
-            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, new Dictionary<int, int>(), threeOutOf4: true);
+            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, isFinalized: false, threeOutOf4: true);
 
             // Only 3 games bowled, nothing dropped: 100 + 110 + 120 + 3 * 11 = 363
             Assert.AreEqual(363, result.Winners[0].TotalScore);
@@ -233,7 +248,7 @@ namespace NineTapTourTests.Services
                 Bowler(3, 5, 0, 100, null, null, null, isComp: true)
             };
 
-            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, new Dictionary<int, int>(), threeOutOf4: false);
+            WinnersListResult result = WinnersService.ComputeWinnersRows(bowlers, isFinalized: false, threeOutOf4: false);
 
             Assert.AreEqual(3, result.TotalEntries);
             Assert.AreEqual(2, result.CompEntries);
@@ -244,7 +259,7 @@ namespace NineTapTourTests.Services
     public class WinnersServiceComputeDoublesWinnersRowsTests
     {
         private static WinnerListMemberViewModel DoublesBowler(int memberId, int memberNumber, int? handicap,
-            int memberBonus, int? g1, int? g2, int squad, bool isComp = false)
+            int memberBonus, int? g1, int? g2, int squad, bool isComp = false, int? memberHandicap = null)
         {
             return new WinnerListMemberViewModel
             {
@@ -252,6 +267,7 @@ namespace NineTapTourTests.Services
                 MemberNumber = memberNumber,
                 BowlerName = $"Bowler {memberNumber}",
                 Handicap = handicap,
+                MemberHandicap = memberHandicap,
                 MemberBonus = memberBonus,
                 Game1 = g1,
                 Game2 = g2,
@@ -283,7 +299,7 @@ namespace NineTapTourTests.Services
             };
             var teams = new List<DoublesTeam> { Team(1, 2, 1), Team(3, 4, 1) };
 
-            WinnersListResult result = WinnersService.ComputeDoublesWinnersRows(bowlers, teams, new Dictionary<int, int>());
+            WinnersListResult result = WinnersService.ComputeDoublesWinnersRows(bowlers, teams, isFinalized: false);
 
             // Team A (members 11, 22): 100+110+90+95 + 2*(10+1) + 2*(20+0) = 457
             // Team B (members 33, 44): 150+140+120+130 + 2*(5+2) + 2*(15+1) = 586
@@ -315,7 +331,7 @@ namespace NineTapTourTests.Services
             };
             var teams = new List<DoublesTeam> { Team(1, 2, 1), Team(3, 4, 1), Team(5, 6, 1) };
 
-            WinnersListResult result = WinnersService.ComputeDoublesWinnersRows(bowlers, teams, new Dictionary<int, int>());
+            WinnersListResult result = WinnersService.ComputeDoublesWinnersRows(bowlers, teams, isFinalized: false);
 
             // Two teams tied at 400 share place 1; third team (360) takes place 3
             int[] places = result.Winners.Select(w => w.PlaceStanding).ToArray();
@@ -323,20 +339,35 @@ namespace NineTapTourTests.Services
         }
 
         [TestMethod]
-        public void PreviousHandicap_IsUsedInCombinedTotal()
+        public void OpenTournament_MemberHandicap_IsUsedInCombinedTotal()
         {
             var bowlers = new List<WinnerListMemberViewModel>
             {
-                DoublesBowler(1, 11, 10, 0, 100, 100, squad: 1),
+                DoublesBowler(1, 11, 10, 0, 100, 100, squad: 1, memberHandicap: 25),
                 DoublesBowler(2, 22, 10, 0, 100, 100, squad: 1)
             };
             var teams = new List<DoublesTeam> { Team(1, 2, 1) };
-            var prevHdcp = new Dictionary<int, int> { [11] = 25 };
 
-            WinnersListResult result = WinnersService.ComputeDoublesWinnersRows(bowlers, teams, prevHdcp);
+            WinnersListResult result = WinnersService.ComputeDoublesWinnersRows(bowlers, teams, isFinalized: false);
 
             // 400 scratch + 2*(25+0) + 2*(10+0) = 470
             Assert.AreEqual(470, result.Winners[0].TotalScore);
+        }
+
+        [TestMethod]
+        public void FinalizedTournament_StoredGameHandicap_IsUsedInCombinedTotal()
+        {
+            var bowlers = new List<WinnerListMemberViewModel>
+            {
+                DoublesBowler(1, 11, 10, 0, 100, 100, squad: 1, memberHandicap: 25),
+                DoublesBowler(2, 22, 10, 0, 100, 100, squad: 1)
+            };
+            var teams = new List<DoublesTeam> { Team(1, 2, 1) };
+
+            WinnersListResult result = WinnersService.ComputeDoublesWinnersRows(bowlers, teams, isFinalized: true);
+
+            // 400 scratch + 2*(10+0) + 2*(10+0) = 440
+            Assert.AreEqual(440, result.Winners[0].TotalScore);
         }
 
         [TestMethod]
@@ -348,7 +379,7 @@ namespace NineTapTourTests.Services
             };
             var teams = new List<DoublesTeam> { Team(1, 2, 1) };
 
-            WinnersListResult result = WinnersService.ComputeDoublesWinnersRows(bowlers, teams, new Dictionary<int, int>());
+            WinnersListResult result = WinnersService.ComputeDoublesWinnersRows(bowlers, teams, isFinalized: false);
 
             Assert.AreEqual(0, result.Winners.Count);
             Assert.AreEqual(1, result.TotalEntries);

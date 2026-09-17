@@ -27,7 +27,6 @@ public class ScoresService : IScoresService
     private readonly IGameRepository gameRepository;
     private readonly ITournamentRepository tournamentRepository;
     private readonly IParticipantRepository participantRepository;
-    private readonly IPlayerHistoryRepository playerHistoryRepository;
     private readonly IDoublesTeamRepository doublesTeamRepository;
     private readonly IDbContextFactory<NineTapDb> dbFactory;
 
@@ -36,7 +35,6 @@ public class ScoresService : IScoresService
         IGameRepository gameRepository,
         ITournamentRepository tournamentRepository,
         IParticipantRepository participantRepository,
-        IPlayerHistoryRepository playerHistoryRepository,
         IDoublesTeamRepository doublesTeamRepository,
         IDbContextFactory<NineTapDb> dbFactory)
     {
@@ -44,7 +42,6 @@ public class ScoresService : IScoresService
         this.gameRepository = gameRepository;
         this.tournamentRepository = tournamentRepository;
         this.participantRepository = participantRepository;
-        this.playerHistoryRepository = playerHistoryRepository;
         this.doublesTeamRepository = doublesTeamRepository;
         this.dbFactory = dbFactory;
     }
@@ -397,10 +394,9 @@ public class ScoresService : IScoresService
 
         if (currentGame == null)
         {
-            int? mostRecentAdjAvg = playerHistoryRepository.GetMostRecentAverage(currentMem.Number);
-            player.Game.Handicap = mostRecentAdjAvg != null
-                ? TournamentCalculations.CalculateHandicapPins(mostRecentAdjAvg.Value)
-                : currentMem.Handicap;
+            // A new entry is scored with the Member record's current handicap, which the
+            // member form keeps in step with the average the director last saved.
+            player.Game.Handicap = currentMem.Handicap;
             player.Game.Bonus = currentMem.Bonus;
         }
         else
