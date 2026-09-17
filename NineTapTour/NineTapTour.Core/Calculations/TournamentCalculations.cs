@@ -80,6 +80,18 @@ public static class TournamentCalculations
     }
 
     /// <summary>
+    /// Returns the bonus pins a tournament entry is scored with.
+    /// While the tournament is open the Member record's current bonus is used, so a bonus
+    /// the director corrects on the member form takes effect straight away. Once the
+    /// tournament is finalized the snapshot written to the game is authoritative, because
+    /// Member.Bonus has already been advanced to the post-tournament value by then.
+    /// </summary>
+    public static int ResolveEntryBonus(int memberBonus, int? gameBonus, bool isFinalized)
+    {
+        return isFinalized ? gameBonus ?? 0 : memberBonus;
+    }
+
+    /// <summary>
     /// Returns the adjusted bonus pins after a tournament depending on if a bowler placed
     /// and what ranking a bowler placed.
     /// </summary>

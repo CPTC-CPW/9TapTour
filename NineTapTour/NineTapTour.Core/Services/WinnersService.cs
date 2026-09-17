@@ -41,8 +41,9 @@ public class WinnersService : IWinnersService
     {
         List<WinnerListMemberViewModel> bowlers = tournamentRepository.GetWinnerListMemberData(request.TournamentId);
 
-        // Handicap and bonus are read from the Member record (MemberHandicap / MemberBonus),
-        // not from game history, so edits on the member form apply to an open tournament.
+        // Handicap and bonus are read from the Member record (MemberHandicap / MemberBonus)
+        // while the tournament is open, so edits on the member form apply to it, and from
+        // the game snapshots once it is finalized.
         if (request.Doubles)
         {
             List<DoublesTeam> teams = doublesTeamRepository.GetTeamsByTournament(request.TournamentId);
@@ -78,7 +79,7 @@ public class WinnersService : IWinnersService
                 MemberNumber = b.MemberNumber,
                 Name = b.BowlerName,
                 Handicap = ResolveHandicap(b, isFinalized),
-                Bonus = b.MemberBonus,
+                Bonus = ResolveBonus(b, isFinalized),
                 MoneyWon = b.MoneyWon,
                 SidePot = b.SidePot,
                 GameId = b.GameId,
@@ -164,8 +165,8 @@ public class WinnersService : IWinnersService
 
             int hdcp1  = ResolveHandicap(m1, isFinalized);
             int hdcp2  = ResolveHandicap(m2, isFinalized);
-            int bonus1 = m1.MemberBonus;
-            int bonus2 = m2.MemberBonus;
+            int bonus1 = ResolveBonus(m1, isFinalized);
+            int bonus2 = ResolveBonus(m2, isFinalized);
 
             int combinedHdcpTotal = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
                                   + (m2.Game1 ?? 0) + (m2.Game2 ?? 0)
@@ -242,6 +243,14 @@ public class WinnersService : IWinnersService
     private static int ResolveHandicap(WinnerListMemberViewModel b, bool isFinalized) =>
         TournamentCalculations.ResolveEntryHandicap(b.MemberHandicap, b.Handicap, b.AdjustedAvg, isFinalized);
 
+    /// <summary>
+    /// The carry-in bonus an entry is scored with: the Member record's current bonus while
+    /// the tournament is open, or the game's own snapshot once finalized (Member.Bonus has
+    /// been advanced to the post-tournament value by then).
+    /// </summary>
+    private static int ResolveBonus(WinnerListMemberViewModel b, bool isFinalized) =>
+        TournamentCalculations.ResolveEntryBonus(b.MemberBonus, b.Bonus, isFinalized);
+
     public TwoDayAutoFillResult AutoFillTwoDayMember(int memberNumber, int tournamentId)
     {
         Member member = memberRepository.GetMember(memberNumber);
@@ -250,8 +259,6 @@ public class WinnersService : IWinnersService
             return new TwoDayAutoFillResult(TwoDayAutoFillStatus.MemberNotFound, "", "", 0, 0, 0);
         }
 
-        // Bonus always comes from the Member record.
-        int bonus = member.Bonus;
         bool isFinalized = tournamentRepository.GetTourneyByID(tournamentId)?.IsTournamentFinalized ?? false;
 
         // Get the highest-scoring game entry for this member in this tournament (all squads).
@@ -274,9 +281,10 @@ public class WinnersService : IWinnersService
             return new TwoDayAutoFillResult(TwoDayAutoFillStatus.GameNotFound, "", "", 0, 0, 0);
         }
 
-        // The Member record's current handicap while the tournament is open, so an average
-        // edited on the member form applies here; the game's own snapshot once finalized.
-        int hdcp = TournamentCalculations.ResolveEntryHandicap(member.Handicap, game.Handicap, game.AdjustedAvg, isFinalized);
+        // The Member record's current handicap and bonus while the tournament is open, so
+        // edits on the member form apply here; the game's own snapshots once finalized.
+        int hdcp  = TournamentCalculations.ResolveEntryHandicap(member.Handicap, game.Handicap, game.AdjustedAvg, isFinalized);
+        int bonus = TournamentCalculations.ResolveEntryBonus(member.Bonus, game.Bonus, isFinalized);
         int totalScore = game.ScratchTotal + (game.GamesPlayed * (hdcp + bonus));
 
         return new TwoDayAutoFillResult(

@@ -364,7 +364,7 @@ public partial class FrmFinalizeTournament : Form
     /// advanced to the post-tournament value.
     /// </summary>
     private int ResolveCarryInBonus(WinnerListMemberViewModel entry) =>
-        _isFinalized ? Convert.ToInt32(entry.Bonus) : entry.MemberBonus;
+        CalcService.ResolveEntryBonus(entry.MemberBonus, entry.Bonus, _isFinalized);
 
     /// <summary>
     /// The handicap an entry is scored with. While the tournament is open this is the

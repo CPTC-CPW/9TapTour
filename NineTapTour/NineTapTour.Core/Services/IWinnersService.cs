@@ -20,9 +20,9 @@ public interface IWinnersService
 
     /// <summary>
     /// Looks up a member and their best game entry in the given tournament across all
-    /// squads for 2-day grid auto-fill. Handicap is the Member record's current handicap
-    /// while the tournament is open (the game's own snapshot once finalized); bonus
-    /// always comes from the Member record.
+    /// squads for 2-day grid auto-fill. Handicap and bonus are the Member record's
+    /// current values while the tournament is open, and the game's own snapshots once
+    /// it is finalized.
     /// </summary>
     TwoDayAutoFillResult AutoFillTwoDayMember(int memberNumber, int tournamentId);
 
