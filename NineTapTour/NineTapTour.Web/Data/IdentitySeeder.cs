@@ -1,22 +1,24 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using NineTapTour.Web.Infrastructure;
 using NineTapTour.Web.Startup;
 
 namespace NineTapTour.Web.Data;
 
 /// <summary>
-/// Ensures the Admin role exists and, when the user table is empty, creates the
-/// first admin from configuration. A missing password is logged, not fatal, so
-/// a misconfigured deployment still starts and shows a hint on the login page.
+/// Ensures the Admin role exists and, when no users exist at all, creates a
+/// first admin. The default account is only created by Debug builds so a fresh
+/// local database is usable without any setup; Release builds log an error and
+/// the login page shows a hint instead.
 /// </summary>
 public sealed class IdentitySeeder(
     UserManager<ApplicationUser> userManager,
     RoleManager<IdentityRole> roleManager,
-    IOptions<IdentitySeedOptions> options,
     ILogger<IdentitySeeder> logger)
 {
+    public const string DefaultAdminUserName = "admin";
+
+    public const string DefaultAdminPassword = "Admin12345!";
+
     public async Task SeedAsync()
     {
         if (!await roleManager.RoleExistsAsync(WebServiceConfiguration.AdminRole))
@@ -29,22 +31,19 @@ public sealed class IdentitySeeder(
             return;
         }
 
-        IdentitySeedOptions seed = options.Value;
-        if (string.IsNullOrWhiteSpace(seed.Password))
-        {
-            logger.LogError("No users exist and Identity:Admin:Password is not configured; nobody can log in until it is set.");
-            return;
-        }
-
-        ApplicationUser admin = new() { UserName = seed.UserName, Email = null, EmailConfirmed = true };
-        IdentityResult created = await userManager.CreateAsync(admin, seed.Password);
+#if DEBUG
+        ApplicationUser admin = new() { UserName = DefaultAdminUserName, Email = null, EmailConfirmed = true };
+        IdentityResult created = await userManager.CreateAsync(admin, DefaultAdminPassword);
         if (!created.Succeeded)
         {
-            logger.LogError("Could not create the seed admin user: {Errors}", string.Join("; ", created.Errors.Select(e => e.Description)));
+            logger.LogError("Could not create the default admin user: {Errors}", string.Join("; ", created.Errors.Select(e => e.Description)));
             return;
         }
 
         await userManager.AddToRoleAsync(admin, WebServiceConfiguration.AdminRole);
-        logger.LogInformation("Seeded admin user '{UserName}'.", seed.UserName);
+        logger.LogInformation("No users existed; created default admin user '{UserName}' (Debug build only).", DefaultAdminUserName);
+#else
+        logger.LogError("No users exist; nobody can log in until an admin account is created in the database.");
+#endif
     }
 }

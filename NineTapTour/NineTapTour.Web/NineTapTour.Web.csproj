@@ -23,12 +23,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Single source of truth for the Excel template shared with the desktop app. -->
-    <Content Include="..\NineTapTour\Resources\SeriesReportTemplate.xlsx" Link="Resources\SeriesReportTemplate.xlsx" CopyToOutputDirectory="PreserveNewest" />
+    <InternalsVisibleTo Include="NineTapTour.Web.Tests" />
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="NineTapTour.Web.Tests" />
+    <Content Update="wwwroot\Files\SeriesReportTemplate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

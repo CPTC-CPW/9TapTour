@@ -48,7 +48,6 @@ public static class WebTestHost
         Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.UseSetting("ConnectionStrings:NineTapDb", connectionString);
-            builder.UseSetting("Identity:Admin:Password", "Test-Pass-1");
             builder.ConfigureLogging(logging => logging.SetMinimumLevel(LogLevel.Warning));
             builder.ConfigureTestServices(services =>
             {

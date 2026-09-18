@@ -81,8 +81,6 @@ public static class WebServiceConfiguration
         services.AddAuthorizationBuilder()
             .AddPolicy(AdminOnlyPolicy, policy => policy.RequireRole(AdminRole));
 
-        services.Configure<IdentitySeedOptions>(configuration.GetSection(IdentitySeedOptions.SectionName));
-
         services.AddScoped<FlashMessageService>();
         services.AddScoped<ExcelDownload>();
 

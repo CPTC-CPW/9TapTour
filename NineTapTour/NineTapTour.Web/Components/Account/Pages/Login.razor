@@ -26,7 +26,7 @@
             @if (noUsersConfigured)
             {
                 <div class="alert alert-warning" role="alert">
-                    No users exist yet. Set <code>Identity:Admin:Password</code> in configuration and restart the site to create the first admin.
+                    No users exist yet. Debug builds create a default admin on startup; otherwise an admin account must be added to the database before anyone can log in.
                 </div>
             }
             <EditForm EditContext="editContext" method="post" OnSubmit="LoginUser" FormName="login">
