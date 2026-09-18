@@ -159,20 +159,4 @@ public class PlayerHistoryRepository : IPlayerHistoryRepository
                 .Sum() ?? 0;
         }
     }
-
-    public int? GetMostRecentAverage(int memberNum)
-    {
-        using var db = dbFactory.CreateDbContext();
-        var game = db.Games
-            .Include(g => g.Participant)
-                .ThenInclude(p => p.Member)
-            .Include(g => g.Participant.Tournament)
-            .Where(g => g.Participant.Member.Number == memberNum
-                     && g.IsFinalized
-                     && g.AdjustedAvg > 0) // Only games where AVG was adjusted
-            .OrderByDescending(g => g.Participant.Tournament.Date)
-            .ThenByDescending(g => g.Id)
-            .FirstOrDefault();
-        return game?.AdjustedAvg ?? null;
-    }
 }

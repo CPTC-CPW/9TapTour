@@ -12,25 +12,17 @@ namespace NineTapTour.Core.Services;
 public interface IWinnersService
 {
     /// <summary>
-    /// Builds the full winners list for a tournament (singles or doubles), applying
-    /// each member's carry-forward handicap from their most recent finalized prior
-    /// tournament and computing handicap total scores.
+    /// Builds the full winners list for a tournament (singles or doubles), scoring each
+    /// entry with the Member record's current handicap while the tournament is open
+    /// (the game's own snapshot once finalized) and computing handicap total scores.
     /// </summary>
     WinnersListResult BuildWinnersList(WinnersListRequest request);
 
     /// <summary>
-    /// Batch-queries the most recent finalized tournament prior to
-    /// <paramref name="excludeTournamentId"/> for each member and returns the handicap
-    /// computed from that entry's AdjustedAvg. Members with no qualifying prior entry
-    /// are absent from the result.
-    /// </summary>
-    Dictionary<int, int> BuildPrevHdcpByMember(HashSet<int> memberNumbers, int excludeTournamentId);
-
-    /// <summary>
     /// Looks up a member and their best game entry in the given tournament across all
-    /// squads for 2-day grid auto-fill. Handicap is derived from the member's most
-    /// recent finalized previous tournament (falling back to the Member record);
-    /// bonus always comes from the Member record.
+    /// squads for 2-day grid auto-fill. Handicap and bonus are the Member record's
+    /// current values while the tournament is open, and the game's own snapshots once
+    /// it is finalized.
     /// </summary>
     TwoDayAutoFillResult AutoFillTwoDayMember(int memberNumber, int tournamentId);
 

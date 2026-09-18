@@ -16,14 +16,16 @@ namespace NineTapTourTests.Services
     [TestClass]
     public class ScoresServiceLeaderboardTests
     {
+        // Entries are scored with the Member record's handicap/bonus while the tournament is
+        // open and with the game snapshots once finalized (issue #1291).
         // Ann: 4 games 150/200/180/170, member handicap 10, member bonus 2, game handicap 12, game bonus 3
-        //   ScratchTotal = 700, Top3 = 200+180+170 = 550
-        //   Top3Handi = 550 + 3*10 + 3*3 = 589
-        //   HandicapScore = 700 + 4*12 + 4*3 = 760, HighScore = 200
+        //   ScratchTotal = 700, Top3 = 200+180+170 = 550, HighScore = 200
+        //   open:      Top3Handi = 550 + 3*10 + 3*2 = 586, HandicapScore = 700 + 4*10 + 4*2 = 748
+        //   finalized: Top3Handi = 550 + 3*12 + 3*3 = 595, HandicapScore = 700 + 4*12 + 4*3 = 760
         // Bob: 2 games 210/-/190/-, member handicap 20, member bonus 0, game handicap 25, game bonus 5
-        //   ScratchTotal = 400, Top3 = 210+190 = 400
-        //   Top3Handi = 400 + 2*20 + 2*5 = 450
-        //   HandicapScore = 400 + 2*25 + 2*5 = 460, HighScore = 210
+        //   ScratchTotal = 400, Top3 = 210+190 = 400, HighScore = 210
+        //   open:      Top3Handi = 400 + 2*20 + 2*0 = 440, HandicapScore = 400 + 2*20 + 2*0 = 440
+        //   finalized: Top3Handi = 400 + 2*25 + 2*5 = 460, HandicapScore = 400 + 2*25 + 2*5 = 460
         private static List<Participant> MakeParticipants()
         {
             return
@@ -46,7 +48,7 @@ namespace NineTapTourTests.Services
         [TestMethod]
         public void BuildLeaderboards_ThreeOutOf4HighSeriesScratch_OrdersByTop3ScratchAndDropsLowestGame()
         {
-            LeaderboardResult result = ScoresService.BuildLeaderboards(MakeParticipants(), true, ReportType.HighSeriesScratch);
+            LeaderboardResult result = ScoresService.BuildLeaderboards(MakeParticipants(), true, ReportType.HighSeriesScratch, isFinalized: false);
 
             Assert.HasCount(2, result.Top3Scores);
             Assert.AreEqual(101, result.Top3Scores[0].MemberNo);
@@ -59,7 +61,7 @@ namespace NineTapTourTests.Services
         [TestMethod]
         public void BuildLeaderboards_RegularHighSeriesScratch_OrdersByFullScratchTotal()
         {
-            LeaderboardResult result = ScoresService.BuildLeaderboards(MakeParticipants(), false, ReportType.HighSeriesScratch);
+            LeaderboardResult result = ScoresService.BuildLeaderboards(MakeParticipants(), false, ReportType.HighSeriesScratch, isFinalized: false);
 
             Assert.AreEqual(101, result.Top3Scores[0].MemberNo);
             Assert.AreEqual(700, result.Top3Scores[0].ScratchTotal);
@@ -68,32 +70,36 @@ namespace NineTapTourTests.Services
             Assert.IsFalse(result.Top3Scores[0].ThreeOutOf4);
         }
 
-        [TestMethod]
-        public void BuildLeaderboards_ThreeOutOf4HighSeriesHandicap_OrdersByTop3HandicapTotal()
+        [DataTestMethod]
+        [DataRow(false, 586, 440)]  // open: Member record's current handicap and bonus
+        [DataRow(true, 595, 460)]   // finalized: game snapshots
+        public void BuildLeaderboards_ThreeOutOf4HighSeriesHandicap_OrdersByTop3HandicapTotal(bool isFinalized, int annTop3, int bobTop3)
         {
-            LeaderboardResult result = ScoresService.BuildLeaderboards(MakeParticipants(), true, ReportType.HighSeriesHandicap);
+            LeaderboardResult result = ScoresService.BuildLeaderboards(MakeParticipants(), true, ReportType.HighSeriesHandicap, isFinalized);
 
             Assert.AreEqual(101, result.Top3Scores[0].MemberNo);
-            Assert.AreEqual(589, result.Top3Scores[0].Top3HandiScores);
+            Assert.AreEqual(annTop3, result.Top3Scores[0].Top3HandiScores);
             Assert.AreEqual(102, result.Top3Scores[1].MemberNo);
-            Assert.AreEqual(450, result.Top3Scores[1].Top3HandiScores);
+            Assert.AreEqual(bobTop3, result.Top3Scores[1].Top3HandiScores);
         }
 
-        [TestMethod]
-        public void BuildLeaderboards_RegularHighSeriesHandicap_OrdersByGameHandicapTotal()
+        [DataTestMethod]
+        [DataRow(false, 748, 440)]  // open: Member record's current handicap and bonus
+        [DataRow(true, 760, 460)]   // finalized: game snapshots
+        public void BuildLeaderboards_RegularHighSeriesHandicap_OrdersByHandicapTotal(bool isFinalized, int annTotal, int bobTotal)
         {
-            LeaderboardResult result = ScoresService.BuildLeaderboards(MakeParticipants(), false, ReportType.HighSeriesHandicap);
+            LeaderboardResult result = ScoresService.BuildLeaderboards(MakeParticipants(), false, ReportType.HighSeriesHandicap, isFinalized);
 
             Assert.AreEqual(101, result.Top3Scores[0].MemberNo);
-            Assert.AreEqual(760, result.Top3Scores[0].HandicapScore);
+            Assert.AreEqual(annTotal, result.Top3Scores[0].HandicapScore);
             Assert.AreEqual(102, result.Top3Scores[1].MemberNo);
-            Assert.AreEqual(460, result.Top3Scores[1].HandicapScore);
+            Assert.AreEqual(bobTotal, result.Top3Scores[1].HandicapScore);
         }
 
         [TestMethod]
         public void BuildLeaderboards_HighGame_OrdersByHighestScratchGame()
         {
-            LeaderboardResult result = ScoresService.BuildLeaderboards(MakeParticipants(), false, ReportType.HighGame);
+            LeaderboardResult result = ScoresService.BuildLeaderboards(MakeParticipants(), false, ReportType.HighGame, isFinalized: false);
 
             Assert.HasCount(2, result.ParticipantsGameScores);
             Assert.AreEqual(102, result.ParticipantsGameScores[0].MemberNo);
@@ -102,14 +108,17 @@ namespace NineTapTourTests.Services
             Assert.AreEqual(200, result.ParticipantsGameScores[1].HighScore);
         }
 
-        [TestMethod]
-        public void BuildLeaderboards_HighGameHandicap_OrdersByHighGamePlusMemberHandicapAndBonus()
+        [DataTestMethod]
+        [DataRow(false, 10, 2)]  // open: Ann 200 + 10 + 2 = 212, Bob 210 + 20 + 0 = 230
+        [DataRow(true, 12, 3)]   // finalized: Ann 200 + 12 + 3 = 215, Bob 210 + 25 + 5 = 240
+        public void BuildLeaderboards_HighGameHandicap_OrdersByHighGamePlusHandicapAndBonus(bool isFinalized, int annHandicap, int annBonus)
         {
-            // Ann: 200 + 10 + 2 = 212, Bob: 210 + 20 + 0 = 230
-            LeaderboardResult result = ScoresService.BuildLeaderboards(MakeParticipants(), false, ReportType.HighGameHandicapGameSenior);
+            LeaderboardResult result = ScoresService.BuildLeaderboards(MakeParticipants(), false, ReportType.HighGameHandicapGameSenior, isFinalized);
 
             Assert.AreEqual(102, result.ParticipantsGameScores[0].MemberNo);
             Assert.AreEqual(101, result.ParticipantsGameScores[1].MemberNo);
+            Assert.AreEqual(annHandicap, result.ParticipantsGameScores[1].Handicap);
+            Assert.AreEqual(annBonus, result.ParticipantsGameScores[1].Bonus);
         }
 
         [TestMethod]

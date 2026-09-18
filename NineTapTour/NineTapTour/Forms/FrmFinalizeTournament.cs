@@ -61,13 +61,6 @@ public partial class FrmFinalizeTournament : Form
     // entries in prior tournaments. Combined with live grid values in UpdateAll30AvgForMember.
     private readonly Dictionary<int, (int Scratch, int Games)> _history30ByMember = [];
 
-    // Per member: handicap derived from the member's most recent finalized tournament
-    // (excluding the current tournament). Used as the source for colHdcp, overriding the
-    // potentially-stale per-entry Game.Handicap snapshot. The bonus half of the tuple is
-    // not used for the grid — carry-in bonus comes from Member.Bonus, matching
-    // WinnersService so the finalize grid and FrmTournamentResults agree.
-    private readonly Dictionary<int, (int Hdcp, int Bonus)> _prevTournHBByMember = [];
-
     // Inputs the New Bonus preview needs beyond the live Bonus and Earnings cells.
     // Whether a doubles team cashed is not stored here: it depends on the Earnings
     // cells of both partners, so UpdateNewBonusPreview resolves it live.
@@ -371,7 +364,17 @@ public partial class FrmFinalizeTournament : Form
     /// advanced to the post-tournament value.
     /// </summary>
     private int ResolveCarryInBonus(WinnerListMemberViewModel entry) =>
-        _isFinalized ? Convert.ToInt32(entry.Bonus) : entry.MemberBonus;
+        CalcService.ResolveEntryBonus(entry.MemberBonus, entry.Bonus, _isFinalized);
+
+    /// <summary>
+    /// The handicap an entry is scored with. While the tournament is open this is the
+    /// Member record's current handicap, which the member form keeps in step with the
+    /// average, so a director's average edit applies to this tournament. Once finalized,
+    /// the Game.Handicap snapshot written at finalization is authoritative.
+    /// </summary>
+    private int ResolveCarryInHandicap(WinnerListMemberViewModel entry) =>
+        finalizeCalculationService.ResolveDisplayHandicap(
+            entry.MemberHandicap, Convert.ToInt32(entry.Handicap), entry.AdjustedAvg, _isFinalized);
 
     private void LoadTournamentGrid()
     {
@@ -387,43 +390,9 @@ public partial class FrmFinalizeTournament : Form
             return;
         }
 
-        // Pre-compute member numbers and previous-tournament H/B BEFORE BuildExcelMemberList
-        // so that place standings (and therefore isCashing) are based on the correct H/B.
+        // Member numbers in this tournament, used by the historical look-ups below.
         var memberNumbersInTournament = _currentTournamentBowlers
             .Select(b => b.MemberNumber).Distinct().ToHashSet();
-
-        _prevTournHBByMember.Clear();
-        using (var dbPrev = dbFactory.CreateDbContext())
-        {
-            var latestApprovedEntries = dbPrev.Participants
-                .Where(p => memberNumbersInTournament.Contains(p.Member.Number)
-                         && p.Tournament.Id != selectedTournament.Id
-                         && p.Game.IsFinalized
-                         && p.Game.AdjustedAvg > 0)
-                .GroupBy(p => p.Member.Number)
-                .Select(g => new
-                {
-                    MemberNumber = g.Key,
-                    LatestDate = g.Max(p => p.Tournament.Date)
-                })
-                .ToList();
-
-            foreach (var item in latestApprovedEntries)
-            {
-                List<PreviousEntrySnapshot> prevEntries = dbPrev.Participants
-                    .Where(p => p.Member.Number == item.MemberNumber
-                             && p.Tournament.Id != selectedTournament.Id
-                             && p.Game.IsFinalized
-                             && p.Tournament.Date == item.LatestDate)
-                    .Select(p => new PreviousEntrySnapshot(p.Game.AdjustedAvg, p.Game.Bonus ?? 0, p.Game.MoneyWon ?? 0))
-                    .ToList();
-
-                if (prevEntries.Count == 0) continue;
-
-                _prevTournHBByMember[item.MemberNumber] =
-                    finalizeCalculationService.ComputePreviousHandicapAndBonus(prevEntries);
-            }
-        }
 
         List<ExcelMember> members = BuildExcelMemberList(_currentTournamentBowlers);
 
@@ -602,9 +571,7 @@ public partial class FrmFinalizeTournament : Form
                 memberPlacing, histCount, currCount, orig.SidePot.HasValue ? (int)orig.SidePot.Value : 0,
                 IsDoubles: false);
 
-            bool hasPrevHB = _prevTournHBByMember.TryGetValue(m.MemberNumber, out var prevHB);
-            int displayHdcp = finalizeCalculationService.ResolveDisplayHandicap(
-                hasPrevHB ? prevHB.Hdcp : null, m.Handicap, orig.AdjustedAvg);
+            int displayHdcp = ResolveCarryInHandicap(orig);
 
             // colHdcpTotal uses the carry-in bonus so it matches FrmTournamentResults.
             // colNewBonus shows the deducted/bumped value the member carries out.
@@ -680,38 +647,9 @@ public partial class FrmFinalizeTournament : Form
     /// </summary>
     private void LoadTournamentGridDoubles()
     {
-        // --- Build prevTournHBByMember for all members in this tournament ---
+        // --- Member numbers in this tournament, used by the historical look-ups below ---
         var memberNumbersInTournament = _currentTournamentBowlers
             .Select(b => b.MemberNumber).Distinct().ToHashSet();
-
-        _prevTournHBByMember.Clear();
-        using (var dbPrev = dbFactory.CreateDbContext())
-        {
-            var latestApproved = dbPrev.Participants
-                .Where(p => memberNumbersInTournament.Contains(p.Member.Number)
-                         && p.Tournament.Id != selectedTournament.Id
-                         && p.Game.IsFinalized
-                         && p.Game.AdjustedAvg > 0)
-                .GroupBy(p => p.Member.Number)
-                .Select(g => new { MemberNumber = g.Key, LatestDate = g.Max(p => p.Tournament.Date) })
-                .ToList();
-
-            foreach (var item in latestApproved)
-            {
-                List<PreviousEntrySnapshot> prevEntries = dbPrev.Participants
-                    .Where(p => p.Member.Number == item.MemberNumber
-                             && p.Tournament.Id != selectedTournament.Id
-                             && p.Game.IsFinalized
-                             && p.Tournament.Date == item.LatestDate)
-                    .Select(p => new PreviousEntrySnapshot(p.Game.AdjustedAvg, p.Game.Bonus ?? 0, p.Game.MoneyWon ?? 0))
-                    .ToList();
-
-                if (prevEntries.Count == 0) continue;
-
-                _prevTournHBByMember[item.MemberNumber] =
-                    finalizeCalculationService.ComputePreviousHandicapAndBonus(prevEntries);
-            }
-        }
 
         // --- Precompute 30-entry history for each member ---
         _history30ByMember.Clear();
@@ -766,11 +704,8 @@ public partial class FrmFinalizeTournament : Form
             var m2 = entries2.FirstOrDefault(e => e.Squad == team.Squad);
             if (m1 == null || m2 == null) continue;
 
-            bool has1 = _prevTournHBByMember.TryGetValue(m1.MemberNumber, out var hb1);
-            bool has2 = _prevTournHBByMember.TryGetValue(m2.MemberNumber, out var hb2);
-
-            int hdcp1     = has1 && hb1.Hdcp > 0 ? hb1.Hdcp : Convert.ToInt32(m1.Handicap);
-            int hdcp2     = has2 && hb2.Hdcp > 0 ? hb2.Hdcp : Convert.ToInt32(m2.Handicap);
+            int hdcp1     = ResolveCarryInHandicap(m1);
+            int hdcp2     = ResolveCarryInHandicap(m2);
             int baseBonus1 = ResolveCarryInBonus(m1);
             int baseBonus2 = ResolveCarryInBonus(m2);
 
@@ -909,12 +844,11 @@ public partial class FrmFinalizeTournament : Form
         List<ExcelMember> members = [];
         foreach (var b in bowlers)
         {
-            bool hasPrevHBbem = _prevTournHBByMember.TryGetValue(b.MemberNumber, out var prevHBbem);
             ExcelMember m = new()
             {
                 MemberNumber = b.MemberNumber,
                 Name         = b.BowlerName,
-                Handicap     = hasPrevHBbem && prevHBbem.Hdcp > 0 ? prevHBbem.Hdcp : Convert.ToInt32(b.Handicap),
+                Handicap     = ResolveCarryInHandicap(b),
                 // Same carry-in bonus the grid shows, so place standings computed here
                 // agree with the ones FrmTournamentResults produced
                 Bonus        = ResolveCarryInBonus(b),

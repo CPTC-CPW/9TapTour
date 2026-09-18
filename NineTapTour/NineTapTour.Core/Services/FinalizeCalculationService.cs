@@ -143,16 +143,6 @@ public class FinalizeCalculationService : IFinalizeCalculationService
         return new UseGameFlags(g1Checked, g2Checked, g3Checked, g4Checked);
     }
 
-    public (int Hdcp, int Bonus) ComputePreviousHandicapAndBonus(IReadOnlyList<PreviousEntrySnapshot> previousEntries)
-    {
-        PreviousEntrySnapshot withAvg = previousEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
-        int prevHdcp  = withAvg != null ? TournamentCalculations.CalculateHandicapPins(withAvg.AdjustedAvg) : 0;
-        int prevBonus = previousEntries.Any(e => e.MoneyWon > 0)
-            ? previousEntries.Min(e => e.Bonus)
-            : previousEntries.Max(e => e.Bonus);
-        return (prevHdcp, prevBonus);
-    }
-
     public BonusPreviewResult ComputeBonusPreview(int baseBonus, int memberPlacing, int cashLine, bool isTwoDay,
         int historicalEntryCount, int currentEntryCount, decimal memberMoneyWon)
     {
@@ -185,11 +175,9 @@ public class FinalizeCalculationService : IFinalizeCalculationService
         return new BonusPreviewResult(displayBonus, isCashing, awardedThirdEntryBonus);
     }
 
-    public int ResolveDisplayHandicap(int? previousHandicap, int storedHandicap, int adjustedAvg)
+    public int ResolveDisplayHandicap(int? memberHandicap, int storedHandicap, int adjustedAvg, bool isFinalized)
     {
-        if (previousHandicap is > 0) return previousHandicap.Value;
-        if (storedHandicap > 0) return storedHandicap;
-        return adjustedAvg > 0 ? TournamentCalculations.CalculateHandicapPins(adjustedAvg) : 0;
+        return TournamentCalculations.ResolveEntryHandicap(memberHandicap, storedHandicap, adjustedAvg, isFinalized);
     }
 
     public int ComputeEntryTotalScore(int? game1, int? game2, int? game3, int? game4, int handicap, int bonus, bool threeOutOf4)

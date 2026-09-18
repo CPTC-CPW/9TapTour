@@ -41,29 +41,27 @@ public class WinnersService : IWinnersService
     {
         List<WinnerListMemberViewModel> bowlers = tournamentRepository.GetWinnerListMemberData(request.TournamentId);
 
-        // Batch-query each member's handicap from their most recent finalized prior tournament.
-        // Bonus is read directly from the Member record via MemberBonus (not game history).
-        var memberNumbers = bowlers.Select(b => b.MemberNumber).Distinct().ToHashSet();
-        var prevHdcpByMember = BuildPrevHdcpByMember(memberNumbers, request.TournamentId);
-
+        // Handicap and bonus are read from the Member record (MemberHandicap / MemberBonus)
+        // while the tournament is open, so edits on the member form apply to it, and from
+        // the game snapshots once it is finalized.
         if (request.Doubles)
         {
             List<DoublesTeam> teams = doublesTeamRepository.GetTeamsByTournament(request.TournamentId);
-            return ComputeDoublesWinnersRows(bowlers, teams, prevHdcpByMember);
+            return ComputeDoublesWinnersRows(bowlers, teams, request.IsFinalized);
         }
 
-        return ComputeWinnersRows(bowlers, prevHdcpByMember, request.ThreeOutOf4);
+        return ComputeWinnersRows(bowlers, request.IsFinalized, request.ThreeOutOf4);
     }
 
     /// <summary>
     /// Pure computation of the singles winners list from pre-fetched bowler data:
-    /// resolves each member's handicap (previous-tournament value when positive,
-    /// otherwise the stored game handicap) and computes the handicap total score.
-    /// For 3-of-4 tournaments the lowest of four games is dropped (zeroed).
+    /// resolves each member's handicap (the Member record's current handicap while the
+    /// tournament is open, otherwise the stored game handicap) and computes the handicap
+    /// total score. For 3-of-4 tournaments the lowest of four games is dropped (zeroed).
     /// </summary>
     public static WinnersListResult ComputeWinnersRows(
         List<WinnerListMemberViewModel> bowlers,
-        IReadOnlyDictionary<int, int> prevHdcpByMember,
+        bool isFinalized,
         bool threeOutOf4)
     {
         List<ExcelMember> tournyBowlers = [];
@@ -80,10 +78,8 @@ public class WinnersService : IWinnersService
             {
                 MemberNumber = b.MemberNumber,
                 Name = b.BowlerName,
-                Handicap = prevHdcpByMember.TryGetValue(b.MemberNumber, out int prevHdcp) && prevHdcp > 0
-                    ? prevHdcp
-                    : Convert.ToInt32(b.Handicap),
-                Bonus = b.MemberBonus,
+                Handicap = ResolveHandicap(b, isFinalized),
+                Bonus = ResolveBonus(b, isFinalized),
                 MoneyWon = b.MoneyWon,
                 SidePot = b.SidePot,
                 GameId = b.GameId,
@@ -149,7 +145,7 @@ public class WinnersService : IWinnersService
     public static WinnersListResult ComputeDoublesWinnersRows(
         List<WinnerListMemberViewModel> bowlers,
         List<DoublesTeam> teams,
-        IReadOnlyDictionary<int, int> prevHdcpByMember)
+        bool isFinalized)
     {
         int compEntries = 0;
         var bowlersByMemberId = bowlers.GroupBy(b => b.MemberId).ToDictionary(g => g.Key, g => g.ToList());
@@ -167,10 +163,10 @@ public class WinnersService : IWinnersService
             var m2 = e2.FirstOrDefault(e => e.Squad == team.Squad);
             if (m1 == null || m2 == null) continue;
 
-            int hdcp1  = prevHdcpByMember.TryGetValue(m1.MemberNumber, out int ph1) && ph1 > 0 ? ph1 : Convert.ToInt32(m1.Handicap);
-            int hdcp2  = prevHdcpByMember.TryGetValue(m2.MemberNumber, out int ph2) && ph2 > 0 ? ph2 : Convert.ToInt32(m2.Handicap);
-            int bonus1 = m1.MemberBonus;
-            int bonus2 = m2.MemberBonus;
+            int hdcp1  = ResolveHandicap(m1, isFinalized);
+            int hdcp2  = ResolveHandicap(m2, isFinalized);
+            int bonus1 = ResolveBonus(m1, isFinalized);
+            int bonus2 = ResolveBonus(m2, isFinalized);
 
             int combinedHdcpTotal = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
                                   + (m2.Game1 ?? 0) + (m2.Game2 ?? 0)
@@ -239,39 +235,21 @@ public class WinnersService : IWinnersService
         return new WinnersListResult(result, bowlers.Count, compEntries);
     }
 
-    public Dictionary<int, int> BuildPrevHdcpByMember(HashSet<int> memberNumbers, int excludeTournamentId)
-    {
-        var result = new Dictionary<int, int>();
-        if (memberNumbers.Count == 0) return result;
+    /// <summary>
+    /// The handicap an entry is scored with: the Member record's current handicap while
+    /// the tournament is open (so an average edited on the member form applies to this
+    /// tournament), or the game's own handicap snapshot once the tournament is finalized.
+    /// </summary>
+    private static int ResolveHandicap(WinnerListMemberViewModel b, bool isFinalized) =>
+        TournamentCalculations.ResolveEntryHandicap(b.MemberHandicap, b.Handicap, b.AdjustedAvg, isFinalized);
 
-        using var dbPrev = dbFactory.CreateDbContext();
-
-        var latestDates = dbPrev.Participants
-            .Where(p => memberNumbers.Contains(p.Member.Number)
-                     && p.Tournament.Id != excludeTournamentId
-                     && p.Game.IsFinalized
-                     && p.Game.AdjustedAvg > 0)
-            .GroupBy(p => p.Member.Number)
-            .Select(g => new { MemberNumber = g.Key, LatestDate = g.Max(p => p.Tournament.Date) })
-            .ToList();
-
-        foreach (var item in latestDates)
-        {
-            int? adjAvg = dbPrev.Participants
-                .Where(p => p.Member.Number == item.MemberNumber
-                         && p.Tournament.Id != excludeTournamentId
-                         && p.Game.IsFinalized
-                         && p.Tournament.Date == item.LatestDate
-                         && p.Game.AdjustedAvg > 0)
-                .Select(p => (int?)p.Game.AdjustedAvg)
-                .FirstOrDefault();
-
-            if (adjAvg.HasValue)
-                result[item.MemberNumber] = TournamentCalculations.CalculateHandicapPins(adjAvg.Value);
-        }
-
-        return result;
-    }
+    /// <summary>
+    /// The carry-in bonus an entry is scored with: the Member record's current bonus while
+    /// the tournament is open, or the game's own snapshot once finalized (Member.Bonus has
+    /// been advanced to the post-tournament value by then).
+    /// </summary>
+    private static int ResolveBonus(WinnerListMemberViewModel b, bool isFinalized) =>
+        TournamentCalculations.ResolveEntryBonus(b.MemberBonus, b.Bonus, isFinalized);
 
     public TwoDayAutoFillResult AutoFillTwoDayMember(int memberNumber, int tournamentId)
     {
@@ -281,13 +259,7 @@ public class WinnersService : IWinnersService
             return new TwoDayAutoFillResult(TwoDayAutoFillStatus.MemberNotFound, "", "", 0, 0, 0);
         }
 
-        // Bonus always comes from the Member record.
-        // Handicap comes from the most recent finalized prior tournament's AdjustedAvg (falls back to Member.Handicap).
-        int bonus = member.Bonus;
-        var prevHdcpByMember = BuildPrevHdcpByMember([memberNumber], tournamentId);
-        int hdcp = prevHdcpByMember.TryGetValue(memberNumber, out int prevHdcp)
-            ? prevHdcp
-            : (member.Handicap ?? 0);
+        bool isFinalized = tournamentRepository.GetTourneyByID(tournamentId)?.IsTournamentFinalized ?? false;
 
         // Get the highest-scoring game entry for this member in this tournament (all squads).
         // ScratchTotal is [NotMapped] so ordering must happen client-side after fetching candidates.
@@ -309,6 +281,10 @@ public class WinnersService : IWinnersService
             return new TwoDayAutoFillResult(TwoDayAutoFillStatus.GameNotFound, "", "", 0, 0, 0);
         }
 
+        // The Member record's current handicap and bonus while the tournament is open, so
+        // edits on the member form apply here; the game's own snapshots once finalized.
+        int hdcp  = TournamentCalculations.ResolveEntryHandicap(member.Handicap, game.Handicap, game.AdjustedAvg, isFinalized);
+        int bonus = TournamentCalculations.ResolveEntryBonus(member.Bonus, game.Bonus, isFinalized);
         int totalScore = game.ScratchTotal + (game.GamesPlayed * (hdcp + bonus));
 
         return new TwoDayAutoFillResult(

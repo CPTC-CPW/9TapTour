@@ -27,7 +27,6 @@ public class ScoresService : IScoresService
     private readonly IGameRepository gameRepository;
     private readonly ITournamentRepository tournamentRepository;
     private readonly IParticipantRepository participantRepository;
-    private readonly IPlayerHistoryRepository playerHistoryRepository;
     private readonly IDoublesTeamRepository doublesTeamRepository;
     private readonly IDbContextFactory<NineTapDb> dbFactory;
 
@@ -36,7 +35,6 @@ public class ScoresService : IScoresService
         IGameRepository gameRepository,
         ITournamentRepository tournamentRepository,
         IParticipantRepository participantRepository,
-        IPlayerHistoryRepository playerHistoryRepository,
         IDoublesTeamRepository doublesTeamRepository,
         IDbContextFactory<NineTapDb> dbFactory)
     {
@@ -44,7 +42,6 @@ public class ScoresService : IScoresService
         this.gameRepository = gameRepository;
         this.tournamentRepository = tournamentRepository;
         this.participantRepository = participantRepository;
-        this.playerHistoryRepository = playerHistoryRepository;
         this.doublesTeamRepository = doublesTeamRepository;
         this.dbFactory = dbFactory;
     }
@@ -54,7 +51,8 @@ public class ScoresService : IScoresService
     {
         List<Participant> listOfParticipants = participantRepository.GetParticipants(tournamentId);
         listOfParticipants = FilterParticipantsBySquad(listOfParticipants, qualifyBySquadNumber, filterSquads);
-        return BuildLeaderboards(listOfParticipants, isThreeOfFourTournament, reportType);
+        bool isFinalized = tournamentRepository.GetTourneyByID(tournamentId)?.IsTournamentFinalized ?? false;
+        return BuildLeaderboards(listOfParticipants, isThreeOfFourTournament, reportType, isFinalized);
     }
 
     /// <summary>
@@ -79,9 +77,11 @@ public class ScoresService : IScoresService
     /// Builds the leaderboard view models for the given participants and orders them
     /// according to the report type. High-game lists allow one top game per person per
     /// squad; series lists use full or top-3-of-4 totals depending on the ruleset.
+    /// Entries are scored with the Member record's current handicap and bonus while the
+    /// tournament is open, and with the game's own snapshots once it is finalized.
     /// </summary>
     public static LeaderboardResult BuildLeaderboards(List<Participant> listOfParticipants,
-        bool isThreeOfFourTournament, ReportType reportType)
+        bool isThreeOfFourTournament, ReportType reportType, bool isFinalized)
     {
         var participantsGameViewModels = new List<ParticipantsGameViewModel>();
         var topParticipantGameViewModels = new List<TopParticipantGameViewModel>();
@@ -90,6 +90,8 @@ public class ScoresService : IScoresService
         // listboxes which only allow 1 top game per person per squad
         foreach (Participant currParticipant in listOfParticipants)
         {
+            (int handicap, int bonus) = ResolveEntryHandicapAndBonus(currParticipant, isFinalized);
+
             // creates temp variable for PaticipantsGameViewModel to store necessary info for each person
             ParticipantsGameViewModel currTopScoreViewModel =
                 new(
@@ -98,8 +100,8 @@ public class ScoresService : IScoresService
                 /* LastName  */ currParticipant.Member.LastName,
                 /* Squad */ currParticipant.Squad,
                 /* HighScore */ currParticipant.Game.AllGameScores().Max(),
-                /* Handicap  */ currParticipant.Member.Handicap,
-                /* Bonus */ currParticipant.Member.Bonus
+                /* Handicap  */ handicap,
+                /* Bonus */ bonus
                 );
 
             // adds person to list<ParticipantsGameViewModel>
@@ -121,6 +123,7 @@ public class ScoresService : IScoresService
             var top3Games = GetTop3OutOf4([.. top4Games]);
 
             int numberOfGames = top4Games.Count;
+            (int handicap, int bonus) = ResolveEntryHandicapAndBonus(currParticipant, isFinalized);
 
             TopParticipantGameViewModel currTopScoreViewModel =
                 new(
@@ -131,14 +134,14 @@ public class ScoresService : IScoresService
                 /* ScratchTotal */ currParticipant.Game.AllGameScores().Sum().Value,
                 /* top3ScratchScore  */ top3Games.Sum(),
                 /* top3HandicapScore */ top3Games.Sum() +
-                                        (Math.Min(3, numberOfGames) * currParticipant.Member.Handicap) +
-                                        (Math.Min(3, numberOfGames) * currParticipant.Game.Bonus),
+                                        (Math.Min(3, numberOfGames) * handicap) +
+                                        (Math.Min(3, numberOfGames) * bonus),
                 /* Game1 */ currParticipant.Game.Game1,
                 /* Game2 */ currParticipant.Game.Game2,
                 /* Game3 */ currParticipant.Game.Game3,
                 /* Game4 */ currParticipant.Game.Game4,
-                /* Handicap */ currParticipant.Game.Handicap,
-                /* Bonus  */ currParticipant.Game.Bonus.Value,
+                /* Handicap */ handicap,
+                /* Bonus  */ bonus,
                 /* gameID */ currParticipant.Game.Id,
                 /* squad  */ currParticipant.Squad,
                 /* threeOutOf4 */ isThreeOfFourTournament
@@ -178,6 +181,15 @@ public class ScoresService : IScoresService
 
         return new LeaderboardResult(participantsGameViewModels, topParticipantGameViewModels);
     }
+
+    /// <summary>
+    /// The handicap and bonus an entry is scored with on the leaderboards: the Member
+    /// record's current values while the tournament is open, so average and bonus edits
+    /// on the member form show in the reports, and the game's own snapshots once finalized.
+    /// </summary>
+    private static (int Handicap, int Bonus) ResolveEntryHandicapAndBonus(Participant p, bool isFinalized) =>
+        (TournamentCalculations.ResolveEntryHandicap(p.Member.Handicap, p.Game.Handicap, p.Game.AdjustedAvg, isFinalized),
+         TournamentCalculations.ResolveEntryBonus(p.Member.Bonus, p.Game.Bonus, isFinalized));
 
     /// <summary>
     /// This method sorts scores and removes the lowest if 4 scores are present
@@ -397,10 +409,9 @@ public class ScoresService : IScoresService
 
         if (currentGame == null)
         {
-            int? mostRecentAdjAvg = playerHistoryRepository.GetMostRecentAverage(currentMem.Number);
-            player.Game.Handicap = mostRecentAdjAvg != null
-                ? TournamentCalculations.CalculateHandicapPins(mostRecentAdjAvg.Value)
-                : currentMem.Handicap;
+            // A new entry is scored with the Member record's current handicap, which the
+            // member form keeps in step with the average the director last saved.
+            player.Game.Handicap = currentMem.Handicap;
             player.Game.Bonus = currentMem.Bonus;
         }
         else
