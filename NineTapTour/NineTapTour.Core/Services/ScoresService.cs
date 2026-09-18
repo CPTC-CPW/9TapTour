@@ -29,6 +29,7 @@ public class ScoresService : IScoresService
     private readonly IParticipantRepository participantRepository;
     private readonly IPlayerHistoryRepository playerHistoryRepository;
     private readonly IDoublesTeamRepository doublesTeamRepository;
+    private readonly IFinalizeTempRepository finalizeTempRepository;
     private readonly IDbContextFactory<NineTapDb> dbFactory;
 
     public ScoresService(
@@ -38,6 +39,7 @@ public class ScoresService : IScoresService
         IParticipantRepository participantRepository,
         IPlayerHistoryRepository playerHistoryRepository,
         IDoublesTeamRepository doublesTeamRepository,
+        IFinalizeTempRepository finalizeTempRepository,
         IDbContextFactory<NineTapDb> dbFactory)
     {
         this.memberRepository = memberRepository;
@@ -46,7 +48,42 @@ public class ScoresService : IScoresService
         this.participantRepository = participantRepository;
         this.playerHistoryRepository = playerHistoryRepository;
         this.doublesTeamRepository = doublesTeamRepository;
+        this.finalizeTempRepository = finalizeTempRepository;
         this.dbFactory = dbFactory;
+    }
+
+    public RemoveEntryResult RemoveParticipantEntry(int tournamentId, int memberNumber, int squad)
+    {
+        Member member = memberRepository.GetMember(memberNumber);
+        if (member.Id == 0)
+        {
+            return new RemoveEntryResult(false, false, $"Member {memberNumber} was not found.");
+        }
+
+        Game game = GetGameOrNull(member.Id, tournamentId, squad);
+        if (game == null)
+        {
+            return new RemoveEntryResult(false, false, "That bowler has no entry in the selected squad.");
+        }
+
+        Participant participant = finalizeTempRepository.GetParticipantByGameId(game.Id);
+        finalizeTempRepository.DeleteParticipant(participant);
+        playerHistoryRepository.DeleteGame(game);
+
+        // Corrects any changes to the member's stats after finalizing to the last accurate data.
+        PlayerHistoryViewModel mostRecent = playerHistoryRepository.GetMostRecentTournament(member.Number);
+        bool statsRestored = mostRecent != null;
+        if (statsRestored)
+        {
+            member.Handicap = mostRecent.HandiCap;
+            member.Bonus = mostRecent.Bonus;
+            member.Average = mostRecent.AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
+        }
+
+        memberRepository.AddOrUpdateMember(member);
+
+        return new RemoveEntryResult(true, statsRestored,
+            statsRestored ? "Entry removed." : "Entry removed. Current Stats Not added to Tournament yet.");
     }
 
     public LeaderboardResult GetTournamentLeaderboards(int tournamentId, bool isThreeOfFourTournament,

@@ -5,6 +5,7 @@ using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace NineTapTour.IntegrationTests
 {
@@ -30,6 +31,13 @@ namespace NineTapTour.IntegrationTests
         // Seeded tournament ids, captured after SaveChanges
         public static int ThreeOf4TournamentId { get; private set; }
         public static int RegularTournamentId { get; private set; }
+
+        /// <summary>
+        /// Id of the "Default" region inserted by the AddRegions migration. The
+        /// seed writes entities directly (bypassing the repositories' default-
+        /// region fallback), so it must set RegionId explicitly.
+        /// </summary>
+        public static int DefaultRegionId { get; private set; }
 
         /// <summary>
         /// Maps member Number (101..107) to the database identity Id. The
@@ -98,6 +106,8 @@ namespace NineTapTour.IntegrationTests
         {
             using NineTapDb db = DbFactory.CreateDbContext();
 
+            DefaultRegionId = db.Regions.Min(r => r.Id);
+
             Member m101 = NewMember(101, "Alice", "Anderson", average: 150, handicap: 63, bonus: 2, isSenior: false, lastPayment: DateTime.Today, isLifetime: false);
             Member m102 = NewMember(102, "Bob", "Baker", average: 180, handicap: 36, bonus: 0, isSenior: true, lastPayment: DateTime.Today.AddYears(-2), isLifetime: false);
             Member m103 = NewMember(103, "Carol", "Chen", average: 200, handicap: 18, bonus: 5, isSenior: false, lastPayment: DateTime.Today, isLifetime: false);
@@ -119,6 +129,7 @@ namespace NineTapTour.IntegrationTests
                 Notes = "",
                 Squads = 2,
                 ThreeOutOf4 = true,
+                RegionId = DefaultRegionId,
             };
             Tournament regular = new()
             {
@@ -128,6 +139,7 @@ namespace NineTapTour.IntegrationTests
                 Sponsors = "",
                 Notes = "",
                 Squads = 1,
+                RegionId = DefaultRegionId,
             };
             db.Tournaments.AddRange(threeOf4, regular);
 
@@ -179,6 +191,7 @@ namespace NineTapTour.IntegrationTests
                 IsSenior = isSenior,
                 LastPayment = lastPayment,
                 IsLifetimeMember = isLifetime,
+                RegionId = DefaultRegionId,
             };
         }
 

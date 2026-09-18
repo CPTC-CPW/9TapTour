@@ -1,0 +1,4 @@
+@using Microsoft.AspNetCore.Identity
+@using NineTapTour.Web.Data
+@using NineTapTour.Web.Startup
+@attribute [Authorize(Policy = WebServiceConfiguration.AdminOnlyPolicy)]

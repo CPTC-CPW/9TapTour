@@ -24,10 +24,7 @@ public class TournamentRepository : ITournamentRepository
     public void AddTournament(Tournament tourn)
     {
         using var db = dbFactory.CreateDbContext();
-        //checks if tournament is new or already existing in db
-        db.Entry(tourn).State = db.Tournaments.Any(t => t.Id == tourn.Id) ?
-            EntityState.Modified :
-            EntityState.Added;
+        AddTournament(tourn, db);
         db.SaveChanges();
     }
 
@@ -38,9 +35,28 @@ public class TournamentRepository : ITournamentRepository
     public void AddTournament(Tournament tourn, NineTapDb db)
     {
         //checks if tournament is new or already existing in db
-        db.Entry(tourn).State = db.Tournaments.Any(t => t.Id == tourn.Id) ?
+        bool exists = db.Tournaments.Any(t => t.Id == tourn.Id);
+        EnsureRegion(tourn, db, exists);
+        db.Entry(tourn).State = exists ?
             EntityState.Modified :
             EntityState.Added;
+    }
+
+    /// <summary>
+    /// Callers without a region UI (desktop app, imports) leave RegionId at 0:
+    /// keep the stored region on update so a region chosen on the website is
+    /// not wiped, and use the default region on insert.
+    /// </summary>
+    private static void EnsureRegion(Tournament tourn, NineTapDb db, bool exists)
+    {
+        if (tourn.RegionId != 0)
+        {
+            return;
+        }
+
+        tourn.RegionId = exists
+            ? db.Tournaments.Where(t => t.Id == tourn.Id).Select(t => t.RegionId).First()
+            : DefaultRegionResolver.ResolveDefaultRegionId(db);
     }
 
     /// <summary>
@@ -53,6 +69,10 @@ public class TournamentRepository : ITournamentRepository
         Tournament original = db.Tournaments.Find(tourn.Id);
         if (original != null)
         {
+            if (tourn.RegionId == 0)
+            {
+                tourn.RegionId = original.RegionId;
+            }
             db.Entry(original).CurrentValues.SetValues(tourn);
             db.SaveChanges();
         }
@@ -124,7 +144,7 @@ public class TournamentRepository : ITournamentRepository
     /// </summary>
     public int GetTotalNumberParticipantsInTournament(Tournament tourn)
     {
-        var db = dbFactory.CreateDbContext();
+        using var db = dbFactory.CreateDbContext();
         return db.Participants
             .Where(p => p.Tournament.Id == tourn.Id)
             .Count();
@@ -309,6 +329,49 @@ public class TournamentRepository : ITournamentRepository
             db.Entry(tourn).State = EntityState.Deleted;
             db.SaveChanges();
         }
+    }
+
+    /// <summary>
+    /// Tournament search moved from FrmTourSearch.BtnSearch_Click and
+    /// FrmTournamentsByYear.PopulateTournamentsByYear.
+    /// </summary>
+    public List<Tournament> Search(Models.TournamentSearchCriteria criteria)
+    {
+        using var db = dbFactory.CreateDbContext();
+        IQueryable<Tournament> query = db.Tournaments.Include(t => t.Region).AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(criteria.Location))
+        {
+            string location = criteria.Location.ToLower().Trim();
+            query = query.Where(t => t.Location.ToLower().Contains(location));
+        }
+
+        if (!string.IsNullOrWhiteSpace(criteria.Event))
+        {
+            string eventName = criteria.Event.ToLower().Trim();
+            query = query.Where(t => t.Event.ToLower().Contains(eventName));
+        }
+
+        if (criteria.Year.HasValue)
+        {
+            int year = criteria.Year.Value;
+            query = query.Where(t => t.Date.Year == year);
+        }
+
+        if (criteria.From.HasValue)
+        {
+            DateTime from = criteria.From.Value.Date;
+            query = query.Where(t => t.Date >= from);
+        }
+
+        if (criteria.To.HasValue)
+        {
+            // Inclusive of the whole calendar day so same-day searches work.
+            DateTime toExclusive = criteria.To.Value.Date.AddDays(1);
+            query = query.Where(t => t.Date < toExclusive);
+        }
+
+        return [.. query.OrderByDescending(t => t.Date).ThenByDescending(t => t.Id)];
     }
 
     public List<WinnerListMemberViewModel> GetWinnerListMemberData(int tournamentId)

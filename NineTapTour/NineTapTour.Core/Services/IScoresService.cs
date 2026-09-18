@@ -42,4 +42,11 @@ public interface IScoresService
     /// updates the member's last-bowled date.
     /// </summary>
     ScoreEntryResult SaveScoreEntry(ScoreEntryRequest request);
+
+    /// <summary>
+    /// Removes a bowler's entry (participant and game) from a tournament squad and
+    /// restores the member's handicap, bonus, and average from their most recent
+    /// remaining history entry. Moved from FrmMemberScores.RemoveParticipantFromTournament.
+    /// </summary>
+    RemoveEntryResult RemoveParticipantEntry(int tournamentId, int memberNumber, int squad);
 }

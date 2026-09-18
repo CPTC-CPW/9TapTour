@@ -1,0 +1,435 @@
+@page "/doubles/{TournamentId:int}"
+@inject ITournamentRepository TournamentRepository
+@inject IMemberRepository MemberRepository
+@inject IDoublesPairingService Pairing
+@inject FlashMessageService Flash
+@inject IJSRuntime JS
+
+<PageTitle>Doubles Pairings - 9-Tap Tour</PageTitle>
+
+<ConfirmDialog @ref="confirm" />
+
+@if (tournament == null)
+{
+    <div class="alert alert-warning">Tournament @TournamentId was not found.</div>
+}
+else if (!tournament.Doubles)
+{
+    <div class="alert alert-info">@tournament.TourneyNameDate is not a doubles tournament.</div>
+}
+else
+{
+    <TournamentHeader Tournament="tournament" />
+
+    <div class="row g-3">
+        <div class="col-lg-5">
+            <div class="card mb-3">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <span>Squad</span>
+                    <select class="form-select form-select-sm w-auto" value="@selectedSquad" @onchange="OnSquadChanged">
+                        <option value="0">All squads</option>
+                        @for (int s = 1; s <= tournament.Squads; s++)
+                        {
+                            <option value="@s">Squad @s</option>
+                        }
+                    </select>
+                    @if (selectedSquad == 0)
+                    {
+                        <span class="ms-2">Add to squad</span>
+                        <select class="form-select form-select-sm w-auto" @bind="addSquad">
+                            @for (int s = 1; s <= tournament.Squads; s++)
+                            {
+                                <option value="@s">@s</option>
+                            }
+                        </select>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-4">
+                            <label class="form-label" for="d-bowler">Bowler #</label>
+                            <input id="d-bowler" type="number" class="form-control" @bind="bowlerNumberText" @bind:event="oninput" @onblur="LookupBowler" @onkeydown="OnBowlerKeyDown" />
+                        </div>
+                        <div class="col-5">
+                            <label class="form-label">Name</label>
+                            <input class="form-control @(bowlerNameMissing ? "text-danger" : "")" value="@bowlerName" readonly />
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="d-count">Partners</label>
+                            <input id="d-count" type="number" min="0" max="20" class="form-control" @bind="partnerCountText" @bind:event="oninput" @onblur="OnPartnerCountCommitted" @onkeydown="OnPartnerCountKeyDown" />
+                        </div>
+                    </div>
+                    @for (int i = 0; i < partners.Count; i++)
+                    {
+                        int index = i;
+                        PartnerEntry entry = partners[i];
+                        <div class="row g-2 align-items-center mt-1">
+                            <div class="col-4">
+                                <input id="d-partner-@index" type="number" class="form-control form-control-sm" placeholder="Partner @(index + 1) #" @bind="entry.NumberText" @bind:event="oninput" @onblur="() => CommitPartner(index)" @onkeydown="e => OnPartnerKeyDown(index, e)" />
+                            </div>
+                            <div class="col-8 small @(entry.NotFound ? "text-danger" : "")">@entry.Name</div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(autoSaveStatus))
+                    {
+                        <div class="small mt-2 @(autoSaveIsError ? "text-danger" : "text-success")">@autoSaveStatus</div>
+                    }
+                </div>
+                <div class="card-footer d-flex flex-wrap align-items-end gap-2">
+                    <div>
+                        <label class="form-label small mb-0" for="d-import">Import bowlers (.xlsx)</label>
+                        <InputFile id="d-import" OnChange="ImportAsync" accept=".xlsx" class="form-control form-control-sm" disabled="@importing" />
+                    </div>
+                    @if (importing)
+                    {
+                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                    }
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header d-flex align-items-center">
+                    <span>Bowlers (@roster.Count)</span>
+                    <div class="btn-group ms-auto">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="PrevBowler" disabled="@(roster.Count == 0)">&lsaquo; Prev</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="NextBowler" disabled="@(roster.Count == 0)">Next &rsaquo;</button>
+                    </div>
+                </div>
+                <div class="leaderboard">
+                    <table class="table table-sm table-hover mb-0 grid-sm">
+                        <tbody>
+                            @for (int i = 0; i < roster.Count; i++)
+                            {
+                                int index = i;
+                                DoublesBowlerRosterEntry r = roster[i];
+                                <tr class="selectable-row @(index == rosterIndex ? "table-primary" : "")" @onclick="() => SelectRoster(index)">
+                                    <td>S@(r.Squad)</td>
+                                    <td>#@r.MemberNumber</td>
+                                    <td>@r.FirstName @r.LastName</td>
+                                    <td class="@(r.PlannedCount != r.EnteredCount ? "text-danger" : "text-muted")">Planned @r.PlannedCount, Entered @r.EnteredCount</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            @if (importSummary != null)
+            {
+                <div class="alert @(importSummary.Errors.Count > 0 ? "alert-warning" : "alert-success") alert-dismissible">
+                    <button type="button" class="btn-close" @onclick="() => importSummary = null"></button>
+                    <strong>Import complete.</strong>
+                    Rows processed: @importSummary.RowsProcessed &middot; Plans added/updated: @importSummary.PlansUpserted &middot;
+                    Participants created: @importSummary.ParticipantsCreated &middot; Rows skipped: @importSummary.RowsSkipped
+                    @if (importSummary.Errors.Count > 0)
+                    {
+                        <div class="mt-2"><strong>Issues:</strong>
+                            <ul class="mb-0">
+                                @foreach (string error in importSummary.Errors.Take(25)) { <li>@error</li> }
+                                @if (importSummary.Errors.Count > 25) { <li>...and @(importSummary.Errors.Count - 25) more.</li> }
+                            </ul>
+                        </div>
+                    }
+                    @if (importSummary.RemovedFromTournament.Count > 0 || importSummary.RemovedFromSquad.Count > 0 || importSummary.PartnerCountChanged.Count > 0)
+                    {
+                        <div class="mt-2"><strong>Changes vs. previous import:</strong>
+                            @if (importSummary.RemovedFromTournament.Count > 0) { <div>Removed from tournament: @string.Join("; ", importSummary.RemovedFromTournament)</div> }
+                            @if (importSummary.RemovedFromSquad.Count > 0) { <div>Removed from squad: @string.Join("; ", importSummary.RemovedFromSquad)</div> }
+                            @if (importSummary.PartnerCountChanged.Count > 0) { <div>Partner count changed: @string.Join("; ", importSummary.PartnerCountChanged)</div> }
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="card">
+                <div class="card-header d-flex flex-wrap align-items-center gap-3">
+                    <span>Pairings</span>
+                    @if (view != null)
+                    {
+                        <span class="small text-muted">Total teams: @view.TotalTeamCount &middot; By squad: @(view.TeamsBySquad.Count == 0 ? "none" : string.Join(" | ", view.TeamsBySquad.Select(g => $"S{g.Squad}: {g.Count}")))</span>
+                        <span class="small @(HasDiscrepancies ? "text-danger" : "text-success")">Discrepancies: count mismatch @view.CountMismatches, missing reciprocal @view.MissingReciprocals</span>
+                        <a class="btn btn-sm btn-outline-danger ms-auto @(HasDiscrepancies ? "" : "disabled")" href="doubles/@tournament.Id/discrepancies">Fix discrepancies</a>
+                    }
+                </div>
+                <div class="table-responsive leaderboard">
+                    <table class="table table-sm table-hover mb-0 grid-sm align-middle">
+                        <thead><tr><th>Squad</th><th>Member 1</th><th>Name</th><th>Member 2</th><th>Name</th><th></th></tr></thead>
+                        <tbody>
+                            @foreach (DoublesTeam team in view?.Teams ?? [])
+                            {
+                                <tr>
+                                    <td>@team.Squad</td>
+                                    <td>@team.Member1.Number</td>
+                                    <td>@team.Member1.FirstName @team.Member1.LastName</td>
+                                    <td>@team.Member2.Number</td>
+                                    <td>@team.Member2.FirstName @team.Member2.LastName</td>
+                                    <td class="text-end"><button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => RemoveAsync(team)">Remove</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private sealed class PartnerEntry
+    {
+        public string? NumberText { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public bool NotFound { get; set; }
+    }
+
+    private ConfirmDialog confirm = default!;
+    private Tournament? tournament;
+    private int selectedSquad;
+    private int addSquad = 1;
+    private DoublesPairingsView? view;
+    private List<DoublesBowlerRosterEntry> roster = [];
+    private int rosterIndex = -1;
+
+    private string? bowlerNumberText;
+    private string bowlerName = string.Empty;
+    private bool bowlerNameMissing;
+    private string? partnerCountText;
+    private readonly List<PartnerEntry> partners = [];
+    private string? autoSaveStatus;
+    private bool autoSaveIsError;
+    private bool importing;
+    private DoublesImportSummary? importSummary;
+
+    [Parameter]
+    public int TournamentId { get; set; }
+
+    private bool HasDiscrepancies => view != null && (view.CountMismatches > 0 || view.MissingReciprocals > 0);
+
+    private int TargetSquad => selectedSquad > 0 ? selectedSquad : addSquad;
+
+    protected override void OnParametersSet()
+    {
+        tournament = TournamentRepository.GetTourneyByID(TournamentId);
+        if (tournament?.Doubles == true)
+        {
+            LoadPairings();
+        }
+    }
+
+    private void LoadPairings()
+    {
+        view = Pairing.GetPairingsView(TournamentId, selectedSquad);
+        (int memberId, int squad) previous = rosterIndex >= 0 && rosterIndex < roster.Count
+            ? (roster[rosterIndex].MemberId, roster[rosterIndex].Squad)
+            : (0, 0);
+        roster = Pairing.GetBowlerRoster(TournamentId, selectedSquad);
+        rosterIndex = roster.FindIndex(r => r.MemberId == previous.memberId && r.Squad == previous.squad);
+        if (rosterIndex < 0)
+        {
+            rosterIndex = roster.FindIndex(r => r.MemberId == previous.memberId);
+        }
+    }
+
+    private void OnSquadChanged(ChangeEventArgs e)
+    {
+        selectedSquad = int.TryParse(e.Value?.ToString(), out int s) ? s : 0;
+        LoadPairings();
+    }
+
+    private void OnBowlerKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" || e.Key == "Tab")
+        {
+            LookupBowler();
+        }
+    }
+
+    /// <summary>Mirrors FrmDoublesTeamPairing.LookupBowlerAndPopulate.</summary>
+    private void LookupBowler()
+    {
+        bowlerName = string.Empty;
+        bowlerNameMissing = false;
+        partners.Clear();
+        if (!int.TryParse(bowlerNumberText?.Trim(), out int number))
+        {
+            return;
+        }
+
+        Member m = MemberRepository.GetMember(number);
+        if (m.Id == 0)
+        {
+            bowlerName = "Not found";
+            bowlerNameMissing = true;
+            return;
+        }
+        bowlerName = $"{m.FirstName} {m.LastName}";
+
+        DoublesBowlerPlanState state = Pairing.GetBowlerPlanState(TournamentId, m.Id, TargetSquad);
+        partnerCountText = state.ExpectedPartnerCount.ToString();
+        RebuildPartnerRows(state.ClaimedPartners);
+    }
+
+    private void RebuildPartnerRows(List<Member>? claimed = null)
+    {
+        int count = int.TryParse(partnerCountText, out int c) ? Math.Clamp(c, 0, 20) : 0;
+        List<PartnerEntry> existing = [.. partners];
+        partners.Clear();
+        for (int i = 0; i < count; i++)
+        {
+            if (claimed != null && i < claimed.Count)
+            {
+                partners.Add(new PartnerEntry { NumberText = claimed[i].Number.ToString(), Name = $"{claimed[i].FirstName} {claimed[i].LastName}" });
+            }
+            else if (claimed == null && i < existing.Count)
+            {
+                partners.Add(existing[i]);
+            }
+            else
+            {
+                partners.Add(new PartnerEntry());
+            }
+        }
+    }
+
+    private void OnPartnerCountKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" || e.Key == "Tab")
+        {
+            OnPartnerCountCommitted();
+        }
+    }
+
+    private void OnPartnerCountCommitted()
+    {
+        RebuildPartnerRows();
+        DoublesPlanSaveResult result = Pairing.SavePartnerPlan(TournamentId, bowlerNumberText ?? string.Empty, TargetSquad, partnerCountText ?? string.Empty);
+        if (result.Saved)
+        {
+            ShowStatus(result.StatusMessage, false);
+            LoadPairings();
+        }
+    }
+
+    private async Task OnPartnerKeyDown(int index, KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            CommitPartner(index);
+            if (index + 1 < partners.Count)
+            {
+                await JS.InvokeVoidAsync("nineTap.focusById", $"d-partner-{index + 1}", true);
+            }
+        }
+    }
+
+    /// <summary>Mirrors LookupMemberName + TrySaveClaim.</summary>
+    private void CommitPartner(int index)
+    {
+        if (index >= partners.Count || tournament == null)
+        {
+            return;
+        }
+        PartnerEntry entry = partners[index];
+        entry.NotFound = false;
+        entry.Name = string.Empty;
+        if (int.TryParse(entry.NumberText?.Trim(), out int number))
+        {
+            Member m = MemberRepository.GetMember(number);
+            if (m.Id > 0)
+            {
+                entry.Name = $"{m.FirstName} {m.LastName}";
+            }
+            else
+            {
+                entry.Name = "Not found";
+                entry.NotFound = true;
+            }
+        }
+
+        DoublesClaimSaveResult result = Pairing.SavePartnerClaim(tournament, bowlerNumberText ?? string.Empty, entry.NumberText ?? string.Empty, TargetSquad);
+        if (result.Persisted)
+        {
+            LoadPairings();
+        }
+        if (result.StatusMessage != null)
+        {
+            ShowStatus(result.StatusMessage, result.IsError);
+        }
+    }
+
+    private void ShowStatus(string message, bool isError)
+    {
+        autoSaveStatus = message;
+        autoSaveIsError = isError;
+    }
+
+    private void SelectRoster(int index)
+    {
+        if (index < 0 || index >= roster.Count)
+        {
+            return;
+        }
+        rosterIndex = index;
+        DoublesBowlerRosterEntry r = roster[index];
+        if (selectedSquad == 0)
+        {
+            addSquad = r.Squad;
+        }
+        bowlerNumberText = r.MemberNumber.ToString();
+        LookupBowler();
+    }
+
+    private void PrevBowler()
+    {
+        if (roster.Count == 0) return;
+        SelectRoster(rosterIndex <= 0 ? roster.Count - 1 : rosterIndex - 1);
+    }
+
+    private void NextBowler()
+    {
+        if (roster.Count == 0) return;
+        SelectRoster(rosterIndex < 0 || rosterIndex >= roster.Count - 1 ? 0 : rosterIndex + 1);
+    }
+
+    private async Task RemoveAsync(DoublesTeam team)
+    {
+        bool hasClaims = Pairing.PairHasClaims(TournamentId, team.Member1.Id, team.Member2.Id, team.Squad);
+        string note = hasClaims ? "\nThis will also remove the associated partner claims." : string.Empty;
+        bool ok = await confirm.ShowAsync($"Remove this pairing?{note}", "Confirm Remove", "Remove", "Cancel", danger: true);
+        if (!ok)
+        {
+            return;
+        }
+        Pairing.RemovePairing(TournamentId, team.Id, team.Member1.Id, team.Member2.Id, team.Squad, hasClaims);
+        LoadPairings();
+    }
+
+    private async Task ImportAsync(InputFileChangeEventArgs e)
+    {
+        if (tournament == null)
+        {
+            return;
+        }
+        importing = true;
+        try
+        {
+            using TempFileScope upload = await TempFileScope.FromBrowserFileAsync(e.File);
+            importSummary = Pairing.ImportBowlersAndExpectedCounts(TournamentId, tournament.Squads, upload.Path);
+            LoadPairings();
+            if (roster.Count > 0)
+            {
+                SelectRoster(0);
+            }
+        }
+        catch (Exception ex)
+        {
+            Flash.Error("Import failed: " + ex.Message);
+        }
+        finally
+        {
+            importing = false;
+        }
+    }
+}

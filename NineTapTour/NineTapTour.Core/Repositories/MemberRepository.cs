@@ -41,13 +41,27 @@ public class MemberRepository : IMemberRepository
 
                 bool doesMemberExist = temp.Id != 0 && db.Members.Any(m => m.Id == temp.Id);
 
+                // Callers without a region UI (desktop app, imports) leave
+                // RegionId at 0: keep the stored region on update so a region
+                // chosen on the website is not wiped, and use the default on insert.
                 if (doesMemberExist)
                 {
+                    if (temp.RegionId == 0)
+                    {
+                        temp.RegionId = db.Members
+                            .Where(m => m.Id == temp.Id)
+                            .Select(m => m.RegionId)
+                            .First();
+                    }
                     db.Entry(temp).State = EntityState.Modified;
                 }
                 else
                 {
                     temp.Id = 0;
+                    if (temp.RegionId == 0)
+                    {
+                        temp.RegionId = DefaultRegionResolver.ResolveDefaultRegionId(db);
+                    }
                     db.Entry(temp).State = EntityState.Added;
                 }
 
@@ -170,5 +184,83 @@ public class MemberRepository : IMemberRepository
         using var db = dbFactory.CreateDbContext();
         return db.Members
             .Max(m => (int?)m.Number) ?? 0;
+    }
+
+    /// <summary>
+    /// Member search moved verbatim from FrmSearch.btnSearch_Click.
+    /// </summary>
+    public List<Member> Search(Models.MemberSearchCriteria criteria)
+    {
+        using var db = dbFactory.CreateDbContext();
+        IQueryable<Member> query = db.Members.Include(m => m.Region).AsNoTracking();
+
+        if (criteria.Number.HasValue)
+        {
+            int number = criteria.Number.Value;
+            query = query.Where(m => m.Number == number);
+        }
+
+        if (!string.IsNullOrWhiteSpace(criteria.FirstName))
+        {
+            string first = criteria.FirstName.ToLower().Trim();
+            query = query.Where(m => m.FirstName.ToLower().Contains(first));
+        }
+
+        if (!string.IsNullOrWhiteSpace(criteria.LastName))
+        {
+            string last = criteria.LastName.ToLower().Trim();
+            query = query.Where(m => m.LastName.ToLower().Contains(last));
+        }
+
+        if (criteria.IsActive.HasValue)
+        {
+            bool isActive = criteria.IsActive.Value;
+            query = query.Where(m => m.IsActive == isActive);
+        }
+
+        if (criteria.Average.HasValue)
+        {
+            int average = criteria.Average.Value;
+            query = query.Where(m => m.Average == average);
+        }
+
+        if (criteria.Handicap.HasValue)
+        {
+            int handicap = criteria.Handicap.Value;
+            query = query.Where(m => m.Handicap == handicap);
+        }
+
+        if (criteria.Bonus.HasValue)
+        {
+            int bonus = criteria.Bonus.Value;
+            query = query.Where(m => m.Bonus == bonus);
+        }
+
+        return [.. query.OrderBy(m => m.Number)];
+    }
+
+    /// <summary>
+    /// Deactivation candidates moved from FrmUpdateActiveMem.UpdateList.
+    /// </summary>
+    public List<Member> GetInactiveCandidates(System.DateTime lastBowledOnOrBefore)
+    {
+        using var db = dbFactory.CreateDbContext();
+        return [.. db.Members
+            .AsNoTracking()
+            .Where(m => m.IsActive && (m.LastBowled == null || m.LastBowled <= lastBowledOnOrBefore))
+            .OrderBy(m => m.Number)];
+    }
+
+    public int SetInactive(IEnumerable<int> memberIds)
+    {
+        List<int> ids = [.. memberIds];
+        using var db = dbFactory.CreateDbContext();
+        List<Member> members = [.. db.Members.Where(m => ids.Contains(m.Id))];
+        foreach (Member member in members)
+        {
+            member.IsActive = false;
+        }
+        db.SaveChanges();
+        return members.Count;
     }
 }

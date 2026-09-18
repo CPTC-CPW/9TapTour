@@ -1,0 +1,90 @@
+@page "/"
+@inject ITournamentRepository TournamentRepository
+
+<PageTitle>Home - 9-Tap Tour</PageTitle>
+
+<PageHeader Title="9-Tap Tour" />
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5 card-title">Members</h2>
+                <p class="card-text">Search, add, and edit bowlers; print recap cards and mailing labels.</p>
+                <a class="btn btn-primary btn-sm" href="members">Search members</a>
+                <a class="btn btn-outline-primary btn-sm" href="members/edit">New member</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5 card-title">Tournaments</h2>
+                <p class="card-text">Create tournaments, enter scores, run standings, results, and finalize.</p>
+                <a class="btn btn-primary btn-sm" href="tournaments">Tournament list</a>
+                <a class="btn btn-outline-primary btn-sm" href="tournaments/edit">New tournament</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5 card-title">Reports</h2>
+                <p class="card-text">Individual and tour-wide statistics with Excel export.</p>
+                <a class="btn btn-primary btn-sm" href="reports">Open reports</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="h5 mt-4">Recent tournaments</h2>
+@if (recent == null)
+{
+    <p>Loading...</p>
+}
+else if (recent.Count == 0)
+{
+    <p class="text-muted">No tournaments yet.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Event</th>
+                    <th>Region</th>
+                    <th>Type</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Tournament t in recent)
+                {
+                    <tr>
+                        <td>@t.Date.ToShortDateString()</td>
+                        <td>@t.Location</td>
+                        <td>@t.Event</td>
+                        <td>@t.Region?.Name</td>
+                        <td><TournamentTypeBadges Tournament="t" /></td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary" href="tournaments/@t.Id">Open</a>
+                            <a class="btn btn-sm btn-outline-secondary" href="scores/@t.Id">Scores</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<Tournament>? recent;
+
+    protected override void OnInitialized()
+    {
+        recent = TournamentRepository.Search(new TournamentSearchCriteria()).Take(10).ToList();
+    }
+}

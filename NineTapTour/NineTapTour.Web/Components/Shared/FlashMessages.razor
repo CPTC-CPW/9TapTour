@@ -1,0 +1,44 @@
+@implements IDisposable
+@inject FlashMessageService Flash
+@inject NavigationManager NavigationManager
+
+@foreach (FlashMessageService.Message message in Flash.Messages)
+{
+    <div class="alert @message.CssClass alert-dismissible fade show no-print" role="alert">
+        @message.Text
+        <button type="button" class="btn-close" aria-label="Close" @onclick="() => Flash.Dismiss(message)"></button>
+    </div>
+}
+
+@code {
+    private int navigationsSinceLastMessage;
+
+    protected override void OnInitialized()
+    {
+        Flash.Changed += OnChanged;
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnChanged()
+    {
+        navigationsSinceLastMessage = 0;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        // A message posted right before a navigation shows on the next page and
+        // is cleared on the navigation after that.
+        navigationsSinceLastMessage++;
+        if (navigationsSinceLastMessage > 1)
+        {
+            Flash.Clear();
+        }
+    }
+
+    public void Dispose()
+    {
+        Flash.Changed -= OnChanged;
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

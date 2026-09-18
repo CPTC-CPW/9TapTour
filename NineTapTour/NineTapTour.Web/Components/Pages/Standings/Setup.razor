@@ -1,0 +1,225 @@
+@page "/standings/{TournamentId:int}"
+@using NineTapTour.Core.Export
+@inject ITournamentRepository TournamentRepository
+@inject IParticipantRepository ParticipantRepository
+@inject IScoresService ScoresService
+@inject IStandingsReportExcelExporter Exporter
+@inject ExcelDownload Download
+@inject FlashMessageService Flash
+@inject NavigationManager Navigation
+@inject IWebHostEnvironment Environment
+
+<PageTitle>Standings - 9-Tap Tour</PageTitle>
+
+@if (tournament == null)
+{
+    <div class="alert alert-warning">Tournament @TournamentId was not found.</div>
+}
+else
+{
+    <TournamentHeader Tournament="tournament" />
+
+    <div class="row g-3">
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-header">Report</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="form-check"><input class="form-check-input" type="radio" name="rtype" id="rt-series" checked="@(query.Type == StandingsQuery.TypeSeries)" @onchange="() => SetType(StandingsQuery.TypeSeries)" /><label class="form-check-label" for="rt-series">Series standings</label></div>
+                        <div class="form-check"><input class="form-check-input" type="radio" name="rtype" id="rt-game" checked="@(query.Type == StandingsQuery.TypeGame)" @onchange="() => SetType(StandingsQuery.TypeGame)" /><label class="form-check-label" for="rt-game">High game</label></div>
+                        <div class="form-check"><input class="form-check-input" type="radio" name="rtype" id="rt-senior" checked="@(query.Type == StandingsQuery.TypeSenior)" @onchange="() => SetType(StandingsQuery.TypeSenior)" /><label class="form-check-label" for="rt-senior">Senior high game</label></div>
+                    </div>
+
+                    @if (query.Type == StandingsQuery.TypeSeries)
+                    {
+                        <div class="mb-3">
+                            <span class="form-label me-2">Scoring</span>
+                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="scoring" id="sc-h" checked="@query.Handicap" @onchange="() => { query.Handicap = true; Reload(); }" /><label class="form-check-label" for="sc-h">Handicap</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="scoring" id="sc-s" checked="@(!query.Handicap)" @onchange="() => { query.Handicap = false; Reload(); }" /><label class="form-check-label" for="sc-s">Scratch</label></div>
+                        </div>
+                        <div class="mb-3">
+                            <span class="form-label me-2">Squads</span>
+                            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="sq-all" checked="@(query.Squads.Count == 0)" @onchange="() => { query.Squads.Clear(); Reload(); }" /><label class="form-check-label" for="sq-all">All</label></div>
+                            @for (int s = 1; s <= tournament.Squads; s++)
+                            {
+                                int squadNumber = s;
+                                <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="sq-@squadNumber" checked="@query.Squads.Contains(squadNumber)" @onchange="() => ToggleSquad(squadNumber)" /><label class="form-check-label" for="sq-@squadNumber">@squadNumber</label></div>
+                            }
+                        </div>
+                    }
+
+                    <div class="mb-3">
+                        <span class="form-label me-2">Qualify by squad</span>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="qualify" id="q-0" checked="@(query.QualifySquad == 0)" @onchange="() => { query.QualifySquad = 0; Reload(); }" /><label class="form-check-label" for="q-0">All</label></div>
+                        @for (int s = 1; s <= tournament.Squads; s++)
+                        {
+                            int squadNumber = s;
+                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="qualify" id="q-@squadNumber" checked="@(query.QualifySquad == squadNumber)" @onchange="() => { query.QualifySquad = squadNumber; Reload(); }" /><label class="form-check-label" for="q-@squadNumber">@squadNumber</label></div>
+                        }
+                    </div>
+
+                    <hr />
+                    <div class="row g-2 align-items-end">
+                        <div class="col-6">
+                            <label class="form-label" for="st-count">Number of @(tournament.Doubles ? "teams" : "members") (max @available)</label>
+                            <input id="st-count" type="number" min="1" max="@available" class="form-control" @bind="query.Count" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label" for="st-cutoff">Manual cutoff line after row</label>
+                            <input id="st-cutoff" type="number" min="1" class="form-control" @bind="query.ManualCutoff" placeholder="automatic" />
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input id="st-dues" type="checkbox" class="form-check-input" @bind="query.PrintDues" />
+                                <label class="form-check-label" for="st-dues">Print membership paid-through year</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex gap-2">
+                    <button type="button" class="btn btn-primary" @onclick="Print" disabled="@(available == 0)">Print</button>
+                    <button type="button" class="btn btn-outline-primary" @onclick="ExportAsync" disabled="@(available == 0 || exporting)">Save to Excel</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-header">Preview (@available entries)</div>
+                @if (available == 0)
+                {
+                    <div class="card-body text-muted">There are no participants for this selection.</div>
+                }
+                else
+                {
+                    <div class="table-responsive leaderboard">
+                        <table class="table table-sm table-striped mb-0 grid-sm">
+                            <thead><tr><th>Place</th><th>Score</th><th>Member</th><th>Name</th><th>Squad</th></tr></thead>
+                            <tbody>
+                                @foreach (MemberScores row in preview)
+                                {
+                                    <tr>
+                                        <td>@row.placing</td>
+                                        <td>@row.Score</td>
+                                        <td>@(row is TeamMemberScores t ? $"{t.Partner1MemberId} & {t.Partner2MemberId}" : row.MemberId.ToString())</td>
+                                        <td>@(row is TeamMemberScores tm ? $"{tm.Partner1FirstName} {tm.Partner1LastName} & {tm.Partner2FirstName} {tm.Partner2LastName}" : $"{row.LastName}, {row.FirstName}")</td>
+                                        <td>@row.Squad</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private Tournament? tournament;
+    private readonly StandingsQuery query = new();
+    private List<MemberScores> preview = [];
+    private int available;
+    private bool exporting;
+
+    [Parameter]
+    public int TournamentId { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        tournament = TournamentRepository.GetTourneyByID(TournamentId);
+        if (tournament != null)
+        {
+            Reload();
+        }
+    }
+
+    private void SetType(string type)
+    {
+        query.Type = type;
+        Reload();
+    }
+
+    private void ToggleSquad(int squadNumber)
+    {
+        if (!query.Squads.Remove(squadNumber))
+        {
+            query.Squads.Add(squadNumber);
+        }
+        if (query.Squads.Count == tournament!.Squads)
+        {
+            query.Squads.Clear();
+        }
+        Reload();
+    }
+
+    private void Reload()
+    {
+        List<MemberScores> all = query.LoadAll(tournament!, ScoresService, ParticipantRepository);
+        available = all.Count;
+        // Show the placings the report will print (ties share a place).
+        preview = available == 0
+            ? all
+            : NineTapTour.Core.Calculations.TournamentCalculations.MakeTopMembersByPlacementList(all, available, tournament!.Doubles);
+        if (query.Count <= 0 || query.Count > available)
+        {
+            query.Count = available;
+        }
+    }
+
+    private bool ValidateCount()
+    {
+        if (query.Count <= 0)
+        {
+            Flash.Warning("Please do not Input 0.");
+            return false;
+        }
+        if (query.Count > available)
+        {
+            Flash.Warning($"There are only {available} participants in the tournament selected.");
+            return false;
+        }
+        return true;
+    }
+
+    private void Print()
+    {
+        if (!ValidateCount())
+        {
+            return;
+        }
+        Navigation.NavigateTo($"print/standings/{TournamentId}?{query.ToQueryString()}", forceLoad: true);
+    }
+
+    private async Task ExportAsync()
+    {
+        if (!ValidateCount() || tournament == null)
+        {
+            return;
+        }
+
+        exporting = true;
+        try
+        {
+            List<MemberScores> rows = query.LoadTop(tournament, ScoresService, ParticipantRepository);
+            StandingsReportExportRequest request = new(tournament.Location, tournament.Event, tournament.Date, query.ReportType, query.PrintDues, rows);
+            string templatePath = Path.Combine(Environment.ContentRootPath, "Resources", StandingsReportExcelExporter.TemplateFileName);
+            if (!File.Exists(templatePath))
+            {
+                templatePath = Path.Combine(AppContext.BaseDirectory, "Resources", StandingsReportExcelExporter.TemplateFileName);
+            }
+
+            using MemoryStream output = new();
+            Exporter.Export(templatePath, output, request);
+            await Download.SendAsync(Exporter.BuildFileName(request), output);
+            Flash.Success("Excel file created.");
+        }
+        catch (Exception ex)
+        {
+            Flash.Error("An error occurred during the export process: " + ex.Message);
+        }
+        finally
+        {
+            exporting = false;
+        }
+    }
+}

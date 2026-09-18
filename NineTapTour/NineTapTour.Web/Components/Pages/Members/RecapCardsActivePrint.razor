@@ -1,0 +1,23 @@
+@page "/print/members/active-recaps"
+@using NineTapTour.Core.Printing
+@layout PrintLayout
+@attribute [ExcludeFromInteractiveRouting]
+@inject ITournamentRepository TournamentRepository
+
+<PageTitle>Recap Cards - Active Members</PageTitle>
+
+<p class="no-print text-muted">@members.Count active member recap card(s), ordered by last name.</p>
+
+@foreach (Member m in members)
+{
+    <RecapCard Card="PrintContentBuilder.BuildRecapCard(m)" />
+}
+
+@code {
+    private List<Member> members = [];
+
+    protected override void OnInitialized()
+    {
+        members = PrintContentBuilder.OrderMembersForRecaps(TournamentRepository.GetAllActiveMembers());
+    }
+}

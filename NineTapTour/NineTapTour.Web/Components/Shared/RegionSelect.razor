@@ -1,0 +1,45 @@
+@inject IRegionRepository RegionRepository
+
+<select id="@Id" class="form-select @CssClass" value="@Value" @onchange="OnChangeAsync" disabled="@Disabled">
+    @if (Value == 0)
+    {
+        <option value="0" selected>-- select a region --</option>
+    }
+    @foreach (Region region in regions)
+    {
+        <option value="@region.Id" selected="@(region.Id == Value)">@region.Name</option>
+    }
+</select>
+
+@code {
+    private List<Region> regions = [];
+
+    [Parameter]
+    public string Id { get; set; } = "regionId";
+
+    [Parameter]
+    public string? CssClass { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public int Value { get; set; }
+
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        regions = RegionRepository.GetAll();
+    }
+
+    private async Task OnChangeAsync(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int id))
+        {
+            Value = id;
+            await ValueChanged.InvokeAsync(id);
+        }
+    }
+}

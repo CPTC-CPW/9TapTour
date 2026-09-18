@@ -33,6 +33,10 @@ namespace NineTapTourTests.Startup
                 ValidateOnBuild = true,
                 ValidateScopes = true,
             });
+
+            // Registered in Core for the website; the desktop container must
+            // still be able to resolve it even though no form uses it.
+            Assert.IsNotNull(provider.GetRequiredService<NineTapTour.Core.Repositories.IRegionRepository>());
         }
 
         [TestMethod]

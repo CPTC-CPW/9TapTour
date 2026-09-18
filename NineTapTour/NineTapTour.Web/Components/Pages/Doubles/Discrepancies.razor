@@ -1,0 +1,110 @@
+@page "/doubles/{TournamentId:int}/discrepancies"
+@inject ITournamentRepository TournamentRepository
+@inject IDoublesPairingService Pairing
+
+<PageTitle>Pairing Discrepancies - 9-Tap Tour</PageTitle>
+
+@if (tournament == null)
+{
+    <div class="alert alert-warning">Tournament @TournamentId was not found.</div>
+}
+else
+{
+    <TournamentHeader Tournament="tournament" />
+    <PageHeader Title="Pairing Discrepancies">
+        <Actions>
+            <button type="button" class="btn btn-primary btn-sm" @onclick="FixAll" disabled="@(!items.Any(i => i.Type == DoublesDiscrepancyType.MissingReciprocal))">Fix all reciprocals</button>
+            <a class="btn btn-outline-secondary btn-sm" href="doubles/@tournament.Id">Back to pairings</a>
+        </Actions>
+    </PageHeader>
+
+    @if (!string.IsNullOrEmpty(status))
+    {
+        <div class="alert alert-success">@status</div>
+    }
+
+    @if (items.Count == 0)
+    {
+        <div class="alert alert-success">No discrepancies. Every claim has its reciprocal and every bowler's entered partners match the plan.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle grid-sm">
+                <thead>
+                    <tr><th>Type</th><th>Squad</th><th>Bowler #</th><th>Bowler name</th><th>Details</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (DoublesDiscrepancy item in items)
+                    {
+                        bool missing = item.Type == DoublesDiscrepancyType.MissingReciprocal;
+                        <tr>
+                            <td class="@(missing ? "text-warning-emphasis" : "text-primary")">@(missing ? "Missing Reciprocal" : "Count Mismatch")</td>
+                            <td>@item.Squad</td>
+                            <td>@item.SourceMemberNumber</td>
+                            <td>@item.SourceMemberName</td>
+                            <td>
+                                @if (missing)
+                                {
+                                    <text>#@item.SourceMemberNumber claims #@item.PartnerMemberNumber (@item.PartnerMemberName), but #@item.PartnerMemberNumber doesn't claim back</text>
+                                }
+                                else
+                                {
+                                    <text>Planned @item.PlannedCount, Entered @item.ActualCount</text>
+                                }
+                            </td>
+                            <td class="text-end text-nowrap">
+                                @if (missing)
+                                {
+                                    <button type="button" class="btn btn-sm btn-outline-primary" @onclick="() => Fix(item)">Add reciprocal</button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => RemoveClaim(item)">Remove claim</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+
+@code {
+    private Tournament? tournament;
+    private List<DoublesDiscrepancy> items = [];
+    private string? status;
+
+    [Parameter]
+    public int TournamentId { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        tournament = TournamentRepository.GetTourneyByID(TournamentId);
+        Load();
+    }
+
+    private void Load()
+    {
+        items = Pairing.GetDiscrepancies(TournamentId);
+    }
+
+    private void Fix(DoublesDiscrepancy item)
+    {
+        Pairing.FixReciprocal(TournamentId, item.SourceMemberId, item.PartnerMemberId, item.Squad);
+        status = null;
+        Load();
+    }
+
+    private void RemoveClaim(DoublesDiscrepancy item)
+    {
+        Pairing.RemoveClaimAndTeam(TournamentId, item.SourceMemberId, item.PartnerMemberId, item.Squad);
+        status = null;
+        Load();
+    }
+
+    private void FixAll()
+    {
+        int fixedCount = Pairing.FixAllMissingReciprocals(TournamentId);
+        status = $"{fixedCount} reciprocal(s) added.";
+        Load();
+    }
+}

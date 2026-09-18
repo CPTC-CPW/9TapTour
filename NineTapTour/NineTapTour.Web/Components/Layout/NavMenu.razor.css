@@ -1,0 +1,19 @@
+.brand-logo {
+    height: 32px;
+    width: auto;
+}
+
+.site-navbar {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+::deep .dropdown-item {
+    cursor: pointer;
+}
+
+::deep form .dropdown-item {
+    background: none;
+    border: 0;
+    width: 100%;
+    text-align: left;
+}

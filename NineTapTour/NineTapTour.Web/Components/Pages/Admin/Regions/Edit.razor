@@ -1,0 +1,90 @@
+@page "/admin/regions/edit"
+@page "/admin/regions/edit/{Id:int}"
+@using System.ComponentModel.DataAnnotations
+@inject IRegionRepository RegionRepository
+@inject FlashMessageService Flash
+@inject NavigationManager Navigation
+
+<PageTitle>@(Id == null ? "New region" : "Edit region") - 9-Tap Tour</PageTitle>
+
+<PageHeader Title="@(Id == null ? "New region" : "Edit region")" />
+
+@if (notFound)
+{
+    <div class="alert alert-warning">That region no longer exists.</div>
+    <a class="btn btn-secondary" href="admin/regions">Back to regions</a>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6 col-lg-4">
+            <EditForm Model="model" OnValidSubmit="SaveAsync" FormName="region-edit">
+                <DataAnnotationsValidator />
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <InputText id="name" class="form-control" @bind-Value="model.Name" />
+                    <ValidationMessage For="() => model.Name" class="text-danger" />
+                    @if (duplicateName)
+                    {
+                        <div class="text-danger">A region with that name already exists.</div>
+                    }
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a class="btn btn-secondary ms-2" href="admin/regions">Cancel</a>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    private readonly RegionInput model = new();
+    private bool notFound;
+    private bool duplicateName;
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Id is int id)
+        {
+            Region? region = RegionRepository.GetById(id);
+            if (region == null)
+            {
+                notFound = true;
+                return;
+            }
+            model.Name = region.Name;
+        }
+    }
+
+    private Task SaveAsync()
+    {
+        duplicateName = RegionRepository.NameExists(model.Name, Id);
+        if (duplicateName)
+        {
+            return Task.CompletedTask;
+        }
+
+        if (Id is int id)
+        {
+            RegionRepository.Update(new Region { Id = id, Name = model.Name });
+            Flash.Success($"Region \"{model.Name.Trim()}\" updated.");
+        }
+        else
+        {
+            RegionRepository.Add(new Region { Name = model.Name });
+            Flash.Success($"Region \"{model.Name.Trim()}\" created.");
+        }
+
+        Navigation.NavigateTo("admin/regions");
+        return Task.CompletedTask;
+    }
+
+    private sealed class RegionInput
+    {
+        [Required(ErrorMessage = "Name is required.")]
+        [StringLength(100, ErrorMessage = "Name must be 100 characters or fewer.")]
+        public string Name { get; set; } = string.Empty;
+    }
+}

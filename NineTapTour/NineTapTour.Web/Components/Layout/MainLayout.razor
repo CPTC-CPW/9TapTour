@@ -1,0 +1,20 @@
+@inherits LayoutComponentBase
+
+<div class="page">
+    <NavMenu />
+
+    <main class="container-fluid content">
+        <FlashMessages />
+        @Body
+    </main>
+
+    <footer class="site-footer text-muted small">
+        9-Tap Tour &middot; version 4.0.0
+    </footer>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>

@@ -1,0 +1,71 @@
+@page "/admin/regions"
+@inject IRegionRepository RegionRepository
+@inject FlashMessageService Flash
+
+<PageTitle>Regions - 9-Tap Tour</PageTitle>
+
+<PageHeader Title="Regions" Subtitle="Every member has a home region and every tournament belongs to a region.">
+    <Actions>
+        <a class="btn btn-primary" href="admin/regions/edit">New region</a>
+    </Actions>
+</PageHeader>
+
+<ConfirmDialog @ref="confirm" />
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Region region in regions)
+            {
+                <tr>
+                    <td>@region.Name</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-primary" href="admin/regions/edit/@region.Id">Edit</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => DeleteAsync(region)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private ConfirmDialog confirm = default!;
+    private List<Region> regions = [];
+
+    protected override void OnInitialized()
+    {
+        Load();
+    }
+
+    private void Load()
+    {
+        regions = RegionRepository.GetAll();
+    }
+
+    private async Task DeleteAsync(Region region)
+    {
+        bool ok = await confirm.ShowAsync($"Delete region \"{region.Name}\"?", "Delete region", "Delete", "Cancel", danger: true);
+        if (!ok)
+        {
+            return;
+        }
+
+        RegionDeleteResult result = RegionRepository.Delete(region.Id);
+        if (result.Deleted)
+        {
+            Flash.Success($"Region \"{region.Name}\" deleted.");
+            Load();
+        }
+        else
+        {
+            Flash.Error(result.Reason ?? "The region could not be deleted.");
+        }
+    }
+}

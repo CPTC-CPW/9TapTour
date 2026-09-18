@@ -13,6 +13,31 @@ public class NineTapDb : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        // Regions: every member has a home region and every tournament belongs
+        // to a region. Restrict deletes so a region in use cannot be removed.
+        builder.Entity<Region>()
+            .Property(r => r.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Entity<Region>()
+            .HasIndex(r => r.Name)
+            .IsUnique();
+
+        builder.Entity<Member>()
+            .HasOne(m => m.Region)
+            .WithMany()
+            .HasForeignKey(m => m.RegionId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Tournament>()
+            .HasOne(t => t.Region)
+            .WithMany()
+            .HasForeignKey(t => t.RegionId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
+
         // Configure one-to-one relationship between Participant and Game
         // Participant is the owner (has foreign key), Game is the dependent
         builder.Entity<Participant>()
@@ -74,6 +99,7 @@ public class NineTapDb : DbContext
     }
 
     // Add DbSets for each type to store in the database
+    public virtual DbSet<Region> Regions { get; set; }
     public virtual DbSet<Member> Members { get; set; }
     public virtual DbSet<Game> Games { get; set; }
     public virtual DbSet<Tournament> Tournaments { get; set; }
