@@ -66,14 +66,6 @@ public interface IFinalizeCalculationService
         bool? useGame1, bool? useGame2, bool? useGame3, bool? useGame4, bool threeOutOf4);
 
     /// <summary>
-    /// Derives the carry-forward handicap and bonus from a member's entries in their most
-    /// recent finalized tournament. The handicap comes from the first entry with a positive
-    /// adjusted average; the bonus is the minimum when the member cashed, otherwise the maximum.
-    /// The list must be non-empty.
-    /// </summary>
-    (int Hdcp, int Bonus) ComputePreviousHandicapAndBonus(IReadOnlyList<PreviousEntrySnapshot> previousEntries);
-
-    /// <summary>
     /// Computes the New Bonus column for a row: the bonus pins the member carries out of
     /// this tournament. Pins are deducted from members who cashed — those who won place
     /// money or finished within the cash line — and +1 pin is awarded to members reaching
@@ -87,11 +79,13 @@ public interface IFinalizeCalculationService
         int historicalEntryCount, int currentEntryCount, decimal memberMoneyWon);
 
     /// <summary>
-    /// Resolves the handicap shown in the grid: the previous tournament's handicap when
-    /// positive, else the stored game handicap, else a value derived from the adjusted
-    /// average, else 0.
+    /// Resolves the handicap shown in the grid. While the tournament is open the Member
+    /// record's current handicap is used (so an average edited on the member form applies
+    /// to this tournament); once finalized, or when the member handicap was never set,
+    /// the stored game handicap is used, else a value derived from the adjusted average,
+    /// else 0.
     /// </summary>
-    int ResolveDisplayHandicap(int? previousHandicap, int storedHandicap, int adjustedAvg);
+    int ResolveDisplayHandicap(int? memberHandicap, int storedHandicap, int adjustedAvg, bool isFinalized);
 
     /// <summary>
     /// Computes an entry's total score (with handicap and bonus) for place standing

@@ -17,5 +17,4 @@ public interface IPlayerHistoryRepository
     PlayerHistoryViewModel GetMostRecentTournament(int memberNum);
     void DeleteGame(Game game);
     decimal GetTotalMoneyWon(int memberNum);
-    int? GetMostRecentAverage(int memberNum);
 }

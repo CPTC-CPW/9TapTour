@@ -1,6 +1,7 @@
 ﻿using NineTapTour.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using NineTapTour.Core.Import;
@@ -82,6 +83,30 @@ public partial class FrmMain : Form
         return false;
     }
 
+    // Two-digit birth years resolve to 20yy only if that makes the member at least this old; otherwise 19yy.
+    private const int MinMemberAgeForTwoDigitYear = 10;
+
+    // Legacy data also has 1-digit years (e.g. 6/24/7), which resolve through the same two-digit pivot.
+    private static readonly string[] BirthDateFormats = ["M/d/yyyy", "M-d-yyyy", "M/d/yy", "M-d-yy", "M/d/y", "M-d-y"];
+
+    private static readonly CultureInfo BirthDateCulture = CreateBirthDateCulture();
+
+    private static CultureInfo CreateBirthDateCulture()
+    {
+        var culture = (CultureInfo)CultureInfo.InvariantCulture.Clone();
+        culture.DateTimeFormat.Calendar.TwoDigitYearMax = DateTime.Today.Year - MinMemberAgeForTwoDigitYear;
+        return culture;
+    }
+
+    /// <summary>
+    /// Parses the fixed-width birth date segment with explicit formats, independent of the PC's regional settings.
+    /// </summary>
+    private static bool TryParseBirthDate(string seg, out DateTime dob)
+    {
+        return DateTime.TryParseExact(seg, BirthDateFormats, BirthDateCulture, DateTimeStyles.None, out dob)
+            && dob <= DateTime.Today;
+    }
+
     private static void ParseFirstNameAndMembershipInfo(Member member, string seg)
     {
         if (string.IsNullOrWhiteSpace(seg))
@@ -107,7 +132,8 @@ public partial class FrmMain : Form
             if (TryParsePaidThroughYear(normalized, out int paidThroughYear))
             {
                 // Paid through YYYY means membership expires at the start of YYYY+1.
-                // Store LastPayment as YYYY-1 so existing report logic (+1 display) remains consistent.
+                // Store LastPayment as 12/31 of YYYY-1: payments from October on count
+                // toward the next year (MembershipDues), so this reads back as paid thru YYYY.
                 int lastPaymentYear = Math.Max(1753, paidThroughYear - 1);
                 if (!member.IsLifetimeMember)
                     member.LastPayment = new DateTime(lastPaymentYear, 12, 31);
@@ -306,12 +332,7 @@ public partial class FrmMain : Form
                         if (int.TryParse(seg, out var gm) && gm == 1) m.Gender = MemberGenders.Male;
                         break;
                     case 30: // Birth Date
-                        if (DateTime.TryParse(seg, out var dob))
-                        {
-                            // If date appears to be in the future, adjust by -100 years (legacy data quirk)
-                            if (dob > DateTime.Today) dob = dob.AddYears(-100);
-                            m.DateOfBirth = dob;
-                        }
+                        if (TryParseBirthDate(seg, out var dob)) m.DateOfBirth = dob;
                         break;
                     default:
                         // intentionally ignore other indices
@@ -509,7 +530,7 @@ public partial class FrmMain : Form
 
     private void FrmMain_Load(object sender, EventArgs e)
     {
-        Text = "Version: 3.2.1";
+        Text = "Version: 3.2.2";
 #if DEBUG
         Text += " DEVELOPMENT ONLY";
 #endif

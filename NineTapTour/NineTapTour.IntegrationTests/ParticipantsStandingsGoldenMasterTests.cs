@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NineTapTour.Core.Calculations;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Repositories;
 using System;
@@ -13,15 +14,18 @@ namespace NineTapTour.IntegrationTests
     /// standings paths, including their known defects. Those defects were fixed
     /// on 2026-08-14 (the raw SQL was replaced with EF/LINQ implementations that
     /// mirror the EF siblings), so these tests now pin the FIXED behavior:
-    /// MemberId is Member.Number, Paid uses the EF rule (paid when the last
-    /// payment is within a year, or lifetime), lifetime members and null games
-    /// are handled gracefully, and the scratch standings return real totals.
+    /// MemberId is Member.Number, lifetime members and null games are handled
+    /// gracefully, and the scratch standings return real totals.
+    /// Changed 2026-10-23 (client request): PaidThroughYear and Paid follow
+    /// MembershipDues (a payment before October 1 is paid thru that year, from
+    /// October 1 on thru the next year), so a member with no payment on file is
+    /// no longer Paid.
     /// </summary>
     [TestClass]
     public class ParticipantsStandingsGoldenMasterTests
     {
-        private static string ThisYear => DateTime.Today.Year.ToString();
-        private static string TwoYearsAgo => DateTime.Today.AddYears(-2).Year.ToString();
+        private static string PaidThruToday => MembershipDues.PaidThroughYear(DateTime.Today).ToString();
+        private static string PaidThruTwoYearsAgo => MembershipDues.PaidThroughYear(DateTime.Today.AddYears(-2)).ToString();
 
         private static ParticipantRepository Repo => new(TestDatabase.DbFactory);
 
@@ -32,17 +36,15 @@ namespace NineTapTour.IntegrationTests
 
             AssertRows(result,
             [
-                // memberNumber, score, lastPaymentYear, paid
-                // Fixed 2026-08-14: MemberId is now Member.Number (was Members.Id),
-                // Paid follows the EF rule (true when paid within a year or
-                // lifetime; the raw SQL had it inverted), and a null LastPayment
-                // yields "" (EF translates ToString() with COALESCE(..., '')).
-                (104, 690, ThisYear, true),
-                (103, 637, ThisYear, true),
-                (102, 570, TwoYearsAgo, false),
-                (101, 510, ThisYear, true),
-                (106, 369, "", true),
-                (105, 330, ThisYear, true),
+                // memberNumber, score, paidThroughYear, paid
+                // Fixed 2026-08-14: MemberId is now Member.Number (was Members.Id)
+                // and Paid is no longer inverted. A null LastPayment yields "".
+                (104, 690, PaidThruToday, true),
+                (103, 637, PaidThruToday, true),
+                (102, 570, PaidThruTwoYearsAgo, false),
+                (101, 510, PaidThruToday, true),
+                (106, 369, "", false),
+                (105, 330, PaidThruToday, true),
             ]);
         }
 
@@ -58,10 +60,10 @@ namespace NineTapTour.IntegrationTests
 
             AssertRows(result,
             [
-                // memberNumber, score, lastPaymentYear, paid
-                (106, 570, "", true),       // 180+190+200 (only 3 games: nothing dropped)
-                (101, 510, ThisYear, true), // 150+160+170+180 - 150 (all 4 games: lowest dropped)
-                (105, 390, ThisYear, true), // 190+200
+                // memberNumber, score, paidThroughYear, paid
+                (106, 570, "", false),       // 180+190+200 (only 3 games: nothing dropped)
+                (101, 510, PaidThruToday, true), // 150+160+170+180 - 150 (all 4 games: lowest dropped)
+                (105, 390, PaidThruToday, true), // 190+200
                 (107, 210, "life ", true),  // 210; lifetime member handled gracefully
             ]);
         }
@@ -74,15 +76,15 @@ namespace NineTapTour.IntegrationTests
 
             // Scores are unchanged from the raw SQL masters (the per-game EF
             // handicap math is numerically identical to sum + H*3 + B*3 - lowest),
-            // but MemberId/Paid/LastPaymentYear follow the fixed EF semantics.
+            // but MemberId/Paid/PaidThroughYear follow the fixed EF semantics.
             AssertRows(result,
             [
-                (103, 706, ThisYear, true),
-                (101, 705, ThisYear, true),
-                (104, 693, ThisYear, true),
-                (102, 678, TwoYearsAgo, false),
-                (105, 549, ThisYear, true),
-                (106, 531, "", true),
+                (103, 706, PaidThruToday, true),
+                (101, 705, PaidThruToday, true),
+                (104, 693, PaidThruToday, true),
+                (102, 678, PaidThruTwoYearsAgo, false),
+                (105, 549, PaidThruToday, true),
+                (106, 531, "", false),
             ]);
         }
 
@@ -151,7 +153,7 @@ namespace NineTapTour.IntegrationTests
 
             // EF path formats the lifetime marker with a trailing space
             MemberScores grace = result.Single(r => r.MemberId == 107);
-            Assert.AreEqual("life ", grace.LastPaymentYear);
+            Assert.AreEqual("life ", grace.PaidThroughYear);
             Assert.IsTrue(grace.Paid);
         }
 
@@ -193,14 +195,14 @@ namespace NineTapTour.IntegrationTests
         }
 
         private static void AssertRows(List<MemberScores> actual,
-            (int MemberId, int Score, string LastPaymentYear, bool Paid)[] expected)
+            (int MemberId, int Score, string PaidThroughYear, bool Paid)[] expected)
         {
             CollectionAssert.AreEqual(expected.Select(e => e.MemberId).ToArray(),
                 actual.Select(r => r.MemberId).ToArray(), "member ordering");
             CollectionAssert.AreEqual(expected.Select(e => e.Score).ToArray(),
                 actual.Select(r => r.Score.Value).ToArray(), "scores");
-            CollectionAssert.AreEqual(expected.Select(e => e.LastPaymentYear).ToArray(),
-                actual.Select(r => r.LastPaymentYear).ToArray(), "last payment year");
+            CollectionAssert.AreEqual(expected.Select(e => e.PaidThroughYear).ToArray(),
+                actual.Select(r => r.PaidThroughYear).ToArray(), "paid thru year");
             CollectionAssert.AreEqual(expected.Select(e => e.Paid).ToArray(),
                 actual.Select(r => r.Paid).ToArray(), "paid flags");
         }

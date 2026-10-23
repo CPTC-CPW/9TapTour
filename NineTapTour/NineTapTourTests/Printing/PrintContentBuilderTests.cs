@@ -79,7 +79,7 @@ namespace NineTapTourTests.Printing
                     MemberId = 1000 + i,
                     FirstName = "First" + i,
                     LastName = "Last" + i,
-                    LastPaymentYear = "2023"
+                    PaidThroughYear = "2023"
                 });
             }
             return members;
@@ -166,12 +166,12 @@ namespace NineTapTourTests.Printing
         [DataRow("", "N/A")]
         [DataRow("   ", "N/A")]
         [DataRow("life ", "life ")]
-        [DataRow("2023", "2024")]
-        [DataRow("1999", "2000")]
+        [DataRow("2023", "2023")]
+        [DataRow("1999", "1999")]
         [DataRow("unknown", "unknown")]
-        public void FormatDuesYear_MatchesCurrentBehavior(string lastPaymentYear, string expected)
+        public void FormatDuesYear_ShowsPaidThroughYearOrNA(string paidThroughYear, string expected)
         {
-            Assert.AreEqual(expected, PrintContentBuilder.FormatDuesYear(lastPaymentYear));
+            Assert.AreEqual(expected, PrintContentBuilder.FormatDuesYear(paidThroughYear));
         }
 
         [TestMethod]
@@ -187,7 +187,33 @@ namespace NineTapTourTests.Printing
         {
             MemberReportContent content = PrintContentBuilderPagingTests.BuildReport(PrintContentBuilderPagingTests.MakeMembers(1), printDues: true);
 
-            Assert.AreEqual("2024", content.Pages[0].Rows[0].DuesText);
+            Assert.AreEqual("2023", content.Pages[0].Rows[0].DuesText);
+        }
+
+        [DataTestMethod]
+        [DataRow(true, true, false)]   // paid member: no highlight
+        [DataRow(true, false, true)]   // owes dues: highlighted
+        [DataRow(false, false, false)] // dues not printed: never highlighted
+        public void BuildMemberReport_OwesDues_OnlyWhenDuesPrintedAndNotPaid(bool printDues, bool paid, bool expected)
+        {
+            List<MemberScores> members = PrintContentBuilderPagingTests.MakeMembers(1);
+            members[0].Paid = paid;
+
+            MemberReportContent content = PrintContentBuilderPagingTests.BuildReport(members, printDues: printDues);
+
+            Assert.AreEqual(expected, content.Pages[0].Rows[0].OwesDues);
+        }
+
+        [TestMethod]
+        public void BuildMemberReport_TeamWithOnePartnerOwing_OwesDues()
+        {
+            // ScoresService sets a team's Paid only when both partners are paid
+            TeamMemberScores team = new() { placing = 1, Score = 1500, Paid = false,
+                PaidThroughYear = "2026", Partner2PaidThroughYear = "2024" };
+
+            MemberReportContent content = PrintContentBuilderPagingTests.BuildReport([team], printDues: true);
+
+            Assert.IsTrue(content.Pages[0].Rows[0].OwesDues);
         }
 
         [TestMethod]
@@ -203,13 +229,13 @@ namespace NineTapTourTests.Printing
                 Partner1LastName = "Ames",
                 Partner2FirstName = "Bob",
                 Partner2LastName = "Barnes",
-                LastPaymentYear = "2023",
-                Partner2LastPaymentYear = "life "
+                PaidThroughYear = "2023",
+                Partner2PaidThroughYear = "life "
             };
             MemberReportContent content = PrintContentBuilderPagingTests.BuildReport([team], printDues: true);
 
             ReportRowContent row = content.Pages[0].Rows[0];
-            Assert.AreEqual("2024 & life ", row.DuesText);
+            Assert.AreEqual("2023 & life ", row.DuesText);
             Assert.AreEqual("11 & 22", row.MemberNumber);
             Assert.AreEqual("Ann Ames & Bob Barnes", row.Name);
         }
@@ -235,7 +261,7 @@ namespace NineTapTourTests.Printing
             MemberReportContent content = PrintContentBuilderPagingTests.BuildReport(PrintContentBuilderPagingTests.MakeMembers(1), ReportType.HighGameHandicapGameSenior, printDues: true);
 
             Assert.AreEqual("9 Tap Tour High - Game Senior Final Standings", content.Title);
-            Assert.AreEqual("       Game     Mem No            Name                                           Membership Paid To", content.ColumnHeaderLine);
+            Assert.AreEqual("       Game     Mem No            Name                                           Membership Paid Thru", content.ColumnHeaderLine);
         }
 
         [TestMethod]

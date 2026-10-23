@@ -333,6 +333,7 @@ public class TournamentRepository : ITournamentRepository
                         Handicap = g.Handicap,
                         Bonus = g.Bonus,
                         MemberBonus = m.Bonus,
+                        MemberHandicap = m.Handicap,
                         MoneyWon = g.MoneyWon,
                         SidePot = g.SidePot,
                         GameId = g.Id,

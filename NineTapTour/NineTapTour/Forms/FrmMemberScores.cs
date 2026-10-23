@@ -316,11 +316,9 @@ public partial class FrmMemberScores : Form
 
                 Game currentGame = GetScoresById(currentMem.Id);
 
-                int? mostRecentAvg = playerHistoryRepository.GetMostRecentAverage(currentMem.Number);
-                int displayHandicap = mostRecentAvg != null
-                    ? CalcService.CalculateHandicapPins(mostRecentAvg.Value)
-                    : (currentMem.Handicap ?? 0);
-                txtHandicap.Text = displayHandicap.ToString();
+                // The Member record's current handicap, which the member form keeps in step
+                // with the average, so an average edit applies to this tournament's entry.
+                txtHandicap.Text = (currentMem.Handicap ?? 0).ToString();
                 txtBonusPins.Text = currentMem.Bonus.ToString();
 
                 GetScores(currentGame);
@@ -1614,20 +1612,26 @@ public partial class FrmMemberScores : Form
             //Delete the game itself
             playerHistoryRepository.DeleteGame(g);
 
-            // Corrects any changes to the members stats after finalizing to the last accurate data
-            PlayerHistoryViewModel temp = playerHistoryRepository.GetMostRecentTournament(currentMem.Number);
-            if (temp != null)
+            // A finalized entry already advanced the member's stats, so removing it rolls
+            // them back to the last remaining finalized history. An open tournament has not
+            // touched the Member record, so the average and handicap the director saved on
+            // the member form are left alone.
+            if (g.IsFinalized)
             {
-                currentMem.Handicap = temp.HandiCap;
-                currentMem.Bonus = temp.Bonus;
-                currentMem.Average = temp.AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
-            }
-            else
-            {
-                MessageBox.Show("Current Stats Not added to Tournament yet.");
-            }
+                PlayerHistoryViewModel temp = playerHistoryRepository.GetMostRecentTournament(currentMem.Number);
+                if (temp != null)
+                {
+                    currentMem.Handicap = temp.HandiCap;
+                    currentMem.Bonus = temp.Bonus;
+                    currentMem.Average = temp.AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
+                }
+                else
+                {
+                    MessageBox.Show("Current Stats Not added to Tournament yet.");
+                }
 
-            memberRepository.AddOrUpdateMember(currentMem);
+                memberRepository.AddOrUpdateMember(currentMem);
+            }
         }
     }
 

@@ -7,7 +7,7 @@ namespace NineTapTour.Core.Models;
 /// Identifies the tournament whose winners list should be built, plus the
 /// tournament-type flags that change how total scores are computed.
 /// </summary>
-public record WinnersListRequest(int TournamentId, bool Doubles, bool ThreeOutOf4);
+public record WinnersListRequest(int TournamentId, bool Doubles, bool ThreeOutOf4, bool IsFinalized);
 
 /// <summary>
 /// The built winners list plus the entry counts the form tracks:

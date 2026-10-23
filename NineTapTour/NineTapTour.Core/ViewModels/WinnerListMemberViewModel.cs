@@ -37,6 +37,13 @@ namespace NineTapTour.Core.ViewModels
         /// </summary>
         public int MemberBonus { get; set; }
 
+        /// <summary>
+        /// The member's current handicap from the Member record (null when never set).
+        /// The member form keeps it in step with Member.Average, so a director's average
+        /// edit changes it immediately, before the tournament is finalized.
+        /// </summary>
+        public int? MemberHandicap { get; set; }
+
         public decimal? MoneyWon { get; set; }
 
         public decimal? SidePot { get; set; }
