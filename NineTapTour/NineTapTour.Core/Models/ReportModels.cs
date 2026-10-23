@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace NineTapTour.Core.Models
 {
@@ -78,6 +79,45 @@ namespace NineTapTour.Core.Models
     }
 
     /// <summary>
+    /// Per-member entry and cash counts over a time period, for the Entries vs
+    /// Cashout report. A cash is an entry that won money.
+    /// </summary>
+    public class CashoutRow
+    {
+        public int Rank { get; set; }
+        public int Member { get; set; }
+        public string Name { get; set; }
+        public int Entries { get; set; }
+        public int Cashes { get; set; }
+        /// <summary>
+        /// Cashes as a percentage of entries (0 to 100).
+        /// </summary>
+        public double CashPercent { get; set; }
+        public decimal Earnings { get; set; }
+    }
+
+    /// <summary>
+    /// An active member with no tournament entry since the inactivity cutoff,
+    /// for the Inactive Bowlers report.
+    /// </summary>
+    public class InactiveMemberRow
+    {
+        /// <summary>
+        /// Database identity, used to flag the member inactive. Hidden from the grid.
+        /// </summary>
+        [Browsable(false)]
+        public int MemberId { get; set; }
+        public int Member { get; set; }
+        public string Name { get; set; }
+        /// <summary>
+        /// Date of the member's most recent tournament entry, or null if they have none.
+        /// </summary>
+        public DateTime? LastBowled { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+    }
+
+    /// <summary>
     /// A name/value pair used to display the individual member report summary.
     /// </summary>
     public class ReportStatistic
@@ -98,6 +138,8 @@ namespace NineTapTour.Core.Models
         Earnings,
         FirstPlaceFinishes,
         Top5Finishes,
-        Top10Finishes
+        Top10Finishes,
+        EntriesVsCashout,
+        InactiveBowlers
     }
 }

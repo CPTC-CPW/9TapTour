@@ -20,4 +20,5 @@ public interface IMemberRepository
     int GetMemberIdByNumber(int memberNumber);
     int GetMemberNumberbyID(int memberID);
     int GetLastMemberNumber();
+    int SetInactive(IEnumerable<int> memberIds);
 }

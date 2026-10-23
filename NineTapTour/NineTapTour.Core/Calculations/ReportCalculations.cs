@@ -21,6 +21,12 @@ public static class ReportCalculations
     const int TOP_10_CUTOFF = 10;
 
     /// <summary>
+    /// Months without a tournament entry before an active member is listed on
+    /// the Inactive Bowlers report.
+    /// </summary>
+    public const int INACTIVE_MONTHS = 6;
+
+    /// <summary>
     /// Returns tournament entries ranked by scratch series, highest first.
     /// Entries with the same series share the same rank.
     /// </summary>
@@ -133,6 +139,85 @@ public static class ReportCalculations
 
         AssignRanks(rows, sortValue, (r, rank) => r.Rank = rank);
         return Limit(rows, topN);
+    }
+
+    /// <summary>
+    /// Builds the Entries vs Cashout report: one row per member with their entry
+    /// count, cash count (entries that won money), cash percentage, and earnings.
+    /// Rows are ranked by cash percentage, then by number of cashes.
+    /// </summary>
+    /// <param name="topN">Maximum rows to return, or null for all</param>
+    /// <param name="includeSidePots">When true, side pot winnings count toward cashes and earnings</param>
+    public static List<CashoutRow> GetCashoutReport(List<ReportGameEntry> entries, int? topN = null, bool includeSidePots = false)
+    {
+        var rows = entries
+            .GroupBy(e => e.MemberNumber)
+            .Select(group =>
+            {
+                int entryCount = group.Count();
+                int cashes = group.Count(e => e.MoneyWon + (includeSidePots ? e.SidePot : 0) > 0);
+
+                return new CashoutRow
+                {
+                    Member = group.Key,
+                    Name = group.First().FullName,
+                    Entries = entryCount,
+                    Cashes = cashes,
+                    CashPercent = Math.Round(100.0 * cashes / entryCount, 2),
+                    Earnings = group.Sum(e => e.MoneyWon + (includeSidePots ? e.SidePot : 0))
+                };
+            })
+            .OrderByDescending(r => r.CashPercent)
+            .ThenByDescending(r => r.Cashes)
+            .ThenBy(r => r.Name)
+            .ToList();
+
+        AssignRanks(rows, r => r.CashPercent, (r, rank) => r.Rank = rank);
+        return Limit(rows, topN);
+    }
+
+    /// <summary>
+    /// Returns the cutoff date for the Inactive Bowlers report: members with no
+    /// entry on or after this date are considered inactive.
+    /// </summary>
+    public static DateTime GetInactiveCutoff(DateTime today)
+    {
+        return today.Date.AddMonths(-INACTIVE_MONTHS);
+    }
+
+    /// <summary>
+    /// Returns the active members whose most recent tournament entry is before
+    /// the cutoff, or who have never entered. Members who joined or rejoined on
+    /// or after the cutoff are skipped so new members are not flagged before
+    /// their first tournament. Sorted with never-bowled members first, then
+    /// oldest last bowled date.
+    /// </summary>
+    /// <param name="lastEntryDates">Most recent tournament date keyed by member Id</param>
+    public static List<InactiveMemberRow> GetInactiveMembers(List<Member> members, Dictionary<int, DateTime> lastEntryDates, DateTime cutoff)
+    {
+        return members
+            .Where(m => m.IsActive)
+            .Select(m => new
+            {
+                Member = m,
+                LastBowled = lastEntryDates.TryGetValue(m.Id, out DateTime last) ? last : (DateTime?)null
+            })
+            .Where(x => !(x.LastBowled >= cutoff)
+                     && !(x.Member.JoinDate >= cutoff)
+                     && !(x.Member.RejoinDate >= cutoff))
+            .OrderBy(x => x.LastBowled ?? DateTime.MinValue)
+            .ThenBy(x => x.Member.LastName)
+            .ThenBy(x => x.Member.FirstName)
+            .Select(x => new InactiveMemberRow
+            {
+                MemberId = x.Member.Id,
+                Member = x.Member.Number,
+                Name = x.Member.LastName + ", " + x.Member.FirstName,
+                LastBowled = x.LastBowled,
+                Phone = x.Member.PrimaryPhone,
+                Email = x.Member.Email
+            })
+            .ToList();
     }
 
     /// <summary>

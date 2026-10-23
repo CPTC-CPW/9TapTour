@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -88,6 +89,22 @@ public class ReportsRepository : IReportsRepository
             .Distinct()
             .OrderByDescending(y => y)
             .ToList();
+    }
+
+    /// <summary>
+    /// Returns the date of each member's most recent tournament entry, keyed by
+    /// member Id. Every tournament counts, finalized or not and including
+    /// imported history, since any entry means the member bowled that day.
+    /// </summary>
+    public Dictionary<int, DateTime> GetLastEntryDates()
+    {
+        using var db = dbFactory.CreateDbContext();
+        return db.Participants
+            .Where(p => p.Member != null && p.Tournament != null)
+            .Select(p => new { MemberId = p.Member.Id, p.Tournament.Date })
+            .GroupBy(x => x.MemberId)
+            .Select(g => new { MemberId = g.Key, LastDate = g.Max(x => x.Date) })
+            .ToDictionary(x => x.MemberId, x => x.LastDate);
     }
 
     /// <summary>
