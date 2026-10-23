@@ -102,7 +102,7 @@ public static class PrintContentBuilder
         string columnHeaderLine;
         if (printDues)
         {
-            columnHeaderLine = "       " + reportType + "     Mem No            Name                                           Membership Paid To";
+            columnHeaderLine = "       " + reportType + "     Mem No            Name                                           Membership Paid Thru";
         }
         else
         {
@@ -188,8 +188,8 @@ public static class PrintContentBuilder
         if (printDues)
         {
             duesText = (entry is TeamMemberScores tmsEntry)
-                ? $"{FormatDuesYear(tmsEntry.LastPaymentYear)} & {FormatDuesYear(tmsEntry.Partner2LastPaymentYear)}"
-                : FormatDuesYear(entry.LastPaymentYear);
+                ? $"{FormatDuesYear(tmsEntry.PaidThroughYear)} & {FormatDuesYear(tmsEntry.Partner2PaidThroughYear)}"
+                : FormatDuesYear(entry.PaidThroughYear);
         }
 
         // Create name string containing lastname, firstname
@@ -201,19 +201,15 @@ public static class PrintContentBuilder
     }
 
     /// <summary>
-    /// Formats the year a member's dues are paid through from their last
-    /// payment year: one year after a numeric payment year, 'life ' passes
-    /// through unchanged, and missing values become 'N/A'.
+    /// Formats the year a member's dues are paid thru (see
+    /// <see cref="MembershipDues.FormatPaidThroughYear"/>): the year and 'life '
+    /// pass through unchanged, and missing values become 'N/A'.
     /// </summary>
-    public static string FormatDuesYear(string lastPaymentYear)
+    public static string FormatDuesYear(string paidThroughYear)
     {
-        if (string.IsNullOrWhiteSpace(lastPaymentYear))
+        if (string.IsNullOrWhiteSpace(paidThroughYear))
             return "N/A";
-        if (lastPaymentYear.Equals("life "))
-            return lastPaymentYear;
-        if (int.TryParse(lastPaymentYear, out int year))
-            return (year + 1).ToString();
-        return lastPaymentYear;
+        return paidThroughYear;
     }
 
     /// <summary>

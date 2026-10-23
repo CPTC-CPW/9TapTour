@@ -7,6 +7,7 @@ using NineTapTour.Database;
 using NineTapTour.Helpers;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using NineTapTour.Core.Printing;
 using static NineTapTour.Core.Calculations.ReportHelper;
 using ClosedXML.Excel;
 
@@ -146,7 +147,7 @@ public partial class FrmMemberScoresReports : Form
             int printDuesOffset = 0;
             if (printDues)
             {
-                ws.Cell(4, 5).Value = "Membership Paid To";
+                ws.Cell(4, 5).Value = "Membership Paid Thru";
                 printDuesOffset = 1;
             }
 
@@ -170,20 +171,9 @@ public partial class FrmMemberScoresReports : Form
                 if (printDuesOffset == 1)
                 {
                     string cellValue = (temp[idx] is TeamMemberScores teamEntry)
-                        ? $"{FormatDuesYear(teamEntry.LastPaymentYear)} & {FormatDuesYear(teamEntry.Partner2LastPaymentYear)}"
-                        : FormatDuesYear(temp[idx].LastPaymentYear);
+                        ? $"{PrintContentBuilder.FormatDuesYear(teamEntry.PaidThroughYear)} & {PrintContentBuilder.FormatDuesYear(teamEntry.Partner2PaidThroughYear)}"
+                        : PrintContentBuilder.FormatDuesYear(temp[idx].PaidThroughYear);
                     ws.Cell(row, 5).Value = cellValue;
-
-                    static string FormatDuesYear(string lastPaymentYear)
-                    {
-                        if (string.IsNullOrWhiteSpace(lastPaymentYear))
-                            return "N/A";
-                        if (lastPaymentYear.Equals("life "))
-                            return lastPaymentYear;
-                        if (int.TryParse(lastPaymentYear, out int year))
-                            return (year + 1).ToString();
-                        return lastPaymentYear;
-                    }
                 }
             }
 

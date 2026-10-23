@@ -109,22 +109,6 @@ public partial class FrmMemberData : Form
         ctrl.BackColor = Color.Yellow;
     }
 
-    public void RemovePlaceholderText(object sender, EventArgs e)
-    {
-        if (txtDOB.Text == "MM/DD/YYYY")
-        {
-            txtDOB.Text = "";
-        }
-    }
-
-    public void AddPlaceholderText(object sender, EventArgs e)
-    {
-        if (string.IsNullOrWhiteSpace(txtDOB.Text))
-        {
-            txtDOB.Text = "MM/DD/YYYY";
-        }
-    }
-
     /// <summary>
     /// Finds "Member Number" in the database and populates the "Member Data" form.
     /// If that "Member Number" is not assigned then display error box.
@@ -180,7 +164,7 @@ public partial class FrmMemberData : Form
             txtLastName.Text = "";
             txtFirstName.Text = "";
             txtMiddleInitial.Text = "";
-            txtDOB.Text = "MM/DD/YYYY";
+            txtDOB.Text = "";
             txtSSN.Text = "";
 
             // Postal Address
@@ -273,7 +257,7 @@ public partial class FrmMemberData : Form
             }
             else
             {
-                txtDOB.Text = "MM/DD/YYYY";
+                txtDOB.Text = "";
             }
 
             if (currentMem.JoinDate.HasValue)
@@ -339,16 +323,10 @@ public partial class FrmMemberData : Form
 
             if (currentMem.LastPayment.HasValue)
             {
-                txtLastPayment.Text = 
+                txtLastPayment.Text =
                     currentMem.LastPayment.Value.ToString("MM/dd/yyyy");
 
-                // Lifetime members have a paid to date of 9999, so only set paid to date if not a lifetime member
-                if (!currentMem.IsLifetimeMember)
-                {
-                    txtPaidTo.Text = currentMem.LastPayment.Value.AddYears(1).ToString("yyyy");
-                }
-
-                CheckPayment();
+                UpdatePaidThrough();
             }
             else
             {
@@ -420,12 +398,14 @@ public partial class FrmMemberData : Form
             valid = false;
         }
 
-        // validate DOB textbox
-        if(String.IsNullOrEmpty(txtDOB.Text) || txtDOB.Text.Contains("MM/DD/YYYY"))
+        // validate DOB textbox: optional, but when entered it needs a full 4-digit year
+        // and can't be in the future
+        if(String.IsNullOrWhiteSpace(txtDOB.Text))
         {
             txtDOB.BackColor = SystemColors.Control;
         }
-        else if(!ValidationHelper.IsDateTimeValid(txtDOB.Text))
+        else if(!txtDOB.MaskCompleted || !ValidationHelper.IsDateTimeValid(txtDOB.Text)
+            || DateTime.Parse(txtDOB.Text) > DateTime.Today)
         {
             lblDOBValidation.Visible = true;
             txtDOB.BackColor = Color.LightPink;
@@ -468,7 +448,7 @@ public partial class FrmMemberData : Form
                 FirstName = txtFirstName.Text,
                 MiddleInitial = txtMiddleInitial.Text
             };
-            if (!String.IsNullOrEmpty(txtDOB.Text) && !txtDOB.Text.Contains("MM/DD/YYYY"))
+            if (!String.IsNullOrWhiteSpace(txtDOB.Text))
             {
                 temp.DateOfBirth = DateTime.Parse(txtDOB.Text);
             }
@@ -707,12 +687,7 @@ public partial class FrmMemberData : Form
             txtDateJoined.Text = DateTime.Now.ToString("MM/dd/yyyy");
             txtLastBowled.Text = DateTime.Now.ToString("MM/dd/yyyy");
             txtLastPayment.Text = "";
-            txtDOB.Text = "MM/DD/YYYY";
-
-            //removes placeholder text when DOB textBox is clicked
-            txtDOB.GotFocus += RemovePlaceholderText;
-            //adds placeholder text when DOB textBox is clicked away from with a date
-            txtDOB.LostFocus += AddPlaceholderText;
+            txtDOB.Text = "";
 
             //get latest member number, or set to 1 if no members in database
             int nextMemberNumber = memberRepository.GetLastMemberNumber() + 1;
@@ -858,8 +833,36 @@ public partial class FrmMemberData : Form
             txtLastPayment.Enabled = true;
             txtPaidTo.Visible = true;
             lblPaidTo.Visible = true;
-            CheckPayment();
+            UpdatePaidThrough();
         }
+    }
+
+    /// <summary>
+    /// Recalculates the "membership paid thru" year as the last payment date is entered
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void TxtLastPayment_TextChanged(object sender, EventArgs e)
+    {
+        UpdatePaidThrough();
+    }
+
+    /// <summary>
+    /// Shows the year the last payment keeps the membership valid thru and whether a payment is due.
+    /// Lifetime members have a last payment of 9999, so the paid thru year is only shown for other members.
+    /// </summary>
+    private void UpdatePaidThrough()
+    {
+        txtPaidTo.Text = !chbLifetime.Checked && TryGetLastPayment(out DateTime lastPayment)
+            ? MembershipDues.PaidThroughYear(lastPayment).ToString()
+            : "";
+        CheckPayment();
+    }
+
+    private bool TryGetLastPayment(out DateTime lastPayment)
+    {
+        lastPayment = default;
+        return txtLastPayment.MaskCompleted && DateTime.TryParse(txtLastPayment.Text, out lastPayment);
     }
 
     /// <summary>
@@ -875,20 +878,13 @@ public partial class FrmMemberData : Form
     }
 
     /// <summary>
-    /// Checks if last payment was made more than a year ago. If it was, show warning label that payment is due. 
+    /// Checks if the membership is paid thru the current year. If it isn't, show warning label that payment is due.
     /// </summary>
     private void CheckPayment()
     {
-        /********************************************************************************
-        added '&& chbLifetime.Checked == false' so when the member is a lifetime member, 
-        the lblPaymentInfo will not be visible even if their last payment was due before
-        *********************************************************************************/
-        lblPaymentInfo.Visible = true;
-        if (chbLifetime.Checked || (DateTime.TryParse(txtLastPayment.Text, 
-            out DateTime lastPayment) && lastPayment >= DateTime.Now.AddYears(-1)))
-        {
-            lblPaymentInfo.Visible = false;
-        }
+        bool hasPayment = TryGetLastPayment(out DateTime lastPayment);
+        lblPaymentInfo.Visible = !MembershipDues.IsCurrent(chbLifetime.Checked,
+            hasPayment ? lastPayment : null, DateTime.Today);
     }
 
     /// <summary>

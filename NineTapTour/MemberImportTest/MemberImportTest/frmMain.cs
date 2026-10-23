@@ -107,7 +107,8 @@ public partial class FrmMain : Form
             if (TryParsePaidThroughYear(normalized, out int paidThroughYear))
             {
                 // Paid through YYYY means membership expires at the start of YYYY+1.
-                // Store LastPayment as YYYY-1 so existing report logic (+1 display) remains consistent.
+                // Store LastPayment as 12/31 of YYYY-1: payments from October on count
+                // toward the next year (MembershipDues), so this reads back as paid thru YYYY.
                 int lastPaymentYear = Math.Max(1753, paidThroughYear - 1);
                 if (!member.IsLifetimeMember)
                     member.LastPayment = new DateTime(lastPaymentYear, 12, 31);

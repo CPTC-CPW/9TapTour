@@ -112,9 +112,8 @@ public class ParticipantRepository : IParticipantRepository
                                             FirstName = g.Member.FirstName,
                                             LastName = g.Member.LastName,
                                             Score = g.Game.Game1.Value,
-                                            LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                                            Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
+                                            PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                                            Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today)
                                         }),
                 .. (from g in (db.Participants.Include(b => b.Member)
                     .Include(b => b.Game)
@@ -125,9 +124,8 @@ public class ParticipantRepository : IParticipantRepository
                 FirstName = g.Member.FirstName,
                 LastName = g.Member.LastName,
                 Score = g.Game.Game2.Value,
-                LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
+                PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today)
                 }),
                 .. (from g in (db.Participants.Include(b => b.Member)
                      .Include(b => b.Game)
@@ -138,9 +136,8 @@ public class ParticipantRepository : IParticipantRepository
                 FirstName = g.Member.FirstName,
                 LastName = g.Member.LastName,
                 Score = g.Game.Game3.Value,
-                LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                   (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
+                PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today)
                 }),
                 .. (from g in (db.Participants.Include(b => b.Member)
                      .Include(b => b.Game)
@@ -151,9 +148,8 @@ public class ParticipantRepository : IParticipantRepository
                 FirstName = g.Member.FirstName,
                 LastName = g.Member.LastName,
                 Score = g.Game.Game4.Value,
-                LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                   (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
+                PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today)
                 }),
             ];
         }
@@ -178,9 +174,8 @@ public class ParticipantRepository : IParticipantRepository
                     FirstName = g.Member.FirstName,
                     LastName = g.Member.LastName,
                     Score = g.Game.Game1.Value,
-                    LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                    Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                        (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
+                    PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                    Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today)
                     }),
                     .. (from g in (db.Participants.Include(nameof(Participant.Member))
                         .Include(nameof(Participant.Game))
@@ -192,9 +187,8 @@ public class ParticipantRepository : IParticipantRepository
                     FirstName = g.Member.FirstName,
                     LastName = g.Member.LastName,
                     Score = g.Game.Game2.Value,
-                    LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                    Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                        (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
+                    PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                    Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today)
                     }),
                     .. (from g in (db.Participants.Include(nameof(Participant.Member))
                         .Include(nameof(Participant.Game))
@@ -206,9 +200,8 @@ public class ParticipantRepository : IParticipantRepository
                     FirstName = g.Member.FirstName,
                     LastName = g.Member.LastName,
                     Score = g.Game.Game3.Value,
-                    LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                    Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                        (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
+                    PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                    Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today)
                     }),
                     .. (from g in (db.Participants.Include(nameof(Participant.Member))
                         .Include(nameof(Participant.Game))
@@ -220,9 +213,8 @@ public class ParticipantRepository : IParticipantRepository
                     FirstName = g.Member.FirstName,
                     LastName = g.Member.LastName,
                     Score = g.Game.Game4.Value,
-                    LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                    Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                        (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
+                    PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                    Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today)
                     }),
                 ];
             temp.Sort(new MemberScoresComparer());
@@ -253,9 +245,8 @@ public class ParticipantRepository : IParticipantRepository
                         Game3Score = g.Game.Game3,
                         Game4Score = g.Game.Game4,
                         Score = 0,
-                        LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                        Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                        PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                        Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today),
                         Squad = g.Squad
                     })];
 
@@ -313,9 +304,8 @@ public class ParticipantRepository : IParticipantRepository
                         HandicapValue = g.Game.Handicap,
                         BonusPinValue = g.Game.Bonus,
                         Score = 0,
-                        LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                        Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                        PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                        Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today),
                         Squad = g.Squad
                     })];
 
@@ -373,9 +363,8 @@ public class ParticipantRepository : IParticipantRepository
                         Game3Score = g.Game.Game3,
                         Game4Score = g.Game.Game4,
                         Score = 0,
-                        LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                        Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                        PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                        Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today),
                         Squad = g.Squad
                     })];
 
@@ -444,9 +433,8 @@ public class ParticipantRepository : IParticipantRepository
                         HandicapValue = g.Game.Handicap,
                         BonusPinValue = g.Game.Bonus,
                         Score = 0,
-                        LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                        Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                        PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                        Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today),
                         Squad = g.Squad
                     })];
 
@@ -510,9 +498,8 @@ public class ParticipantRepository : IParticipantRepository
                          HandicapValue = g.Game.Handicap,
                          BonusPinValue = g.Game.Bonus,
                          Score = 0,
-                         LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                         Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                         PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                         Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today),
                          Squad = squad
                      }).ToList());
 
@@ -574,9 +561,8 @@ public class ParticipantRepository : IParticipantRepository
                         Game3Score = g.Game.Game3,
                         Game4Score = g.Game.Game4,
                         Score = 0,
-                        LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                        Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                        PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                        Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today),
                         Squad = g.Squad
                     })];
 
@@ -637,9 +623,8 @@ public class ParticipantRepository : IParticipantRepository
                          Game3Score = g.Game.Game3,
                          Game4Score = g.Game.Game4,
                          Score = 0,
-                         LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                         Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                         (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                         PaidThroughYear = MembershipDues.FormatPaidThroughYear(g.Member.IsLifetimeMember, g.Member.LastPayment),
+                         Paid = MembershipDues.IsCurrent(g.Member.IsLifetimeMember, g.Member.LastPayment, DateTime.Today),
                          Squad = squad
                      }).ToList());
             }

@@ -307,8 +307,7 @@ public class WinnersService : IWinnersService
             .Select(m => new { m.Number, m.IsLifetimeMember, m.LastPayment })
             .ToDictionary(
                 x => x.Number,
-                x => x.IsLifetimeMember
-                    || (x.LastPayment.HasValue && (x.LastPayment.Value.Year + 1) >= DateTime.Today.Year));
+                x => MembershipDues.IsCurrent(x.IsLifetimeMember, x.LastPayment, DateTime.Today));
     }
 
     /// <summary>

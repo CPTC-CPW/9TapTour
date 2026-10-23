@@ -99,7 +99,7 @@ namespace NineTapTour.Core.Entities
         public int placing { get; set; }
         public int? Score { get; set; }
         public int MemberId { get; set; } // Renamed MemberNo to MemberId because that is the actual info being assigned to this property
-        public string LastPaymentYear { get; set; }
+        public string PaidThroughYear { get; set; }
         public bool Paid { get; set; }
         public int Squad { get; set; }
     }
