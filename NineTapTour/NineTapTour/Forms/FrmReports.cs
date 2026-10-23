@@ -311,7 +311,7 @@ public partial class FrmReports : Form
 
         string prompt = $"{rows.Count} active member(s) have not bowled since {cutoff:M/d/yyyy}.\n\n" +
             "Mark them all inactive?";
-        if (MessageBox.Show(prompt, "Inactive Bowlers", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+        if (MessageBox.Show(prompt, "Inactive Bowlers", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
         {
             return;
         }
