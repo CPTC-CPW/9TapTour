@@ -171,4 +171,26 @@ public class MemberRepository : IMemberRepository
         return db.Members
             .Max(m => (int?)m.Number) ?? 0;
     }
+
+    /// <summary>
+    /// Sets IsActive to false for the members with the given database Ids.
+    /// Returns the number of members that were changed.
+    /// </summary>
+    public int SetInactive(IEnumerable<int> memberIds)
+    {
+        List<int> ids = memberIds.ToList();
+        using var db = dbFactory.CreateDbContext();
+
+        List<Member> members = db.Members
+            .Where(m => ids.Contains(m.Id) && m.IsActive)
+            .ToList();
+
+        foreach (Member member in members)
+        {
+            member.IsActive = false;
+        }
+
+        db.SaveChanges();
+        return members.Count;
+    }
 }

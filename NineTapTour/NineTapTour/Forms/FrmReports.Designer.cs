@@ -276,6 +276,7 @@
             cmbCategory.Name = "cmbCategory";
             cmbCategory.Size = new System.Drawing.Size(175, 23);
             cmbCategory.TabIndex = 1;
+            cmbCategory.SelectedIndexChanged += CmbCategory_SelectedIndexChanged;
             //
             // lblCategory
             //

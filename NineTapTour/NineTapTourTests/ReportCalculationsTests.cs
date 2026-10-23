@@ -210,5 +210,121 @@ namespace NineTapTourTests
 
             Assert.IsEmpty(stats);
         }
+
+        /// <summary>
+        /// The standard test entries plus a third entry for member 2 that won
+        /// no prize money, only a side pot.
+        /// </summary>
+        private static List<ReportGameEntry> GetCashoutTestEntries()
+        {
+            List<ReportGameEntry> entries = GetTestEntries();
+            entries.Add(new ReportGameEntry
+            {
+                MemberNumber = 2, FirstName = "Bob", LastName = "Jones",
+                TournamentId = 101, TournamentDate = new DateTime(2025, 4, 1), Location = "Lanes B",
+                GameScores = [150, 150, 150], ScratchSeries = 450, HandicapSeries = 470,
+                GamesPlayed = 3, MoneyWon = 0m, SidePot = 10m, PlaceStanding = 12
+            });
+            return entries;
+        }
+
+        [TestMethod]
+        public void GetCashoutReport_CountsEntriesAndCashesPerMember()
+        {
+            List<CashoutRow> rows = ReportCalculations.GetCashoutReport(GetCashoutTestEntries());
+
+            // Member 1 cashed in both entries; member 2 cashed in one of two
+            Assert.HasCount(2, rows);
+            Assert.AreEqual(1, rows[0].Member);
+            Assert.AreEqual(1, rows[0].Rank);
+            Assert.AreEqual(2, rows[0].Entries);
+            Assert.AreEqual(2, rows[0].Cashes);
+            Assert.AreEqual(100.0, rows[0].CashPercent);
+            Assert.AreEqual(125m, rows[0].Earnings);
+
+            Assert.AreEqual(2, rows[1].Member);
+            Assert.AreEqual(2, rows[1].Rank);
+            Assert.AreEqual(2, rows[1].Entries);
+            Assert.AreEqual(1, rows[1].Cashes);
+            Assert.AreEqual(50.0, rows[1].CashPercent);
+            Assert.AreEqual(50m, rows[1].Earnings);
+        }
+
+        [TestMethod]
+        public void GetCashoutReport_SidePotsCountAsCashesWhenIncluded()
+        {
+            List<CashoutRow> rows = ReportCalculations.GetCashoutReport(GetCashoutTestEntries(), includeSidePots: true);
+
+            CashoutRow bob = rows.Single(r => r.Member == 2);
+            Assert.AreEqual(2, bob.Cashes);
+            Assert.AreEqual(100.0, bob.CashPercent);
+            Assert.AreEqual(60m, bob.Earnings);
+
+            // Both members now cash 100%, so they share the top rank
+            Assert.IsTrue(rows.All(r => r.Rank == 1));
+        }
+
+        [TestMethod]
+        public void GetCashoutReport_LimitsToTopN()
+        {
+            List<CashoutRow> rows = ReportCalculations.GetCashoutReport(GetCashoutTestEntries(), 1);
+
+            Assert.HasCount(1, rows);
+            Assert.AreEqual(1, rows[0].Member);
+        }
+
+        [TestMethod]
+        public void GetInactiveCutoff_IsSixMonthsBeforeToday()
+        {
+            DateTime cutoff = ReportCalculations.GetInactiveCutoff(new DateTime(2026, 10, 23, 14, 30, 0));
+
+            Assert.AreEqual(new DateTime(2026, 4, 23), cutoff);
+        }
+
+        private static Member NewInactiveTestMember(int id, string lastName, bool isActive = true,
+            DateTime? joinDate = null, DateTime? rejoinDate = null)
+        {
+            return new Member
+            {
+                Id = id, Number = id + 100, FirstName = "Test", LastName = lastName, IsActive = isActive,
+                JoinDate = joinDate, RejoinDate = rejoinDate, PrimaryPhone = "555-0100", Email = "test@example.com"
+            };
+        }
+
+        [TestMethod]
+        public void GetInactiveMembers_ListsActiveMembersNotBowledSinceCutoff()
+        {
+            DateTime cutoff = new(2026, 4, 23);
+            List<Member> members =
+            [
+                NewInactiveTestMember(1, "Recent"),
+                NewInactiveTestMember(2, "OnCutoff"),
+                NewInactiveTestMember(3, "Stale"),
+                NewInactiveTestMember(4, "Never"),
+                NewInactiveTestMember(5, "AlreadyInactive", isActive: false),
+                NewInactiveTestMember(6, "NewMember", joinDate: new DateTime(2026, 9, 1)),
+                NewInactiveTestMember(7, "Rejoined", rejoinDate: new DateTime(2026, 6, 1)),
+                NewInactiveTestMember(8, "OldJoin", joinDate: new DateTime(2020, 1, 1)),
+            ];
+            Dictionary<int, DateTime> lastEntryDates = new()
+            {
+                { 1, new DateTime(2026, 10, 1) },
+                { 2, cutoff },
+                { 3, new DateTime(2025, 12, 6) },
+                { 5, new DateTime(2024, 1, 1) },
+                { 7, new DateTime(2025, 1, 1) },
+            };
+
+            List<InactiveMemberRow> rows = ReportCalculations.GetInactiveMembers(members, lastEntryDates, cutoff);
+
+            // Never-bowled members first (by name), then oldest last bowled
+            CollectionAssert.AreEqual(new[] { "Never", "OldJoin", "Stale" },
+                rows.Select(r => r.Name.Split(',')[0]).ToArray());
+            Assert.IsNull(rows[0].LastBowled);
+            Assert.AreEqual(new DateTime(2025, 12, 6), rows[2].LastBowled);
+            Assert.AreEqual(3, rows[2].MemberId);
+            Assert.AreEqual(103, rows[2].Member);
+            Assert.AreEqual("555-0100", rows[2].Phone);
+        }
     }
 }

@@ -22,6 +22,8 @@ public partial class FrmReports : Form
     const string CATEGORY_SUMMARY = "Summary";
     const string CATEGORY_HIGH_SERIES = "High Series";
     const string CATEGORY_HIGH_GAMES = "High Games";
+    // Kept short to fit the category dropdown's width
+    const string CATEGORY_INACTIVE = "Inactive Bowlers (6 Mo.)";
 
     static readonly Dictionary<string, TourReportCategory> TourCategories = new()
     {
@@ -33,6 +35,8 @@ public partial class FrmReports : Form
         { "1st Place Finishes", TourReportCategory.FirstPlaceFinishes },
         { "Top 5 Finishes", TourReportCategory.Top5Finishes },
         { "Top 10 Finishes", TourReportCategory.Top10Finishes },
+        { "Entries vs Cashout", TourReportCategory.EntriesVsCashout },
+        { CATEGORY_INACTIVE, TourReportCategory.InactiveBowlers },
     };
 
     static readonly string[] IndividualCategories =
@@ -54,6 +58,8 @@ public partial class FrmReports : Form
         { "ThirdPlace", "3rd Place" },
         { "Top5", "Top 5" },
         { "Top10", "Top 10" },
+        { "CashPercent", "Cash %" },
+        { "LastBowled", "Last Bowled" },
     };
 
     /// <summary>
@@ -165,6 +171,19 @@ public partial class FrmReports : Form
         PopulateCategories();
     }
 
+    /// <summary>
+    /// The Inactive Bowlers report always uses the last 6 months, so the
+    /// period and filter options do not apply to it.
+    /// </summary>
+    private void CmbCategory_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        bool usesOptions = cmbCategory.Text != CATEGORY_INACTIVE;
+        grpPeriod.Enabled = usesOptions;
+        txtTopN.Enabled = usesOptions;
+        chkIncludeSidePots.Enabled = usesOptions;
+        chkIncludeImported.Enabled = usesOptions;
+    }
+
     private void RbPeriod_CheckedChanged(object sender, EventArgs e)
     {
         cmbYear.Enabled = rbYear.Checked;
@@ -174,6 +193,12 @@ public partial class FrmReports : Form
 
     private void BtnRunReport_Click(object sender, EventArgs e)
     {
+        if (rbTourWide.Checked && cmbCategory.Text == CATEGORY_INACTIVE)
+        {
+            RunInactiveBowlersReport();
+            return;
+        }
+
         if (!TryGetSelectedPeriod(out int? startYear, out int? endYear, out string periodLabel))
         {
             return;
@@ -245,11 +270,62 @@ public partial class FrmReports : Form
             {
                 TourReportCategory.HighSeries => ReportCalculations.GetHighSeries(entries, topN),
                 TourReportCategory.HighGames => ReportCalculations.GetHighGames(entries, topN),
+                TourReportCategory.EntriesVsCashout => ReportCalculations.GetCashoutReport(entries, topN, includeSidePots),
                 var tourCategory => (object)ReportCalculations.GetTourReport(entries, tourCategory, topN, includeSidePots)
             };
         }
 
         FormatGrid();
+    }
+
+    /// <summary>
+    /// Lists active members with no tournament entry in the last 6 months, then
+    /// offers to mark all of them inactive. The list stays in the grid so it
+    /// can still be exported afterward.
+    /// </summary>
+    private void RunInactiveBowlersReport()
+    {
+        DateTime cutoff = ReportCalculations.GetInactiveCutoff(DateTime.Today);
+        List<InactiveMemberRow> rows;
+        try
+        {
+            rows = ReportCalculations.GetInactiveMembers(
+                memberRepository.GetMemberList(), reportsRepository.GetLastEntryDates(), cutoff);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("An error occurred while loading report data:\n" + ex.Message,
+                "Report Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+        currentReportTitle = $"Tour-Wide — Inactive Bowlers — no entries since {cutoff:M/d/yyyy}";
+        dgvReport.DataSource = rows;
+        FormatGrid();
+
+        if (rows.Count == 0)
+        {
+            MessageBox.Show($"Every active member has bowled since {cutoff:M/d/yyyy}.");
+            return;
+        }
+
+        string prompt = $"{rows.Count} active member(s) have not bowled since {cutoff:M/d/yyyy}.\n\n" +
+            "Mark them all inactive?";
+        if (MessageBox.Show(prompt, "Inactive Bowlers", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+        {
+            return;
+        }
+
+        try
+        {
+            int updated = memberRepository.SetInactive(rows.Select(r => r.MemberId));
+            MessageBox.Show($"{updated} member(s) marked inactive.");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("An error occurred while marking members inactive:\n" + ex.Message,
+                "Report Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     /// <summary>
@@ -268,7 +344,7 @@ public partial class FrmReports : Form
             {
                 column.DefaultCellStyle.Format = "C2";
             }
-            else if (column.ValueType == typeof(DateTime))
+            else if (column.ValueType == typeof(DateTime) || column.ValueType == typeof(DateTime?))
             {
                 column.DefaultCellStyle.Format = "M/d/yyyy";
             }
@@ -277,7 +353,12 @@ public partial class FrmReports : Form
                 column.DefaultCellStyle.Format = "N2";
             }
 
-            column.AutoSizeMode = column.Name is "Statistic" or "Value" or "Name" or "Location"
+            if (column.Name == "LastBowled")
+            {
+                column.DefaultCellStyle.NullValue = "Never";
+            }
+
+            column.AutoSizeMode = column.Name is "Statistic" or "Value" or "Name" or "Location" or "Email"
                 ? DataGridViewAutoSizeColumnMode.AllCells
                 : DataGridViewAutoSizeColumnMode.DisplayedCells;
         }
@@ -379,7 +460,9 @@ public partial class FrmReports : Form
             {
                 for (int col = 0; col < dgvReport.Columns.Count; col++)
                 {
-                    object value = dgvReport.Rows[row].Cells[col].Value;
+                    // Null cells export their display text, e.g. "Never" for Last Bowled
+                    DataGridViewCell gridCell = dgvReport.Rows[row].Cells[col];
+                    object value = gridCell.Value ?? gridCell.FormattedValue;
                     var cell = ws.Cell(HEADER_ROW + 1 + row, col + 1);
                     cell.Value = XLCellValue.FromObject(value);
 
