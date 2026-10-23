@@ -50,6 +50,27 @@ namespace NineTapTourTests
         }
 
         [TestMethod]
+        public void DefaultLastPayment_NewBowlerWithNoPayment_UsesJoinDate()
+        {
+            DateTime joined = new(2026, 3, 3, 14, 30, 0);
+
+            Assert.AreEqual(new DateTime(2026, 3, 3),
+                MembershipDues.DefaultLastPayment(null, joined, isLifetimeMember: false, hasGameHistory: false));
+        }
+
+        [TestMethod]
+        public void DefaultLastPayment_KeepsEnteredPaymentLifetimeAndBowlersWithHistory()
+        {
+            DateTime joined = new(2026, 3, 3);
+            DateTime paid = new(2026, 10, 5);
+
+            Assert.AreEqual(paid, MembershipDues.DefaultLastPayment(paid, joined, false, false));
+            Assert.IsNull(MembershipDues.DefaultLastPayment(null, joined, isLifetimeMember: true, hasGameHistory: false));
+            Assert.IsNull(MembershipDues.DefaultLastPayment(null, joined, isLifetimeMember: false, hasGameHistory: true));
+            Assert.IsNull(MembershipDues.DefaultLastPayment(null, null, false, false));
+        }
+
+        [TestMethod]
         public void ImportedPaidThroughYear_ReadsBackAsThatYear()
         {
             // MemberImportTest stores "paid thru YYYY" as 12/31 of YYYY-1.

@@ -119,6 +119,8 @@ public partial class FrmMemberData : Form
         lblFirstNameValidation.Visible = false;
         lblAverageValidation.Visible = false;
         lblDateJoinedValidation.Visible = false;
+        lblLastPaymentValidation.Visible = false;
+        txtLastPayment.BackColor = SystemColors.Control;
 
         //set all member info group control background colors
         foreach (Control c in grpMemberInfo.Controls)
@@ -404,14 +406,37 @@ public partial class FrmMemberData : Form
         {
             txtDOB.BackColor = SystemColors.Control;
         }
-        else if(!txtDOB.MaskCompleted || !ValidationHelper.IsDateTimeValid(txtDOB.Text)
-            || DateTime.Parse(txtDOB.Text) > DateTime.Today)
+        else if(!IsCompletePastDate(txtDOB))
         {
             lblDOBValidation.Visible = true;
             txtDOB.BackColor = Color.LightPink;
             valid = false;
         }
+
+        // validate last payment textbox the same way, so a partly typed date isn't
+        // saved as no payment. Lifetime members keep their 9999 date and the box is disabled.
+        if (chbLifetime.Checked || String.IsNullOrWhiteSpace(txtLastPayment.Text))
+        {
+            txtLastPayment.BackColor = SystemColors.Control;
+        }
+        else if (!IsCompletePastDate(txtLastPayment))
+        {
+            lblLastPaymentValidation.Visible = true;
+            txtLastPayment.BackColor = Color.LightPink;
+            valid = false;
+        }
         return valid;
+    }
+
+    /// <summary>
+    /// True when every digit of the MM/DD/YYYY mask is filled in with a real date
+    /// from 1900 through today.
+    /// </summary>
+    private static bool IsCompletePastDate(MaskedTextBox dateBox)
+    {
+        return dateBox.MaskCompleted
+            && ValidationHelper.IsDateTimeValid(dateBox.Text)
+            && DateTime.Parse(dateBox.Text) <= DateTime.Today;
     }
 
     /// <summary>
@@ -592,6 +617,11 @@ public partial class FrmMemberData : Form
                 MessageBox.Show("Bonus pins is invalid!");
                 txtBonus.BackColor = Color.LightPink;
             }
+
+            // New bowlers pay when they join: with no payment entered and no game history,
+            // the last payment defaults to the join date
+            temp.LastPayment = MembershipDues.DefaultLastPayment(temp.LastPayment, temp.JoinDate,
+                temp.IsLifetimeMember, hasGameHistory: mostRecent != null);
 
             if (isValid)
             {
@@ -844,6 +874,7 @@ public partial class FrmMemberData : Form
     /// <param name="e"></param>
     private void TxtLastPayment_TextChanged(object sender, EventArgs e)
     {
+        lblLastPaymentValidation.Visible = false;
         UpdatePaidThrough();
     }
 

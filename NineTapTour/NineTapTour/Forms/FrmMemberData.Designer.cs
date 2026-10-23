@@ -94,6 +94,7 @@
             chbLifetime = new System.Windows.Forms.CheckBox();
             lblLastPaid = new System.Windows.Forms.Label();
             lblPaymentInfo = new System.Windows.Forms.Label();
+            lblLastPaymentValidation = new System.Windows.Forms.Label();
             toolTip1 = new System.Windows.Forms.ToolTip(components);
             txtLastPayment = new System.Windows.Forms.MaskedTextBox();
             flpMemberData = new System.Windows.Forms.FlowLayoutPanel();
@@ -874,6 +875,18 @@
             lblPaymentInfo.TabIndex = 57;
             lblPaymentInfo.Text = "Yearly Payment is due.";
             lblPaymentInfo.Visible = false;
+            //
+            // lblLastPaymentValidation
+            //
+            lblLastPaymentValidation.AutoSize = true;
+            lblLastPaymentValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblLastPaymentValidation.ForeColor = System.Drawing.Color.Red;
+            lblLastPaymentValidation.Location = new System.Drawing.Point(198, 50);
+            lblLastPaymentValidation.Name = "lblLastPaymentValidation";
+            lblLastPaymentValidation.Size = new System.Drawing.Size(74, 15);
+            lblLastPaymentValidation.TabIndex = 59;
+            lblLastPaymentValidation.Text = "Invalid date.";
+            lblLastPaymentValidation.Visible = false;
             // 
             // txtLastPayment
             // 
@@ -1163,6 +1176,7 @@
             panel2.Controls.Add(lblLastPaid);
             panel2.Controls.Add(txtLastPayment);
             panel2.Controls.Add(lblPaymentInfo);
+            panel2.Controls.Add(lblLastPaymentValidation);
             panel2.Location = new System.Drawing.Point(3, 95);
             panel2.Name = "panel2";
             panel2.Size = new System.Drawing.Size(285, 70);
@@ -1287,6 +1301,7 @@
         private System.Windows.Forms.CheckBox chbLifetime;
         private System.Windows.Forms.Label lblLastPaid;
         private System.Windows.Forms.Label lblPaymentInfo;
+        private System.Windows.Forms.Label lblLastPaymentValidation;
         private System.Windows.Forms.Button btnImportData;
         private System.Windows.Forms.CheckBox chbSocial;
         private System.Windows.Forms.ToolTip toolTip1;

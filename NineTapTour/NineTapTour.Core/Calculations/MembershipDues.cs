@@ -45,4 +45,17 @@ public static class MembershipDues
     /// </summary>
     public static bool IsCurrent(bool isLifetimeMember, DateTime? lastPayment, DateTime today) =>
         isLifetimeMember || (lastPayment.HasValue && PaidThroughYear(lastPayment.Value) >= today.Year);
+
+    /// <summary>
+    /// New bowlers pay when they join, so a member with no payment on file and no
+    /// game history is treated as having paid on their join date. Otherwise the
+    /// last payment is returned unchanged.
+    /// </summary>
+    public static DateTime? DefaultLastPayment(DateTime? lastPayment, DateTime? joinDate,
+        bool isLifetimeMember, bool hasGameHistory)
+    {
+        if (lastPayment.HasValue || isLifetimeMember || hasGameHistory)
+            return lastPayment;
+        return joinDate?.Date;
+    }
 }
