@@ -38,7 +38,7 @@
             lblMemberNum = new System.Windows.Forms.Label();
             txtMemberNumber = new System.Windows.Forms.TextBox();
             grpMemberInfo = new System.Windows.Forms.GroupBox();
-            txtDOB = new System.Windows.Forms.TextBox();
+            txtDOB = new System.Windows.Forms.MaskedTextBox();
             lblStateValidation = new System.Windows.Forms.Label();
             lblSSNValidation = new System.Windows.Forms.Label();
             lblReferralsValidation = new System.Windows.Forms.Label();
@@ -46,7 +46,6 @@
             lblDOBValidation = new System.Windows.Forms.Label();
             txtRejoinDate = new System.Windows.Forms.MaskedTextBox();
             txtDateJoined = new System.Windows.Forms.MaskedTextBox();
-            txtDOBMasked = new System.Windows.Forms.MaskedTextBox();
             chbSocial = new System.Windows.Forms.CheckBox();
             txtZip = new System.Windows.Forms.MaskedTextBox();
             txtSSN = new System.Windows.Forms.MaskedTextBox();
@@ -95,6 +94,7 @@
             chbLifetime = new System.Windows.Forms.CheckBox();
             lblLastPaid = new System.Windows.Forms.Label();
             lblPaymentInfo = new System.Windows.Forms.Label();
+            lblLastPaymentValidation = new System.Windows.Forms.Label();
             toolTip1 = new System.Windows.Forms.ToolTip(components);
             txtLastPayment = new System.Windows.Forms.MaskedTextBox();
             flpMemberData = new System.Windows.Forms.FlowLayoutPanel();
@@ -234,7 +234,6 @@
             grpMemberInfo.Controls.Add(lblDOBValidation);
             grpMemberInfo.Controls.Add(txtRejoinDate);
             grpMemberInfo.Controls.Add(txtDateJoined);
-            grpMemberInfo.Controls.Add(txtDOBMasked);
             grpMemberInfo.Controls.Add(chbSocial);
             grpMemberInfo.Controls.Add(txtZip);
             grpMemberInfo.Controls.Add(txtSSN);
@@ -270,9 +269,12 @@
             // 
             txtDOB.BackColor = System.Drawing.SystemColors.Control;
             txtDOB.Location = new System.Drawing.Point(25, 41);
+            txtDOB.Mask = "00/00/0000";
             txtDOB.Name = "txtDOB";
             txtDOB.Size = new System.Drawing.Size(109, 23);
             txtDOB.TabIndex = 10;
+            txtDOB.ValidatingType = typeof(System.DateTime);
+            txtDOB.Click += MtxtBox_Click;
             txtDOB.TextChanged += TxtDOB_TextChanged;
             // 
             // lblStateValidation
@@ -356,17 +358,6 @@
             txtDateJoined.TabIndex = 28;
             txtDateJoined.ValidatingType = typeof(System.DateTime);
             txtDateJoined.Click += MtxtBox_Click;
-            // 
-            // txtDOBMasked
-            // 
-            txtDOBMasked.Location = new System.Drawing.Point(25, 41);
-            txtDOBMasked.Mask = "00/00/0000";
-            txtDOBMasked.Name = "txtDOBMasked";
-            txtDOBMasked.Size = new System.Drawing.Size(109, 23);
-            txtDOBMasked.TabIndex = 0;
-            txtDOBMasked.TabStop = false;
-            txtDOBMasked.ValidatingType = typeof(System.DateTime);
-            txtDOBMasked.Click += MtxtBox_Click;
             // 
             // chbSocial
             // 
@@ -884,6 +875,18 @@
             lblPaymentInfo.TabIndex = 57;
             lblPaymentInfo.Text = "Yearly Payment is due.";
             lblPaymentInfo.Visible = false;
+            //
+            // lblLastPaymentValidation
+            //
+            lblLastPaymentValidation.AutoSize = true;
+            lblLastPaymentValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblLastPaymentValidation.ForeColor = System.Drawing.Color.Red;
+            lblLastPaymentValidation.Location = new System.Drawing.Point(198, 50);
+            lblLastPaymentValidation.Name = "lblLastPaymentValidation";
+            lblLastPaymentValidation.Size = new System.Drawing.Size(74, 15);
+            lblLastPaymentValidation.TabIndex = 59;
+            lblLastPaymentValidation.Text = "Invalid date.";
+            lblLastPaymentValidation.Visible = false;
             // 
             // txtLastPayment
             // 
@@ -895,6 +898,7 @@
             txtLastPayment.TabIndex = 58;
             txtLastPayment.ValidatingType = typeof(System.DateTime);
             txtLastPayment.Click += MtxtBox_Click;
+            txtLastPayment.TextChanged += TxtLastPayment_TextChanged;
             // 
             // flpMemberData
             // 
@@ -1172,6 +1176,7 @@
             panel2.Controls.Add(lblLastPaid);
             panel2.Controls.Add(txtLastPayment);
             panel2.Controls.Add(lblPaymentInfo);
+            panel2.Controls.Add(lblLastPaymentValidation);
             panel2.Location = new System.Drawing.Point(3, 95);
             panel2.Name = "panel2";
             panel2.Size = new System.Drawing.Size(285, 70);
@@ -1181,7 +1186,7 @@
             // 
             txtPaidTo.BackColor = System.Drawing.SystemColors.Control;
             txtPaidTo.Enabled = false;
-            txtPaidTo.Location = new System.Drawing.Point(126, 47);
+            txtPaidTo.Location = new System.Drawing.Point(140, 47);
             txtPaidTo.Name = "txtPaidTo";
             txtPaidTo.Size = new System.Drawing.Size(54, 21);
             txtPaidTo.TabIndex = 75;
@@ -1192,9 +1197,9 @@
             lblPaidTo.Font = new System.Drawing.Font("Calibri", 9.75F);
             lblPaidTo.Location = new System.Drawing.Point(6, 48);
             lblPaidTo.Name = "lblPaidTo";
-            lblPaidTo.Size = new System.Drawing.Size(118, 15);
+            lblPaidTo.Size = new System.Drawing.Size(130, 15);
             lblPaidTo.TabIndex = 75;
-            lblPaidTo.Text = "Membership paid to";
+            lblPaidTo.Text = "Membership paid thru";
             // 
             // FrmMemberData
             // 
@@ -1296,9 +1301,9 @@
         private System.Windows.Forms.CheckBox chbLifetime;
         private System.Windows.Forms.Label lblLastPaid;
         private System.Windows.Forms.Label lblPaymentInfo;
+        private System.Windows.Forms.Label lblLastPaymentValidation;
         private System.Windows.Forms.Button btnImportData;
         private System.Windows.Forms.CheckBox chbSocial;
-        private System.Windows.Forms.MaskedTextBox txtDOBMasked;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.MaskedTextBox txtDateJoined;
         private System.Windows.Forms.MaskedTextBox txtRejoinDate;
@@ -1333,7 +1338,7 @@
         private System.Windows.Forms.Label lblReferralsValidation;
         private System.Windows.Forms.TextBox txtPaidTo;
         private System.Windows.Forms.Label lblPaidTo;
-        private System.Windows.Forms.TextBox txtDOB;
+        private System.Windows.Forms.MaskedTextBox txtDOB;
         private System.Windows.Forms.Button btnPrintActive;
     }
 }

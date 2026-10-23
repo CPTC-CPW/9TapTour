@@ -347,7 +347,7 @@ public class ScoresService : IScoresService
 
                 // Use first partner's payment info as the team's overall status
                 Paid = member1Scores.Paid && member2Scores.Paid,
-                LastPaymentYear = member1Scores.LastPaymentYear,
+                PaidThroughYear = member1Scores.PaidThroughYear,
 
                 // Store individual partner data
                 Partner1MemberId = team.Member1.Number,
@@ -359,7 +359,7 @@ public class ScoresService : IScoresService
                 Partner2FirstName = team.Member2.FirstName,
                 Partner2LastName = team.Member2.LastName,
                 Partner2Score = member2Scores.Score,
-                Partner2LastPaymentYear = member2Scores.LastPaymentYear,
+                Partner2PaidThroughYear = member2Scores.PaidThroughYear,
 
                 // Use first partner's member ID as a reference
                 MemberId = team.Member1.Number,

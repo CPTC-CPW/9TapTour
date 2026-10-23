@@ -172,10 +172,10 @@ namespace NineTapTourTests.Services
         {
             return
             [
-                new MemberScores { MemberId = 101, Score = 400, Squad = 1, Paid = true, LastPaymentYear = "2025" },
-                new MemberScores { MemberId = 102, Score = 350, Squad = 1, Paid = false, LastPaymentYear = "2024" },
+                new MemberScores { MemberId = 101, Score = 400, Squad = 1, Paid = true, PaidThroughYear = "2025" },
+                new MemberScores { MemberId = 102, Score = 350, Squad = 1, Paid = false, PaidThroughYear = "2024" },
                 // 103 has a score but partner 104 has none, so team 2 is skipped
-                new MemberScores { MemberId = 103, Score = 500, Squad = 2, Paid = true, LastPaymentYear = "2026" }
+                new MemberScores { MemberId = 103, Score = 500, Squad = 2, Paid = true, PaidThroughYear = "2026" }
             ];
         }
 
@@ -188,7 +188,7 @@ namespace NineTapTourTests.Services
             TeamMemberScores team = (TeamMemberScores)result[0];
             Assert.AreEqual(750, team.Score);
             Assert.IsFalse(team.Paid);                       // both partners must be paid
-            Assert.AreEqual("2025", team.LastPaymentYear);   // first partner's payment year
+            Assert.AreEqual("2025", team.PaidThroughYear);   // first partner's payment year
             Assert.AreEqual(string.Empty, team.FirstName);
             Assert.AreEqual(101, team.MemberId);             // first partner's member number
             Assert.IsTrue(team.IsTeam);
@@ -200,7 +200,7 @@ namespace NineTapTourTests.Services
             Assert.AreEqual("Bob", team.Partner2FirstName);
             Assert.AreEqual("Baker", team.Partner2LastName);
             Assert.AreEqual(350, team.Partner2Score);
-            Assert.AreEqual("2024", team.Partner2LastPaymentYear);
+            Assert.AreEqual("2024", team.Partner2PaidThroughYear);
         }
 
         [TestMethod]
