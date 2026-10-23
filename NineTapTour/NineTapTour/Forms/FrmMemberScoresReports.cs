@@ -174,6 +174,11 @@ public partial class FrmMemberScoresReports : Form
                         ? $"{PrintContentBuilder.FormatDuesYear(teamEntry.PaidThroughYear)} & {PrintContentBuilder.FormatDuesYear(teamEntry.Partner2PaidThroughYear)}"
                         : PrintContentBuilder.FormatDuesYear(temp[idx].PaidThroughYear);
                     ws.Cell(row, 5).Value = cellValue;
+
+                    // Highlight the dues of members who owe (a team's Paid needs both partners
+                    // paid); always set or clear it so template formatting never carries over
+                    ws.Cell(row, 5).Style.Fill.BackgroundColor =
+                        temp[idx].Paid ? XLColor.NoColor : XLColor.Orange;
                 }
             }
 

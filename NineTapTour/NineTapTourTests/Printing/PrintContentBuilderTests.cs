@@ -190,6 +190,32 @@ namespace NineTapTourTests.Printing
             Assert.AreEqual("2023", content.Pages[0].Rows[0].DuesText);
         }
 
+        [DataTestMethod]
+        [DataRow(true, true, false)]   // paid member: no highlight
+        [DataRow(true, false, true)]   // owes dues: highlighted
+        [DataRow(false, false, false)] // dues not printed: never highlighted
+        public void BuildMemberReport_OwesDues_OnlyWhenDuesPrintedAndNotPaid(bool printDues, bool paid, bool expected)
+        {
+            List<MemberScores> members = PrintContentBuilderPagingTests.MakeMembers(1);
+            members[0].Paid = paid;
+
+            MemberReportContent content = PrintContentBuilderPagingTests.BuildReport(members, printDues: printDues);
+
+            Assert.AreEqual(expected, content.Pages[0].Rows[0].OwesDues);
+        }
+
+        [TestMethod]
+        public void BuildMemberReport_TeamWithOnePartnerOwing_OwesDues()
+        {
+            // ScoresService sets a team's Paid only when both partners are paid
+            TeamMemberScores team = new() { placing = 1, Score = 1500, Paid = false,
+                PaidThroughYear = "2026", Partner2PaidThroughYear = "2024" };
+
+            MemberReportContent content = PrintContentBuilderPagingTests.BuildReport([team], printDues: true);
+
+            Assert.IsTrue(content.Pages[0].Rows[0].OwesDues);
+        }
+
         [TestMethod]
         public void BuildMemberReport_TeamEntryWithDues_CombinesBothPartners()
         {

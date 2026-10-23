@@ -197,7 +197,10 @@ public static class PrintContentBuilder
             ? $"{teamEntry.Partner1FirstName} {teamEntry.Partner1LastName} & {teamEntry.Partner2FirstName} {teamEntry.Partner2LastName}"
             : entry.LastName + ", " + entry.FirstName;
 
-        return new ReportRowContent(entry.placing.ToString(), entry.Score.ToString(), memberNumString, nameString, duesText);
+        // A team's Paid is only true when both partners are paid
+        bool owesDues = printDues && !entry.Paid;
+
+        return new ReportRowContent(entry.placing.ToString(), entry.Score.ToString(), memberNumString, nameString, duesText, owesDues);
     }
 
     /// <summary>

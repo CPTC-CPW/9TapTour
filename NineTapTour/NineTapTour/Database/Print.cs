@@ -77,6 +77,8 @@ namespace NineTapTour.Database
 
             //Sets default brush to use when printing
             SolidBrush dBrush = new(Color.Black);
+            //Highlights the dues of members who owe, matching the orange used in the Excel reports
+            SolidBrush owesDuesBrush = new(Color.Orange);
 
             int startX = 15;
             int startY = 50;
@@ -114,7 +116,12 @@ namespace NineTapTour.Database
                 //draw name string
                 graphic.DrawString(row.Name, font, dBrush, startX + 230, startY + 173 + (i * 19));
 
-                //draw Membership Paid Through Column
+                //draw Membership Paid Through Column, shaded when the member owes dues
+                if (row.OwesDues)
+                {
+                    SizeF duesSize = graphic.MeasureString(row.DuesText, font);
+                    graphic.FillRectangle(owesDuesBrush, startX + 500, startY + 173 + (i * 19), duesSize.Width, 19);
+                }
                 graphic.DrawString(row.DuesText, font, dBrush, startX + 500, startY + 173 + (i * 19));
 
                 // Print the cutoff line after the last row of money-winning members

@@ -3,8 +3,10 @@
 /// <summary>
 /// One printed row of a member report: every value is the exact string the
 /// printer draws, already formatted (team vs single member, dues text, etc.).
+/// <see cref="OwesDues"/> is true when dues are printed and the member (or either
+/// doubles partner) isn't paid thru the current year, so the dues cell is highlighted.
 /// </summary>
-public record ReportRowContent(string Placing, string Score, string MemberNumber, string Name, string DuesText);
+public record ReportRowContent(string Placing, string Score, string MemberNumber, string Name, string DuesText, bool OwesDues = false);
 
 /// <summary>
 /// The rows for one printed page of a member report.
