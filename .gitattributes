@@ -61,3 +61,6 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# Bash reads these on the Windows release runner, which would otherwise check them out with CRLF line endings.
+*.sh text eol=lf

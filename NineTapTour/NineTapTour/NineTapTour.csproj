@@ -40,6 +40,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <!-- Updates the installed apps from the GitHub releases. Keep in step with vpk in .github/workflows/release.yml. -->
+    <PackageReference Include="Velopack" Version="1.2.161" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NineTapTour.Core\NineTapTour.Core.csproj" />

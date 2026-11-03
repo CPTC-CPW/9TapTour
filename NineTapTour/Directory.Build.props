@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <!-- The version for ClickOnce and local builds. The Release workflow sets each release's version instead
+         (packaging/package.sh passes -p:Version), so this only changes if ClickOnce is published again. -->
+    <Version>3.3.0</Version>
+  </PropertyGroup>
+</Project>

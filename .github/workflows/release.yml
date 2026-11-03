@@ -1,0 +1,102 @@
+name: Release
+
+# Run from the Actions tab: builds 9-Tap Tour and 9-Tap Member Import with Velopack and publishes a GitHub release
+# with the installers. Installed copies update themselves from the newest release.
+on:
+  workflow_dispatch:
+    inputs:
+      change:
+        description: What's in this release (picks the next version number)
+        type: choice
+        options:
+          - Bug fixes
+          - New features
+          - Breaking changes
+        default: Bug fixes
+      summary:
+        description: Short summary for the release title, e.g. Birthdate fixes (optional)
+        type: string
+        required: false
+      version:
+        description: Version number, e.g. 3.4.0 (optional; overrides the calculated one)
+        type: string
+        required: false
+  # Pull requests that change the packaging build both packages without releasing, so problems show up before a release.
+  pull_request:
+    branches: [main]
+    paths:
+      - packaging/**
+      - .github/workflows/release.yml
+
+permissions:
+  contents: read
+
+# Two releases at once could pick the same version number.
+concurrency:
+  group: release-${{ github.event_name }}
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Only release from main
+        if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Releases are made from main. Choose main in 'Use workflow from'."
+          exit 1
+
+      - uses: actions/checkout@v6
+        with:
+          # The tags are needed to find the latest release.
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.x
+
+      - name: Next version
+        id: next
+        env:
+          # Pull requests have no inputs.
+          CHANGE: ${{ inputs.change || 'Bug fixes' }}
+          REQUESTED: ${{ inputs.version }}
+        run: |
+          version=$(bash packaging/next-version.sh "$CHANGE" "$REQUESTED")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Releasing $version" >> "$GITHUB_STEP_SUMMARY"
+
+      # Velopack's packaging tool. Keep its version the same as the Velopack package in NineTapTour.csproj.
+      - name: Install vpk
+        run: dotnet tool install --global vpk --version 1.2.161
+
+      - name: Build and package
+        env:
+          VERSION: ${{ steps.next.outputs.version }}
+        run: bash packaging/package.sh
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: packages
+          path: dist/*
+          if-no-files-found: error
+
+      - name: Create the release
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.next.outputs.version }}
+          SUMMARY: ${{ inputs.summary }}
+        run: |
+          title=$VERSION
+          if [ -n "$SUMMARY" ]; then
+            title="$VERSION - $SUMMARY"
+          fi
+          sed "s/{{VERSION}}/$VERSION/g" packaging/release-notes.md > notes.md
+          # Tags are bare versions, like the releases before this workflow. Installed apps update from the newest
+          # release's files (releases/latest/download), so this must be marked latest.
+          gh release create "$VERSION" dist/* --target "$GITHUB_SHA" --title "$title" --notes-file notes.md --generate-notes --latest

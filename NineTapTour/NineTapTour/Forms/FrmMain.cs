@@ -1,6 +1,7 @@
 ﻿using NineTapTour.Core.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using NineTapTour.Database;
+using NineTapTour.Deployment;
 using NineTapTour.Services;
 using System;
 using System.Windows.Forms;
@@ -21,6 +22,12 @@ public partial class FrmMain : Form
     private readonly IDatabaseMaintenanceService databaseMaintenance;
     private readonly IFileDialogService fileDialogService;
     private readonly IMessageService messageService;
+    private readonly AppUpdater updater;
+
+    /// <summary>
+    /// Shown at the right of the menu bar once an update has downloaded.
+    /// </summary>
+    private ToolStripMenuItem restartToUpdateMenuItem;
 
     /// <summary>
     /// Keeps track of the currently active menu item on the menu strip.
@@ -32,8 +39,10 @@ public partial class FrmMain : Form
     /// Retrieves information from the database in order.
     /// </summary>
     public FrmMain(IFormNavigator navigator, IFormFactory formFactory, IDbContextFactory<NineTapDb> dbFactory, ITournamentSession session,
-        IDatabaseMaintenanceService databaseMaintenance, IFileDialogService fileDialogService, IMessageService messageService)
+        IDatabaseMaintenanceService databaseMaintenance, IFileDialogService fileDialogService, IMessageService messageService,
+        AppUpdater updater)
     {
+        this.updater = updater;
         this.navigator = navigator;
         this.session = session;
         this.formFactory = formFactory;
@@ -55,10 +64,34 @@ public partial class FrmMain : Form
         ActiveItem.BackColor = SystemColors.ActiveCaption;
     }
 
-    protected override void OnLoad(EventArgs e)
+    protected override async void OnLoad(EventArgs e)
     {
         base.OnLoad(e);
         navigator.ShowSingleton<FrmMainMenu>();
+
+        // The update downloads in the background and installs the next time the app opens,
+        // or straight away from the menu bar.
+        string newVersion = await updater.DownloadUpdateAsync();
+        if (newVersion != null)
+        {
+            restartToUpdateMenuItem = new ToolStripMenuItem($"Version {newVersion} is ready: restart to update")
+            {
+                Alignment = ToolStripItemAlignment.Right,
+                ToolTipText = "Or it installs the next time you open 9-Tap Tour.",
+            };
+            restartToUpdateMenuItem.Click += RestartToUpdateMenuItem_Click;
+            menMain.Items.Add(restartToUpdateMenuItem);
+        }
+    }
+
+    private void RestartToUpdateMenuItem_Click(object sender, EventArgs e)
+    {
+        DialogResult result = MessageBox.Show("9-Tap Tour will close, update and open again. Anything you haven't saved will be lost.",
+            "Restart to Update", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+        if (result == DialogResult.OK)
+        {
+            updater.RestartToUpdate();
+        }
     }
 
     /// <summary>
@@ -70,7 +103,7 @@ public partial class FrmMain : Form
     private void MainMenuToolStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
     {
         ToolStripMenuItem currentItem = (ToolStripMenuItem)e.ClickedItem;
-        if (currentItem.HasDropDownItems)
+        if (currentItem.HasDropDownItems || currentItem == restartToUpdateMenuItem)
         {
             return;
         }

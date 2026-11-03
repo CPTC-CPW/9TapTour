@@ -1,5 +1,6 @@
 ﻿using NineTapTour.Database;
 using NineTapTour.Core.Data;
+using NineTapTour.Deployment;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -80,7 +81,7 @@ public partial class FrmMainMenu : Form
 
     private void FrmMainMenu_Load(object sender, EventArgs e)
     {
-        Text = "Version: 3.2.3";
+        Text = "Version: " + DeployedApp.CurrentVersion;
 #if DEBUG
         Text += " DEVELOPMENT ONLY";
 #endif

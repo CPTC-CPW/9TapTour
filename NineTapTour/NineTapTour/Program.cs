@@ -3,12 +3,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NineTapTour.Database;
 using NineTapTour.Core.Data;
+using NineTapTour.Deployment;
 using NineTapTour.Forms;
 using NineTapTour.Startup;
 using System;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using Velopack;
 
 namespace NineTapTour
 {
@@ -18,18 +20,33 @@ namespace NineTapTour
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
+            // Must run first. The installer and updater start the app with special arguments to finish their work
+            // (shortcuts, uninstalling), and Run() handles those and exits. It also installs an update downloaded last time.
+            VelopackApp.Build().Run();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             SetUpGlobalExceptionHandling();
+
+            if (ClickOnceMigration.MoveToVelopack(DeployedApp.Tour))
+            {
+                return;
+            }
+            ClickOnceMigration.RemoveClickOnceCopy(DeployedApp.Tour, args);
 
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json", optional: false)
                 .AddJsonFile("appsettings.Development.json", optional: true)
                 .Build();
+
+            if (!LocalDbCheck.EnsureInstalled(configuration.GetConnectionString("NineTapDb"), DeployedApp.Tour.ProductName))
+            {
+                return;
+            }
 
             ServiceCollection services = new();
             services.AddNineTapTourServices(configuration);
