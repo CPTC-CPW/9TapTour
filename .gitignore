@@ -221,3 +221,7 @@ FakesAssemblies/
 *.opt
 /NineTapTour/NineTapTour/.sonarqube
 /NineTapTour/SonarQube
+
+# Velopack packaging output (packaging/package.sh)
+/dist/
+/out/

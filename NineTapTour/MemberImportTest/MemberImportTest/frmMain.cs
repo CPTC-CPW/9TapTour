@@ -10,6 +10,7 @@ using NineTapTour.Core.Entities;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Text.RegularExpressions;
+using NineTapTour.Deployment;
 
 namespace MemberImportTest;
 
@@ -21,12 +22,15 @@ public partial class FrmMain : Form
     private readonly IMemberRepository memberRepository;
     private readonly IPlayerHistoryRepository playerHistoryRepository;
     private readonly IMemberHistoryImportService memberHistoryImportService;
+    private readonly AppUpdater updater;
 
     public FrmMain(
         IMemberRepository memberRepository,
         IPlayerHistoryRepository playerHistoryRepository,
-        IMemberHistoryImportService memberHistoryImportService)
+        IMemberHistoryImportService memberHistoryImportService,
+        AppUpdater updater)
     {
+        this.updater = updater;
         this.memberRepository = memberRepository;
         this.playerHistoryRepository = playerHistoryRepository;
         this.memberHistoryImportService = memberHistoryImportService;
@@ -528,11 +532,18 @@ public partial class FrmMain : Form
         }
     }
 
-    private void FrmMain_Load(object sender, EventArgs e)
+    private async void FrmMain_Load(object sender, EventArgs e)
     {
-        Text = "Version: 3.2.3";
+        Text = "Version: " + DeployedApp.CurrentVersion;
 #if DEBUG
         Text += " DEVELOPMENT ONLY";
 #endif
+
+        // The update downloads in the background and installs the next time the app opens.
+        string newVersion = await updater.DownloadUpdateAsync();
+        if (newVersion != null)
+        {
+            Text += $" (version {newVersion} installs the next time you open it)";
+        }
     }
 }

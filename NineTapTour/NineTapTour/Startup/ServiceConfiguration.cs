@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NineTapTour.Database;
 using NineTapTour.Core.Data;
 using NineTapTour.Core.Startup;
+using NineTapTour.Deployment;
 using NineTapTour.Forms;
 using NineTapTour.Services;
 using System;
@@ -28,6 +29,7 @@ public static class ServiceConfiguration
         services.AddSingleton<IFormFactory, FormFactory>();
         services.AddSingleton<Core.Abstractions.IMessageService, WinFormsMessageService>();
         services.AddSingleton<Core.Abstractions.IFileDialogService, WinFormsFileDialogService>();
+        services.AddSingleton<AppUpdater>();
 
         // MDI shell and singleton child forms opened through IFormNavigator
         services.AddTransient<FrmMain>();
