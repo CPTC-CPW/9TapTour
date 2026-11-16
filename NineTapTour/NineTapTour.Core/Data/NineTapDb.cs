@@ -71,6 +71,10 @@ public class NineTapDb : DbContext
         builder.Entity<DoublesPartnerClaim>()
             .HasIndex("TournamentId", "SourceMemberId", "PartnerMemberId", "Squad")
             .IsUnique();
+
+        builder.Entity<OtherEarning>()
+            .Property(o => o.Amount)
+            .HasColumnType("decimal(18,2)");
     }
 
     // Add DbSets for each type to store in the database
@@ -81,4 +85,5 @@ public class NineTapDb : DbContext
     public virtual DbSet<DoublesTeam> DoublesTeams { get; set; }
     public virtual DbSet<DoublesPartnerPlan> DoublesPartnerPlans { get; set; }
     public virtual DbSet<DoublesPartnerClaim> DoublesPartnerClaims { get; set; }
+    public virtual DbSet<OtherEarning> OtherEarnings { get; set; }
 }

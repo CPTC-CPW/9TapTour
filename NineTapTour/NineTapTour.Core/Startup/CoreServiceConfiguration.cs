@@ -25,6 +25,7 @@ public static class CoreServiceConfiguration
         services.AddSingleton<IParticipantRepository, ParticipantRepository>();
         services.AddSingleton<IPlayerHistoryRepository, PlayerHistoryRepository>();
         services.AddSingleton<IReportsRepository, ReportsRepository>();
+        services.AddSingleton<IOtherEarningRepository, OtherEarningRepository>();
         services.AddSingleton<IFinalizeTempRepository, FinalizeTempRepository>();
         services.AddSingleton<IDoublesTeamRepository, DoublesTeamRepository>();
         services.AddSingleton<IDoublesPartnerPlanRepository, DoublesPartnerPlanRepository>();

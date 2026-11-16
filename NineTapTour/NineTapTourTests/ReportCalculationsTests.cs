@@ -326,5 +326,69 @@ namespace NineTapTourTests
             Assert.AreEqual(103, rows[2].Member);
             Assert.AreEqual("555-0100", rows[2].Phone);
         }
+        private static List<OtherEarningEntry> GetOtherEarnings()
+        {
+            return
+            [
+                // Member 1: a satellite payout and a career total from before the books
+                new OtherEarningEntry { MemberNumber = 1, FirstName = "Jane", LastName = "Smith", Amount = 200m, Date = new DateTime(2024, 9, 6) },
+                new OtherEarningEntry { MemberNumber = 1, FirstName = "Jane", LastName = "Smith", Amount = 300m },
+                // Member 9 has other earnings but no tournament entries
+                new OtherEarningEntry { MemberNumber = 9, FirstName = "Ola", LastName = "Outside", Amount = 1000m },
+            ];
+        }
+
+        [TestMethod]
+        public void GetTourReport_Earnings_AddsOtherEarningsAndListsMembersWithoutEntries()
+        {
+            List<MemberReportSummary> rows = ReportCalculations.GetTourReport(
+                GetTestEntries(), TourReportCategory.Earnings, otherEarnings: GetOtherEarnings());
+
+            Assert.AreEqual(9, rows[0].Member, "$1,000 of other earnings ranks first");
+            Assert.AreEqual(1000m, rows[0].Earnings);
+            Assert.AreEqual(0, rows[0].Entries, "other earnings never count as entries");
+            Assert.AreEqual(1, rows[1].Member);
+            Assert.AreEqual(625m, rows[1].Earnings, "$125 from entries + $500 other earnings");
+            Assert.AreEqual(2, rows[1].Entries);
+            Assert.AreEqual(50m, rows.Single(r => r.Member == 2).Earnings);
+        }
+
+        [TestMethod]
+        public void GetTourReport_OtherCategories_SkipMembersWithoutEntries()
+        {
+            List<MemberReportSummary> rows = ReportCalculations.GetTourReport(
+                GetTestEntries(), TourReportCategory.HighAverages, otherEarnings: GetOtherEarnings());
+
+            Assert.HasCount(2, rows);
+            Assert.IsFalse(rows.Any(r => r.Member == 9));
+            Assert.AreEqual(625m, rows.Single(r => r.Member == 1).Earnings);
+        }
+
+        [TestMethod]
+        public void BuildIndividualSummary_AddsOtherEarningsLine()
+        {
+            List<ReportGameEntry> memberEntries = GetTestEntries().Where(e => e.MemberNumber == 1).ToList();
+
+            List<ReportStatistic> stats = ReportCalculations.BuildIndividualSummary(
+                memberEntries, includeSidePots: true, otherEarnings: GetOtherEarnings());
+
+            ReportStatistic earnings = stats.Single(s => s.Statistic == "Total Earnings (incl. Side Pots & Other Earnings)");
+            Assert.AreEqual(650m.ToString("C2"), earnings.Value, "$125 + $25 side pots + $500 other earnings");
+            ReportStatistic other = stats.Single(s => s.Statistic == "Other Earnings (no tournament entry)");
+            Assert.AreEqual(500m.ToString("C2"), other.Value, "only this member's other earnings");
+            Assert.AreEqual("Average (Scratch)", stats[stats.IndexOf(other) + 1].Statistic);
+        }
+
+        [TestMethod]
+        public void BuildIndividualSummary_NoOtherEarnings_KeepsPlainLabel()
+        {
+            List<ReportGameEntry> memberEntries = GetTestEntries().Where(e => e.MemberNumber == 2).ToList();
+
+            List<ReportStatistic> stats = ReportCalculations.BuildIndividualSummary(
+                memberEntries, otherEarnings: GetOtherEarnings());
+
+            Assert.IsTrue(stats.Any(s => s.Statistic == "Total Earnings"));
+            Assert.IsFalse(stats.Any(s => s.Statistic.StartsWith("Other Earnings")));
+        }
     }
 }

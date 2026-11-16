@@ -88,9 +88,16 @@ public class MemberHistoryImportService : IMemberHistoryImportService
     }
 
     /// <summary>
+    /// Largest number read as a place. Bigger values are year labels the books
+    /// write in the place column next to carried-forward totals ("2005/06").
+    /// </summary>
+    private const int MaxLegacyPlace = 999;
+
+    /// <summary>
     /// Parses a legacy place-standing cell into a numeric place. The books use
     /// many variations ("4th", "17th tie", "9thHM", ...), so only the leading
-    /// digits are taken. Blank cells (the bowler did not place) return null.
+    /// digits are taken. Blank cells (the bowler did not place) and year labels
+    /// ("2005", "2005/06") return null.
     /// </summary>
     internal static int? ParseLegacyPlaceStanding(string finPPHG)
     {
@@ -98,9 +105,30 @@ public class MemberHistoryImportService : IMemberHistoryImportService
             return null;
 
         Match match = RegexHelpers.LeadingDigits().Match(finPPHG);
-        return match.Success && int.TryParse(match.Groups[1].Value, out int place) && place > 0
+        return match.Success && int.TryParse(match.Groups[1].Value, out int place)
+                && place > 0 && place <= MaxLegacyPlace
             ? place
             : null;
+    }
+
+    /// <summary>
+    /// Finds the entry a re-run should update instead of inserting: an entry for
+    /// the same member and tournament with the same four game scores that no other
+    /// row of this file has already claimed. Matching on scores rather than squad
+    /// number keeps re-runs correct for books whose entries were imported with
+    /// colliding squad numbers (older imports restarted numbering on every sheet).
+    /// </summary>
+    internal static Participant FindMatchingImportedEntry(IEnumerable<Participant> existingEntries,
+        Game game, ISet<int> claimedParticipantIds)
+    {
+        return existingEntries
+            .Where(p => !claimedParticipantIds.Contains(p.Id))
+            .OrderBy(p => p.Squad)
+            .FirstOrDefault(p => p.Game != null
+                && p.Game.Game1 == game.Game1
+                && p.Game.Game2 == game.Game2
+                && p.Game.Game3 == game.Game3
+                && p.Game.Game4 == game.Game4);
     }
 
     /// <summary>
@@ -264,26 +292,89 @@ public class MemberHistoryImportService : IMemberHistoryImportService
                     return returnMe;
                 }
 
+                // Last squad number used per tournament for this member, across every
+                // page of the book: a tournament can span two pages, and numbering
+                // restarted on each page used to give both entries squad 1. Keyed by
+                // the Tournament instance (reference equality), NOT by Id: tournaments
+                // newly added in this file all share Id 0 until SaveChanges runs.
+                Dictionary<Tournament, int> lastSquadByTournament =
+                    new Dictionary<Tournament, int>(ReferenceEqualityComparer.Instance);
+
+                // Existing entries already updated by an earlier row of this file, so two
+                // rows with the same scores on the same date never update the same entry.
+                HashSet<int> claimedParticipantIds = [];
+
+                // Pages run newest (first tab) to oldest (last tab).
+                List<IXLWorksheet> pages = [.. workbook.Worksheets];
+
+                // Cash on rows with no entry is replaced on every run: drop this book's
+                // previously imported rows (rows added by hand are kept). Saved with the
+                // rest of the file, so a failed import leaves the old rows in place.
+                string fileName = Path.GetFileName(pathAndFileName);
+                string sourcePrefix = fileName + ", ";
+                db.OtherEarnings.RemoveRange(db.OtherEarnings
+                    .Where(o => o.Member.Id == member.Id && o.IsImported && o.Source.StartsWith(sourcePrefix)));
+                int otherEarningsCount = 0;
+                decimal otherEarningsTotal = 0;
+
                 // Now process each worksheet with the extracted player info
-                foreach (var ws in workbook.Worksheets)
+                for (int pageIndex = 0; pageIndex < pages.Count; pageIndex++)
                 {
                     const int GameDataLastRow = 46;
                     const int GameDataStartRow = 3;
 
-                    // PERFORMANCE: Track participant counts per tournament to avoid repeated DB queries.
-                    // Keyed by the Tournament instance (reference equality), NOT by Id: tournaments
-                    // newly added in this file all share Id 0 until SaveChanges runs, so an Id-keyed
-                    // counter would number squads sequentially across different new tournaments.
-                    Dictionary<Tournament, int> tournamentSquadCounts =
-                        new Dictionary<Tournament, int>(ReferenceEqualityComparer.Instance);
+                    IXLWorksheet ws = pages[pageIndex];
+
+                    // Every page but the oldest starts with the career cash carried
+                    // forward from the page before it; that balance is not winnings.
+                    bool isOldestPage = pageIndex == pages.Count - 1;
+                    int? carryForwardRow = isOldestPage ? null : ExcelWorkbookReader.FindCashCarryForwardRow(ws);
+
+                    // Without the page's CASH total the carried-forward balance cannot be
+                    // told apart from real cash, so no cash-only rows are read from it.
+                    bool canReadOtherEarnings = isOldestPage || carryForwardRow.HasValue;
+                    if (!canReadOtherEarnings)
+                    {
+                        string totalWarning = $"  WARNING: {fileName} sheet '{ws.Name}': no CASH total formula found; cash on rows without an entry was not imported.\r\n";
+                        progress?.Report(totalWarning);
+                        warnings.Add(totalWarning);
+                    }
 
                     for (int row = GameDataStartRow; row <= GameDataLastRow; row++)
                     {
                         ExcelRow temp = ExcelWorkbookReader.ReadHistoryRow(ws, row, playerFinalFirstAndMiddle,
                             playerLastName, playerOrgAVG, playerNumberAsInt);
 
+                        // A game can share the carry-forward row; keep the game, drop the balance.
+                        if (temp != null && row == carryForwardRow)
+                        {
+                            temp.Cash = 0;
+                        }
+
                         if (temp == null)
                         {
+                            // Cash with no entry (career totals from before the book,
+                            // satellites, Yakima, Hawaii, ...) counts toward lifetime cash.
+                            OtherEarningRow other = canReadOtherEarnings && row != carryForwardRow
+                                ? ExcelWorkbookReader.ReadOtherEarningRow(ws, row)
+                                : null;
+                            if (other != null)
+                            {
+                                db.OtherEarnings.Add(new OtherEarning
+                                {
+                                    Member = member,
+                                    Amount = other.Amount,
+                                    Description = other.Description,
+                                    Date = other.Date.HasValue && IsPlausibleTournamentDate(other.Date.Value)
+                                        ? other.Date
+                                        : null,
+                                    IsImported = true,
+                                    Source = $"{sourcePrefix}{ws.Name}, row {row}",
+                                });
+                                otherEarningsCount++;
+                                otherEarningsTotal += other.Amount;
+                            }
+
                             // Blank filler rows are normal; only warn when the row has a
                             // date (so it looks like a data row) but the games-played
                             // cell (column 1) could not be read.
@@ -337,16 +428,6 @@ public class MemberHistoryImportService : IMemberHistoryImportService
                             existingTournaments.Add(tourn);
                         }
 
-                        // Squad numbering is 1-based per player per tournament within this import run.
-                        // Always start from 1 for the first entry read, regardless of any existing DB records.
-                        int squadNumber;
-                        if (!tournamentSquadCounts.ContainsKey(tourn))
-                        {
-                            tournamentSquadCounts[tourn] = 0;
-                        }
-                        tournamentSquadCounts[tourn]++;
-                        squadNumber = tournamentSquadCounts[tourn];
-
                         // There are some cases where an entire entry will be all null games
                         // this is due to tournament conditions such as invalid lane oilings.
                         // The tournament is valid but none of the scores are counted due to inflated numbers.
@@ -385,43 +466,24 @@ public class MemberHistoryImportService : IMemberHistoryImportService
                         game.HandicapTotal = game.ScratchTotal
                             + ((game.Handicap ?? 0) + (game.Bonus ?? 0)) * game.GamesPlayed;
 
-                        // Only add the new Game to the context when this participant does not
-                        // already exist. For duplicates, AddMemberToTournament updates the
-                        // existing participant's game scores in place and this Game instance is
-                        // discarded (never tracked), so re-running an import does not leave
-                        // orphaned duplicate game rows.
-                        bool participantExists = db.Participants
-                            .AsNoTracking()
-                            .Any(p => p.Member.Id == member.Id
-                                   && p.Tournament.Id == tourn.Id
-                                   && p.Squad == squadNumber);
+                        // Entries already saved for this member and tournament (by an earlier
+                        // run). Rows added earlier in this file are not saved yet, so they
+                        // are never in this list.
+                        List<Participant> existingEntries = db.Participants
+                            .Include(p => p.Game)
+                            .Where(p => p.Member.Id == member.Id && p.Tournament.Id == tourn.Id)
+                            .ToList();
 
-                        if (!participantExists)
+                        Participant existing = FindMatchingImportedEntry(existingEntries, game, claimedParticipantIds);
+                        if (existing != null)
                         {
-                            gameRepository.AddOrUpdateGame(game, db);
-                        }
-
-                        Participant participant = new Participant()
-                        {
-                            Squad = squadNumber,
-                            Member = member,
-                            Game = game,
-                            Tournament = tourn
-                        };
-
-                        tournamentRepository.AddMemberToTournament(participant, db);
-
-                        if (participantExists)
-                        {
-                            // AddMemberToTournament rewrote the existing game's scores in
-                            // place, but not the legacy-import fields. Update those here so
-                            // a re-run corrects rows imported before these fields existed.
-                            Game existingGame = db.Participants
-                                .Include(p => p.Game)
-                                .First(p => p.Member.Id == member.Id
-                                         && p.Tournament.Id == tourn.Id
-                                         && p.Squad == squadNumber)
-                                .Game;
+                            // Re-run: update the entry in place so corrected parsing (cash,
+                            // place, 3-of-4 drops) reaches rows imported by an older version,
+                            // and this Game instance is discarded (never tracked).
+                            claimedParticipantIds.Add(existing.Id);
+                            Game existingGame = existing.Game;
+                            existingGame.MoneyWon = game.MoneyWon;
+                            existingGame.IsComp = game.IsComp;
                             existingGame.PlaceStanding = game.PlaceStanding;
                             existingGame.UseGame1 = game.UseGame1;
                             existingGame.UseGame2 = game.UseGame2;
@@ -429,12 +491,39 @@ public class MemberHistoryImportService : IMemberHistoryImportService
                             existingGame.UseGame4 = game.UseGame4;
                             existingGame.HandicapTotal = game.HandicapTotal;
                         }
+                        else
+                        {
+                            // New entry: next squad number after any already used for this
+                            // member in this tournament, whether saved or added in this file.
+                            if (!lastSquadByTournament.TryGetValue(tourn, out int lastSquad))
+                            {
+                                lastSquad = existingEntries.Count == 0 ? 0 : existingEntries.Max(p => p.Squad);
+                            }
+                            lastSquad++;
+                            lastSquadByTournament[tourn] = lastSquad;
+
+                            gameRepository.AddOrUpdateGame(game, db);
+
+                            Participant participant = new Participant()
+                            {
+                                Squad = lastSquad,
+                                Member = member,
+                                Game = game,
+                                Tournament = tourn
+                            };
+
+                            tournamentRepository.AddMemberToTournament(participant, db);
+                        }
 
                         returnMe.Add(temp);
                     }
                 }
 
                 db.SaveChanges();
+                if (otherEarningsCount > 0)
+                {
+                    progress?.Report($"  Other earnings (cash with no entry): {otherEarningsCount} rows, {otherEarningsTotal:C}.\r\n");
+                }
                 progress?.Report($"  File complete: {returnMe.Count} records saved.\r\n");
                 return returnMe;
             }

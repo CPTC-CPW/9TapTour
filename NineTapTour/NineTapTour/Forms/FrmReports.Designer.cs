@@ -44,6 +44,7 @@
             grpReport = new System.Windows.Forms.GroupBox();
             chkIncludeSidePots = new System.Windows.Forms.CheckBox();
             chkIncludeImported = new System.Windows.Forms.CheckBox();
+            chkIncludeOtherEarnings = new System.Windows.Forms.CheckBox();
             lblTopNHint = new System.Windows.Forms.Label();
             txtTopN = new System.Windows.Forms.TextBox();
             lblTopN = new System.Windows.Forms.Label();
@@ -206,6 +207,7 @@
             //
             // grpReport
             //
+            grpReport.Controls.Add(chkIncludeOtherEarnings);
             grpReport.Controls.Add(chkIncludeImported);
             grpReport.Controls.Add(chkIncludeSidePots);
             grpReport.Controls.Add(lblTopNHint);
@@ -215,7 +217,7 @@
             grpReport.Controls.Add(lblCategory);
             grpReport.Location = new System.Drawing.Point(633, 12);
             grpReport.Name = "grpReport";
-            grpReport.Size = new System.Drawing.Size(280, 140);
+            grpReport.Size = new System.Drawing.Size(280, 162);
             grpReport.TabIndex = 2;
             grpReport.TabStop = false;
             grpReport.Text = "Report";
@@ -241,6 +243,18 @@
             chkIncludeImported.TabIndex = 6;
             chkIncludeImported.Text = "Include imported history";
             chkIncludeImported.UseVisualStyleBackColor = true;
+            //
+            // chkIncludeOtherEarnings
+            //
+            chkIncludeOtherEarnings.AutoSize = true;
+            chkIncludeOtherEarnings.Checked = true;
+            chkIncludeOtherEarnings.CheckState = System.Windows.Forms.CheckState.Checked;
+            chkIncludeOtherEarnings.Location = new System.Drawing.Point(15, 134);
+            chkIncludeOtherEarnings.Name = "chkIncludeOtherEarnings";
+            chkIncludeOtherEarnings.Size = new System.Drawing.Size(250, 19);
+            chkIncludeOtherEarnings.TabIndex = 7;
+            chkIncludeOtherEarnings.Text = "Include other earnings (no tournament entry)";
+            chkIncludeOtherEarnings.UseVisualStyleBackColor = true;
             //
             // lblTopNHint
             //
@@ -367,6 +381,7 @@
         private System.Windows.Forms.Label lblTopNHint;
         private System.Windows.Forms.CheckBox chkIncludeSidePots;
         private System.Windows.Forms.CheckBox chkIncludeImported;
+        private System.Windows.Forms.CheckBox chkIncludeOtherEarnings;
         private System.Windows.Forms.Button btnRunReport;
         private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.DataGridView dgvReport;

@@ -292,6 +292,41 @@ namespace NineTapTour.Core.Data.Migrations
                     b.ToTable("Members");
                 });
 
+            modelBuilder.Entity("NineTapTour.Core.Entities.OtherEarning", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsImported")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Source")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("OtherEarnings");
+                });
+
             modelBuilder.Entity("NineTapTour.Core.Entities.Participant", b =>
                 {
                     b.Property<int>("Id")
@@ -447,6 +482,17 @@ namespace NineTapTour.Core.Data.Migrations
                     b.Navigation("Member2");
 
                     b.Navigation("Tournament");
+                });
+
+            modelBuilder.Entity("NineTapTour.Core.Entities.OtherEarning", b =>
+                {
+                    b.HasOne("NineTapTour.Core.Entities.Member", "Member")
+                        .WithMany()
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
                 });
 
             modelBuilder.Entity("NineTapTour.Core.Entities.Participant", b =>

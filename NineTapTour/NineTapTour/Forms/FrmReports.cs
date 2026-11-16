@@ -182,6 +182,7 @@ public partial class FrmReports : Form
         txtTopN.Enabled = usesOptions;
         chkIncludeSidePots.Enabled = usesOptions;
         chkIncludeImported.Enabled = usesOptions;
+        chkIncludeOtherEarnings.Enabled = usesOptions;
     }
 
     private void RbPeriod_CheckedChanged(object sender, EventArgs e)
@@ -242,6 +243,24 @@ public partial class FrmReports : Form
             return;
         }
 
+        // Cash with no tournament entry (satellites, pre-book career totals, ...).
+        // It counts toward earnings only; entries, cashes and averages are unchanged.
+        bool includeOtherEarnings = chkIncludeOtherEarnings.Checked;
+        List<OtherEarningEntry> otherEarnings = null;
+        if (includeOtherEarnings)
+        {
+            try
+            {
+                otherEarnings = reportsRepository.GetOtherEarnings(startYear, endYear, memberNumber, includeImported);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while loading report data:\n" + ex.Message,
+                    "Report Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+
         bool includeSidePots = chkIncludeSidePots.Checked;
         string category = cmbCategory.Text;
         string scopeLabel = selectedMember?.ToString() ?? "Tour-Wide";
@@ -249,6 +268,10 @@ public partial class FrmReports : Form
         if (includeSidePots)
         {
             currentReportTitle += " (incl. side pots)";
+        }
+        if (otherEarnings?.Count > 0 && ShowsEarningsTotal(category))
+        {
+            currentReportTitle += " (incl. other earnings)";
         }
         if (!includeImported)
         {
@@ -261,7 +284,7 @@ public partial class FrmReports : Form
             {
                 CATEGORY_HIGH_SERIES => ReportCalculations.GetHighSeries(entries, topN),
                 CATEGORY_HIGH_GAMES => ReportCalculations.GetHighGames(entries, topN),
-                _ => (object)ReportCalculations.BuildIndividualSummary(entries, includeSidePots)
+                _ => (object)ReportCalculations.BuildIndividualSummary(entries, includeSidePots, otherEarnings)
             };
         }
         else
@@ -271,11 +294,26 @@ public partial class FrmReports : Form
                 TourReportCategory.HighSeries => ReportCalculations.GetHighSeries(entries, topN),
                 TourReportCategory.HighGames => ReportCalculations.GetHighGames(entries, topN),
                 TourReportCategory.EntriesVsCashout => ReportCalculations.GetCashoutReport(entries, topN, includeSidePots),
-                var tourCategory => (object)ReportCalculations.GetTourReport(entries, tourCategory, topN, includeSidePots)
+                var tourCategory => (object)ReportCalculations.GetTourReport(entries, tourCategory, topN, includeSidePots, otherEarnings)
             };
         }
 
         FormatGrid();
+    }
+
+    /// <summary>
+    /// True when the report for this category shows a member's total earnings,
+    /// which is where other earnings are added. High series and high games list
+    /// single entries, and Entries vs Cashout is about entries that cashed.
+    /// </summary>
+    private bool ShowsEarningsTotal(string category)
+    {
+        if (rbIndividual.Checked)
+        {
+            return category == CATEGORY_SUMMARY;
+        }
+        return TourCategories[category] is not (TourReportCategory.HighSeries
+            or TourReportCategory.HighGames or TourReportCategory.EntriesVsCashout);
     }
 
     /// <summary>

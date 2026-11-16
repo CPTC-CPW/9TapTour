@@ -30,6 +30,21 @@ namespace NineTapTour.Core.Models
     }
 
     /// <summary>
+    /// Cash a member won outside a tournament entry, flattened for report
+    /// calculations. Counts toward earnings but never as an entry.
+    /// </summary>
+    public class OtherEarningEntry
+    {
+        public int MemberNumber { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime? Date { get; set; }
+
+        public string FullName => LastName + ", " + FirstName;
+    }
+
+    /// <summary>
     /// A single tournament entry ranked by series score, for High Series reports.
     /// </summary>
     public class HighSeriesRow
