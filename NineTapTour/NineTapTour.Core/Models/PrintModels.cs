@@ -46,3 +46,19 @@ public record RecapCardContent(
 /// The three text lines printed on a single mailing label.
 /// </summary>
 public record LabelContent(string NameLine, string StreetLine, string CityStateZipLine);
+
+/// <summary>
+/// One printed row of the updated averages list: a member's number, name and
+/// the Average, Handicap and Bonus on their member record, already formatted.
+/// </summary>
+public record AveragesRowContent(string MemberNumber, string Name, string Average, string Handicap, string Bonus);
+
+/// <summary>
+/// Everything the updated averages list prints after a tournament is finalized:
+/// the header strings (repeated on every page) and the rows chunked into pages.
+/// </summary>
+public record AveragesListContent(
+    string Title,
+    string TournamentLine,
+    string PrintedLine,
+    IReadOnlyList<IReadOnlyList<AveragesRowContent>> Pages);
