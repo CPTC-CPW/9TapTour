@@ -317,5 +317,118 @@ namespace NineTapTourTests.Import
             Assert.IsNotNull(row);
             Assert.AreEqual(default, row.Date);
         }
+        [TestMethod]
+        public void FindCashCarryForwardRow_ReturnsLastRowOfCashTotalRange()
+        {
+            using XLWorkbook workbook = new();
+            IXLWorksheet ws = workbook.AddWorksheet("Sheet1");
+            ws.Cell(46, 15).Value = 71376;                     // Career cash carried forward
+            ws.Cell(47, 15).FormulaA1 = "=SUM(O3:O46)";        // Page total
+
+            Assert.AreEqual(46, ExcelWorkbookReader.FindCashCarryForwardRow(ws));
+        }
+
+        [TestMethod]
+        public void FindCashCarryForwardRow_FollowsShiftedLayoutsAndAbsoluteRefs()
+        {
+            using XLWorkbook workbook = new();
+            IXLWorksheet ws = workbook.AddWorksheet("Sheet1");
+            ws.Cell(48, 15).FormulaA1 = "SUM($O$3:$O$47)";
+
+            Assert.AreEqual(47, ExcelWorkbookReader.FindCashCarryForwardRow(ws));
+        }
+
+        [TestMethod]
+        public void FindCashCarryForwardRow_NoTotalFormula_ReturnsNull()
+        {
+            using XLWorkbook workbook = new();
+            IXLWorksheet ws = workbook.AddWorksheet("Sheet1");
+            ws.Cell(3, 15).Value = 25;
+            ws.Cell(47, 15).FormulaA1 = "=AVERAGE(O3:O46)";
+
+            Assert.IsNull(ExcelWorkbookReader.FindCashCarryForwardRow(ws));
+        }
+        [TestMethod]
+        public void ReadOtherEarningRow_CashWithNoEntry_ReadsAmountAndDescription()
+        {
+            using XLWorkbook workbook = new();
+            IXLWorksheet ws = workbook.AddWorksheet("Sheet1");
+            ws.Cell(4, 14).Value = "10th Yak";
+            ws.Cell(4, 15).Value = 100;
+
+            OtherEarningRow row = ExcelWorkbookReader.ReadOtherEarningRow(ws, 4);
+
+            Assert.AreEqual(100m, row.Amount);
+            Assert.AreEqual("10th Yak", row.Description);
+            Assert.IsNull(row.Date, "the book gives no date");
+        }
+
+        [TestMethod]
+        public void ReadOtherEarningRow_GamesPlayedFormulaShowingBlank_CountsAsNoEntry()
+        {
+            using XLWorkbook workbook = new();
+            IXLWorksheet ws = workbook.AddWorksheet("Sheet1");
+            ws.Cell(4, 1).FormulaA1 = "=IF(B4=\"\",\"\",V4)";  // As in the real books
+            ws.Cell(4, 14).Value = "10th Yak";
+            ws.Cell(4, 15).Value = 100;
+
+            OtherEarningRow row = ExcelWorkbookReader.ReadOtherEarningRow(ws, 4);
+
+            Assert.IsNotNull(row);
+            Assert.AreEqual(100m, row.Amount);
+        }
+
+        [TestMethod]
+        public void ReadOtherEarningRow_DateInNotes_IsUsed()
+        {
+            using XLWorkbook workbook = new();
+            IXLWorksheet ws = workbook.AddWorksheet("Sheet1");
+            ws.Cell(30, 14).Value = "20th";
+            ws.Cell(30, 15).Value = "$62.00";
+            ws.Cell(30, 16).Value = "House Shot 10/4/14";
+
+            OtherEarningRow row = ExcelWorkbookReader.ReadOtherEarningRow(ws, 30);
+
+            Assert.AreEqual(62m, row.Amount);
+            Assert.AreEqual("20th - House Shot 10/4/14", row.Description);
+            Assert.AreEqual(new DateTime(2014, 10, 4), row.Date);
+        }
+
+        [TestMethod]
+        public void ReadOtherEarningRow_NotCashOnly_ReturnsNull()
+        {
+            using XLWorkbook workbook = new();
+            IXLWorksheet ws = workbook.AddWorksheet("Sheet1");
+            ws.Cell(3, 1).Value = 4;                       // An entry: games played
+            ws.Cell(3, 15).Value = 75;
+            ws.Cell(5, 14).Value = "9th";                  // No cash
+            ws.Cell(6, 15).Value = 0;                      // Zero cash
+            ws.Cell(7, 15).FormulaA1 = "=SUM(O3:O6)";      // A computed total
+
+            Assert.IsNull(ExcelWorkbookReader.ReadOtherEarningRow(ws, 3));
+            Assert.IsNull(ExcelWorkbookReader.ReadOtherEarningRow(ws, 5));
+            Assert.IsNull(ExcelWorkbookReader.ReadOtherEarningRow(ws, 6));
+            Assert.IsNull(ExcelWorkbookReader.ReadOtherEarningRow(ws, 7));
+        }
+
+        [DataTestMethod]
+        [DataRow("Nob Hill 7-7-12", 2012, 7, 7)]
+        [DataRow("12/13/08", 2008, 12, 13)]
+        [DataRow("08/24/13 Riverside Sat", 2013, 8, 24)]
+        [DataRow("1st 6/27/2004 DBL $500", 2004, 6, 27)]
+        public void ParseNotesDate_ReadsMonthDayYear(string notes, int year, int month, int day)
+        {
+            Assert.AreEqual(new DateTime(year, month, day), ExcelWorkbookReader.ParseNotesDate(notes));
+        }
+
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("Yak 6-1")]          // No year
+        [DataRow("13/40/14")]         // Not a real date
+        [DataRow("90% of 220")]
+        public void ParseNotesDate_NoUsableDate_ReturnsNull(string notes)
+        {
+            Assert.IsNull(ExcelWorkbookReader.ParseNotesDate(notes));
+        }
     }
 }

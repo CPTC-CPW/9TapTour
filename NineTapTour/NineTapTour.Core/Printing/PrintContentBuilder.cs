@@ -271,4 +271,29 @@ public static class PrintContentBuilder
             mem.Street,
             mem.City + ", " + mem.State + " " + mem.PostalCode);
     }
+
+    /// <summary>
+    /// Builds the updated averages list printed after a tournament is finalized,
+    /// so the director can copy the new values into the old program. One row per
+    /// member with the Average, Handicap and Bonus currently on the member record,
+    /// ordered by last name then first name and chunked into pages of
+    /// <see cref="BowlersPerPage"/>.
+    /// </summary>
+    public static AveragesListContent BuildUpdatedAveragesList(Tournament tournament, List<Member> members, DateTime printedOn)
+    {
+        string tournamentLine = tournament.Location + " " + string.Format("{0:M-d-yyyy}", tournament.Date);
+        string printedLine = "Printed " + string.Format("{0:M-d-yyyy}", printedOn);
+
+        List<AveragesRowContent> rows = [.. OrderMembersForRecaps(members)
+            .Select(mem => new AveragesRowContent(
+                mem.Number.ToString(),
+                mem.LastName + ", " + mem.FirstName,
+                mem.Average?.ToString() ?? "",
+                mem.Handicap?.ToString() ?? "",
+                mem.Bonus.ToString()))];
+
+        List<IReadOnlyList<AveragesRowContent>> pages = [.. rows.Chunk(BowlersPerPage)];
+
+        return new AveragesListContent("9 Tap Tour Updated Averages", tournamentLine, printedLine, pages);
+    }
 }

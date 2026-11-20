@@ -12,6 +12,7 @@ namespace NineTapTour.Core.Repositories;
 public interface IReportsRepository
 {
     List<ReportGameEntry> GetReportEntries(int? startYear, int? endYear, int? memberNumber = null, bool includeImported = true);
+    List<OtherEarningEntry> GetOtherEarnings(int? startYear, int? endYear, int? memberNumber = null, bool includeImported = true);
     List<int> GetTournamentYears();
     Dictionary<int, DateTime> GetLastEntryDates();
 }

@@ -3,6 +3,7 @@ using NineTapTour.Database;
 using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using NineTapTour.Core.Printing;
 using NineTapTour.Core.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,7 @@ public partial class FrmFinalizeTournament : Form
     private Label lblFinalizedBanner;
     private Button btnFinalizeTournament;
     private Button btnUndoFinalize;
+    private Button btnPrintAverages;
     private SplitContainer splitMain;
     private Panel pnlPlayerInfo;
     private Label lblPlayerInfo;
@@ -209,7 +211,18 @@ public partial class FrmFinalizeTournament : Form
         };
         btnTeamView.Click += BtnTeamView_Click;
 
-        pnlToolbar.Controls.AddRange([btnFinalizeTournament, btnUndoFinalize, btnTeamView]);
+        // Enabled by ApplyFinalizedState: the list only means something once the
+        // new averages have been written to the member records.
+        btnPrintAverages = new Button
+        {
+            Text     = "Print Updated Averages",
+            Size     = new Size(170, 26),
+            Location = new Point(12, 7),
+            Enabled  = false
+        };
+        btnPrintAverages.Click += BtnPrintAverages_Click;
+
+        pnlToolbar.Controls.AddRange([btnFinalizeTournament, btnUndoFinalize, btnTeamView, btnPrintAverages]);
         pnlToolbar.Resize += (s, _) => PinToolbarButtons();
 
         // --- "Already finalized" banner (shown by ApplyFinalizedState) ---
@@ -300,7 +313,20 @@ public partial class FrmFinalizeTournament : Form
         lblFinalizedBanner.Visible    = true;
         btnFinalizeTournament.Enabled = false;
         btnUndoFinalize.Enabled       = false;
+        btnPrintAverages.Enabled      = true;
         dgvTournament.ReadOnly        = true;
+    }
+
+    /// <summary>
+    /// Prints each bowler's number, name, and the Average, Handicap and Bonus now
+    /// on their member record, so the director can update the old program to match.
+    /// </summary>
+    private void BtnPrintAverages_Click(object sender, EventArgs e)
+    {
+        List<Member> members = tournamentRepository.GetUniqueTourMembers(selectedTournament);
+        AveragesListContent content =
+            PrintContentBuilder.BuildUpdatedAveragesList(selectedTournament, members, DateTime.Today);
+        Print.PrintUpdatedAverages(content);
     }
 
     private void PinToolbarButtons()
@@ -1721,7 +1747,8 @@ public partial class FrmFinalizeTournament : Form
         DgvTournament_SelectionChanged(dgvTournament, EventArgs.Empty);
 
         MessageBox.Show(
-            "Tournament has been finalized successfully.",
+            "Tournament has been finalized successfully.\n\n" +
+            "Use Print Updated Averages to print the new averages for the old program.",
             "Finalized",
             MessageBoxButtons.OK,
             MessageBoxIcon.Information);

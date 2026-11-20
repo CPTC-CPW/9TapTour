@@ -421,4 +421,59 @@ namespace NineTapTourTests.Printing
             Assert.AreEqual("Springfield, IL 62701", label.CityStateZipLine);
         }
     }
+
+    [TestClass]
+    public class PrintContentBuilderUpdatedAveragesTests
+    {
+        static readonly Tournament Tourney = new() { Location = "Sunset Lanes", Date = new DateTime(2026, 11, 14) };
+
+        [TestMethod]
+        public void BuildUpdatedAveragesList_RowsShowMemberRecordValuesSortedByName()
+        {
+            List<Member> members =
+            [
+                new() { Number = 320, FirstName = "Earl", LastName = "Kleist", Average = 211, Handicap = 7, Bonus = 2 },
+                new() { Number = 11, FirstName = "Samson", LastName = "Ibale", Average = 221, Handicap = 0, Bonus = 0 },
+            ];
+
+            AveragesListContent content = PrintContentBuilder.BuildUpdatedAveragesList(Tourney, members, new DateTime(2026, 11, 16));
+
+            Assert.AreEqual("Sunset Lanes 11-14-2026", content.TournamentLine);
+            Assert.AreEqual("Printed 11-16-2026", content.PrintedLine);
+            Assert.AreEqual(1, content.Pages.Count);
+            Assert.AreEqual(new AveragesRowContent("11", "Ibale, Samson", "221", "0", "0"), content.Pages[0][0]);
+            Assert.AreEqual(new AveragesRowContent("320", "Kleist, Earl", "211", "7", "2"), content.Pages[0][1]);
+        }
+
+        [TestMethod]
+        public void BuildUpdatedAveragesList_MissingAverageAndHandicap_PrintBlank()
+        {
+            List<Member> members = [new() { Number = 5, FirstName = "New", LastName = "Bowler", Bonus = 3 }];
+
+            AveragesListContent content = PrintContentBuilder.BuildUpdatedAveragesList(Tourney, members, DateTime.Today);
+
+            Assert.AreEqual(new AveragesRowContent("5", "Bowler, New", "", "", "3"), content.Pages[0][0]);
+        }
+
+        [TestMethod]
+        public void BuildUpdatedAveragesList_PagesHoldFortyBowlers()
+        {
+            List<Member> members = [.. Enumerable.Range(1, 41)
+                .Select(n => new Member { Number = n, FirstName = "F", LastName = $"L{n:D2}" })];
+
+            AveragesListContent content = PrintContentBuilder.BuildUpdatedAveragesList(Tourney, members, DateTime.Today);
+
+            Assert.AreEqual(2, content.Pages.Count);
+            Assert.AreEqual(40, content.Pages[0].Count);
+            Assert.AreEqual("41", content.Pages[1][0].MemberNumber);
+        }
+
+        [TestMethod]
+        public void BuildUpdatedAveragesList_NoMembers_ProducesNoPages()
+        {
+            AveragesListContent content = PrintContentBuilder.BuildUpdatedAveragesList(Tourney, [], DateTime.Today);
+
+            Assert.AreEqual(0, content.Pages.Count);
+        }
+    }
 }

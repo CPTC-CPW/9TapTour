@@ -82,7 +82,48 @@ public static class ReportCalculations
     /// The returned list is unranked and unsorted; see GetTourReport.
     /// </summary>
     /// <param name="includeSidePots">When true, side pot winnings are added to earnings</param>
-    public static List<MemberReportSummary> BuildMemberSummaries(List<ReportGameEntry> entries, bool includeSidePots = false)
+    /// <param name="otherEarnings">Cash not tied to an entry to add to earnings, or null for none.
+    /// A member with other earnings but no entries gets a summary with zero entries.</param>
+    public static List<MemberReportSummary> BuildMemberSummaries(List<ReportGameEntry> entries, bool includeSidePots = false,
+        List<OtherEarningEntry> otherEarnings = null)
+    {
+        List<MemberReportSummary> summaries = BuildEntrySummaries(entries, includeSidePots);
+        AddOtherEarnings(summaries, otherEarnings);
+        return summaries;
+    }
+
+    /// <summary>
+    /// Adds each member's other earnings to their summary's earnings, creating a
+    /// zero-entry summary for members who have other earnings but no entries.
+    /// </summary>
+    static void AddOtherEarnings(List<MemberReportSummary> summaries, List<OtherEarningEntry> otherEarnings)
+    {
+        if (otherEarnings == null)
+        {
+            return;
+        }
+
+        Dictionary<int, MemberReportSummary> byMember = summaries.ToDictionary(s => s.Member);
+        foreach (IGrouping<int, OtherEarningEntry> group in otherEarnings.GroupBy(o => o.MemberNumber))
+        {
+            decimal amount = group.Sum(o => o.Amount);
+            if (byMember.TryGetValue(group.Key, out MemberReportSummary summary))
+            {
+                summary.Earnings += amount;
+            }
+            else
+            {
+                summaries.Add(new MemberReportSummary
+                {
+                    Member = group.Key,
+                    Name = group.First().FullName,
+                    Earnings = amount
+                });
+            }
+        }
+    }
+
+    static List<MemberReportSummary> BuildEntrySummaries(List<ReportGameEntry> entries, bool includeSidePots)
     {
         return entries
             .GroupBy(e => e.MemberNumber)
@@ -117,9 +158,16 @@ public static class ReportCalculations
     /// </summary>
     /// <param name="topN">Maximum rows to return, or null for all</param>
     /// <param name="includeSidePots">When true, side pot winnings are added to earnings</param>
-    public static List<MemberReportSummary> GetTourReport(List<ReportGameEntry> entries, TourReportCategory category, int? topN = null, bool includeSidePots = false)
+    /// <param name="otherEarnings">Cash not tied to an entry to add to earnings, or null for none.
+    /// Members with other earnings but no entries are only listed on the Earnings report.</param>
+    public static List<MemberReportSummary> GetTourReport(List<ReportGameEntry> entries, TourReportCategory category, int? topN = null,
+        bool includeSidePots = false, List<OtherEarningEntry> otherEarnings = null)
     {
-        List<MemberReportSummary> summaries = BuildMemberSummaries(entries, includeSidePots);
+        List<MemberReportSummary> summaries = BuildMemberSummaries(entries, includeSidePots, otherEarnings);
+        if (category != TourReportCategory.Earnings)
+        {
+            summaries = [.. summaries.Where(s => s.Entries > 0)];
+        }
 
         Func<MemberReportSummary, double> sortValue = category switch
         {
@@ -225,14 +273,34 @@ public static class ReportCalculations
     /// summary report. Returns an empty list when the member has no entries.
     /// </summary>
     /// <param name="includeSidePots">When true, side pot winnings are added to earnings</param>
-    public static List<ReportStatistic> BuildIndividualSummary(List<ReportGameEntry> entries, bool includeSidePots = false)
+    /// <param name="otherEarnings">The member's cash not tied to an entry to add to earnings, or null for none</param>
+    public static List<ReportStatistic> BuildIndividualSummary(List<ReportGameEntry> entries, bool includeSidePots = false,
+        List<OtherEarningEntry> otherEarnings = null)
     {
         if (entries.Count == 0)
         {
             return [];
         }
 
-        MemberReportSummary summary = BuildMemberSummaries(entries, includeSidePots).First();
+        int memberNumber = entries[0].MemberNumber;
+        List<OtherEarningEntry> memberOtherEarnings = otherEarnings?
+            .Where(o => o.MemberNumber == memberNumber)
+            .ToList();
+        MemberReportSummary summary = BuildMemberSummaries(entries, includeSidePots, memberOtherEarnings)
+            .First(s => s.Member == memberNumber);
+
+        List<string> earningsIncludes = [];
+        if (includeSidePots)
+        {
+            earningsIncludes.Add("Side Pots");
+        }
+        if (memberOtherEarnings?.Count > 0)
+        {
+            earningsIncludes.Add("Other Earnings");
+        }
+        string earningsLabel = earningsIncludes.Count == 0
+            ? "Total Earnings"
+            : $"Total Earnings (incl. {string.Join(" & ", earningsIncludes)})";
 
         ReportGameEntry bestSeries = entries
             .Where(e => e.GamesPlayed > 0)
@@ -246,7 +314,20 @@ public static class ReportCalculations
             new() { Statistic = "Member", Value = $"{summary.Name} ({summary.Member})" },
             new() { Statistic = "Total Entries", Value = summary.Entries.ToString() },
             new() { Statistic = "Tournaments Bowled", Value = summary.Tournaments.ToString() },
-            new() { Statistic = includeSidePots ? "Total Earnings (incl. Side Pots)" : "Total Earnings", Value = summary.Earnings.ToString("C2") },
+            new() { Statistic = earningsLabel, Value = summary.Earnings.ToString("C2") },
+        ];
+
+        if (memberOtherEarnings?.Count > 0)
+        {
+            stats.Add(new()
+            {
+                Statistic = "Other Earnings (no tournament entry)",
+                Value = memberOtherEarnings.Sum(o => o.Amount).ToString("C2")
+            });
+        }
+
+        stats.AddRange(
+        [
             new() { Statistic = "Average (Scratch)", Value = summary.Average.ToString("N2") },
             new() { Statistic = "High Series (Scratch)", Value = FormatBestSeries(bestSeries) },
             new() { Statistic = "High Game (Scratch)", Value = FormatBestGame(bestGames) },
@@ -255,7 +336,7 @@ public static class ReportCalculations
             new() { Statistic = "3rd Place Finishes", Value = summary.ThirdPlace.ToString() },
             new() { Statistic = "Top 5 Finishes", Value = summary.Top5.ToString() },
             new() { Statistic = "Top 10 Finishes", Value = summary.Top10.ToString() },
-        ];
+        ]);
 
         return stats;
     }

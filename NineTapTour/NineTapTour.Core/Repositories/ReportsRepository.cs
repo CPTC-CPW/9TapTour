@@ -78,6 +78,51 @@ public class ReportsRepository : IReportsRepository
     }
 
     /// <summary>
+    /// Returns cash not tied to a tournament entry (see <see cref="OtherEarning"/>),
+    /// optionally filtered by year range and/or a single member. Rows with no date
+    /// are only returned when no year range is given, since their year is unknown.
+    /// </summary>
+    /// <param name="includeImported">When false, rows created by the legacy history import are excluded</param>
+    public List<OtherEarningEntry> GetOtherEarnings(int? startYear, int? endYear, int? memberNumber = null, bool includeImported = true)
+    {
+        using var db = dbFactory.CreateDbContext();
+
+        IQueryable<OtherEarning> query = db.OtherEarnings.Where(o => o.Member != null);
+
+        if (startYear.HasValue || endYear.HasValue)
+        {
+            query = query.Where(o => o.Date != null);
+        }
+        if (startYear.HasValue)
+        {
+            query = query.Where(o => o.Date.Value.Year >= startYear.Value);
+        }
+        if (endYear.HasValue)
+        {
+            query = query.Where(o => o.Date.Value.Year <= endYear.Value);
+        }
+        if (memberNumber.HasValue)
+        {
+            query = query.Where(o => o.Member.Number == memberNumber.Value);
+        }
+        if (!includeImported)
+        {
+            query = query.Where(o => !o.IsImported);
+        }
+
+        return query
+            .Select(o => new OtherEarningEntry
+            {
+                MemberNumber = o.Member.Number,
+                FirstName = o.Member.FirstName,
+                LastName = o.Member.LastName,
+                Amount = o.Amount,
+                Date = o.Date
+            })
+            .ToList();
+    }
+
+    /// <summary>
     /// Returns the distinct years that have at least one tournament, newest first.
     /// Used to populate the year dropdowns on the reports form.
     /// </summary>

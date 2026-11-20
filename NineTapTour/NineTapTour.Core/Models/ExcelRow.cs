@@ -107,3 +107,9 @@ public class ExcelRow
     /// </summary>
     public string Notes { get; set; }
 }
+/// <summary>
+/// Cash a legacy book records on a row with no tournament entry: a career total
+/// from before the book started, or a payout from a satellite, Yakima, 3RT,
+/// Hawaii or other outside event. <see cref="Date"/> is null when the book gives none.
+/// </summary>
+public record OtherEarningRow(decimal Amount, string Description, DateTime? Date);

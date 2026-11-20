@@ -24,4 +24,19 @@ public static partial class RegexHelpers
     /// </summary>
     [GeneratedRegex(@"^\s*(\d+)")]
     public static partial Regex LeadingDigits();
+
+    /// <summary>
+    /// Matches the formula that totals a legacy book page's CASH column, such
+    /// as "SUM(O3:O46)" (with or without a leading "=" or "$" anchors removed).
+    /// Group 1 is the last row of the summed range.
+    /// </summary>
+    [GeneratedRegex(@"^=?SUM\(O\d+:O(\d+)\)$", RegexOptions.IgnoreCase, "en-US")]
+    public static partial Regex CashTotalFormula();
+
+    /// <summary>
+    /// Matches a month/day/year date written in a legacy book's notes, such as
+    /// "House Shot 10/4/14" or "Nob Hill 7-7-12". Groups 1-3 are month, day, year.
+    /// </summary>
+    [GeneratedRegex(@"(?<!\d)(\d{1,2})[/-](\d{1,2})[/-](\d{4}|\d{2})(?!\d)")]
+    public static partial Regex NotesDate();
 }

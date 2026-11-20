@@ -207,6 +207,77 @@ namespace NineTapTour.Database
             index = 0;
         }
 
+        /// <summary>
+        /// Prints the updated averages list (member number, name, average,
+        /// handicap and bonus) for the members of a finalized tournament.
+        /// </summary>
+        static public void PrintUpdatedAverages(AveragesListContent content)
+        {
+            if (content.Pages.Count == 0)
+            {
+                return;
+            }
+
+            PrintDialog printDialog = new();
+            PrintDocument printDocument = new();
+            printDialog.Document = printDocument;
+
+            averagesContent = content;
+            index = 0;
+            printDocument.PrintPage += new PrintPageEventHandler(PrintAveragesPage);
+
+            if (printDialog.ShowDialog() == DialogResult.OK)
+            {
+                printDocument.Print();
+            }
+            index = 0;
+        }
+
+        static private void PrintAveragesPage(object sender, PrintPageEventArgs e)
+        {
+            Graphics graphic = e.Graphics;
+            Font font = new("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
+            Font bigFont = new("Arial", 25, FontStyle.Bold, GraphicsUnit.Pixel);
+            SolidBrush dBrush = new(Color.Black);
+
+            const int startX = 25;
+            const int startY = 50;
+            const int rowHeight = 19;
+            const int memberNumberX = startX;
+            const int nameX = startX + 100;
+            const int averageX = startX + 480;
+            const int handicapX = startX + 580;
+            const int bonusX = startX + 690;
+
+            graphic.DrawString(averagesContent.TournamentLine, font, dBrush, startX, startY - 19);
+            graphic.DrawString(averagesContent.PrintedLine, font, dBrush, bonusX - 60, startY - 19);
+            graphic.DrawString(averagesContent.Title, bigFont, dBrush, startX, startY + 27);
+
+            int headerY = startY + 100;
+            graphic.DrawString("Mem No", font, dBrush, memberNumberX, headerY);
+            graphic.DrawString("Name", font, dBrush, nameX, headerY);
+            graphic.DrawString("Average", font, dBrush, averageX, headerY);
+            graphic.DrawString("Handicap", font, dBrush, handicapX, headerY);
+            graphic.DrawString("Bonus", font, dBrush, bonusX, headerY);
+            graphic.DrawLine(new Pen(Brushes.Black, 2), startX, headerY + 22, bonusX + 70, headerY + 22);
+
+            IReadOnlyList<AveragesRowContent> rows = averagesContent.Pages[index];
+            for (int i = 0; i < rows.Count; i++)
+            {
+                int y = headerY + 30 + (i * rowHeight);
+                graphic.DrawString(rows[i].MemberNumber, font, dBrush, memberNumberX, y);
+                graphic.DrawString(rows[i].Name, font, dBrush, nameX, y);
+                graphic.DrawString(rows[i].Average, font, dBrush, averageX, y);
+                graphic.DrawString(rows[i].Handicap, font, dBrush, handicapX, y);
+                graphic.DrawString(rows[i].Bonus, font, dBrush, bonusX, y);
+            }
+
+            index++;
+            e.HasMorePages = (index < averagesContent.Pages.Count);
+        }
+
+        static AveragesListContent averagesContent;
+
         static public void PrintByMemberList(List<Member> members)
         {
             //Set up components for printing

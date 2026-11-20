@@ -792,6 +792,22 @@ public partial class FrmMemberData : Form
     }
 
     /// <summary>
+    /// Opens the member's other earnings: cash won with no tournament entry, such
+    /// as satellites and career totals from before the legacy books.
+    /// </summary>
+    private void BtnOtherEarnings_Click(object sender, EventArgs e)
+    {
+        if (currentMem == null || currentMem.Id == 0)
+        {
+            MessageBox.Show("Look up a member first.");
+            return;
+        }
+
+        using FrmOtherEarnings otherEarnings = formFactory.Create<FrmOtherEarnings>(currentMem);
+        otherEarnings.ShowDialog(this);
+    }
+
+    /// <summary>
     /// Prints Average, Handicap and Bonus of a single member
     /// </summary>
     /// <param name="sender"></param>

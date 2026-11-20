@@ -107,6 +107,7 @@
             lblLastBowled = new System.Windows.Forms.Label();
             lblMoneyEarned = new System.Windows.Forms.Label();
             txtMoneyEarned = new System.Windows.Forms.TextBox();
+            btnOtherEarnings = new System.Windows.Forms.Button();
             lblBonus = new System.Windows.Forms.Label();
             lblTournAvg = new System.Windows.Forms.Label();
             lblAverage = new System.Windows.Forms.Label();
@@ -940,6 +941,7 @@
             panel5.Controls.Add(lblLastBowled);
             panel5.Controls.Add(lblMoneyEarned);
             panel5.Controls.Add(txtMoneyEarned);
+            panel5.Controls.Add(btnOtherEarnings);
             panel5.Controls.Add(lblBonus);
             panel5.Controls.Add(lblTournAvg);
             panel5.Controls.Add(lblAverage);
@@ -1027,6 +1029,17 @@
             txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
             txtMoneyEarned.TabIndex = 92;
             txtMoneyEarned.TabStop = false;
+            // 
+            // btnOtherEarnings
+            // 
+            btnOtherEarnings.Font = new System.Drawing.Font("Calibri", 9.75F);
+            btnOtherEarnings.Location = new System.Drawing.Point(355, 115);
+            btnOtherEarnings.Name = "btnOtherEarnings";
+            btnOtherEarnings.Size = new System.Drawing.Size(115, 25);
+            btnOtherEarnings.TabStop = false;
+            btnOtherEarnings.Text = "Other Earnings...";
+            btnOtherEarnings.UseVisualStyleBackColor = true;
+            btnOtherEarnings.Click += BtnOtherEarnings_Click;
             // 
             // lblBonus
             // 
@@ -1322,6 +1335,7 @@
         private System.Windows.Forms.Label lblLastBowled;
         private System.Windows.Forms.Label lblMoneyEarned;
         private System.Windows.Forms.TextBox txtMoneyEarned;
+        private System.Windows.Forms.Button btnOtherEarnings;
         private System.Windows.Forms.Label lblBonus;
         private System.Windows.Forms.Label lblTournAvg;
         private System.Windows.Forms.Label lblAverage;

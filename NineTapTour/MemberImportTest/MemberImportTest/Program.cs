@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NineTapTour.Database;
 using NineTapTour.Core.Data;
@@ -52,6 +53,13 @@ namespace MemberImportTest
             services.AddTransient<FrmMain>();
 
             using ServiceProvider provider = services.BuildServiceProvider();
+
+            // The import writes tables added by newer versions (e.g. OtherEarnings), so
+            // bring the schema up to date in case the main app has not run since updating.
+            using (NineTapDb db = provider.GetRequiredService<IDbContextFactory<NineTapDb>>().CreateDbContext())
+            {
+                db.Database.Migrate();
+            }
 
             Application.Run(provider.GetRequiredService<FrmMain>());
         }

@@ -462,6 +462,192 @@ namespace NineTapTour.IntegrationTests.Import
             }
         }
 
+        /// <summary>
+        /// Real books are paged newest-first. Each page totals its CASH column with
+        /// =SUM(O3:O46) and row 46 carries the previous page's total forward, even when
+        /// a game also sits on row 46. Older imports counted that running total as
+        /// winnings (Earl Kleist imported at about three times his book total) and
+        /// restarted squad numbers on every page.
+        /// </summary>
+        [TestMethod]
+        public void ImportFolder_PagedBook_IgnoresCarriedForwardCash_AndReRunRepairsOldImports()
+        {
+            MemberHistoryImportService service = CreateService();
+            MemberRepository memberRepository = new(TestDatabase.DbFactory);
+
+            int maxMemberId;
+            int maxTournamentId;
+            int maxGameId;
+            int maxParticipantId;
+            using (NineTapDb db = TestDatabase.DbFactory.CreateDbContext())
+            {
+                maxMemberId = db.Members.Max(m => (int?)m.Id) ?? 0;
+                maxTournamentId = db.Tournaments.Max(t => (int?)t.Id) ?? 0;
+                maxGameId = db.Games.Max(g => (int?)g.Id) ?? 0;
+                maxParticipantId = db.Participants.Max(p => (int?)p.Id) ?? 0;
+            }
+
+            DateTime firstDate = new(2004, 1, 10);
+            DateTime splitDate = new(2004, 2, 14);   // Entries on both pages
+            DateTime lastDate = new(2004, 3, 20);
+
+            string folder = Path.Combine(Path.GetTempPath(), $"NineTapImport_{Guid.NewGuid():N}");
+            Directory.CreateDirectory(folder);
+            using (XLWorkbook workbook = new())
+            {
+                // Newest page first, as in the real books.
+                IXLWorksheet newest = workbook.AddWorksheet("Sheet1");
+                newest.Cell(1, 2).Value = "Pages, Pat";
+                newest.Cell(1, 10).Value = 150;
+                newest.Cell(1, 14).Value = "Mem #903";
+                WriteGameRow(newest, 3, lastDate, 210, 211, 212, 213);
+                newest.Cell(3, 15).Value = 100;
+                // Cash with no entry: a satellite payout, dated only in the notes.
+                newest.Cell(10, 1).FormulaA1 = "=IF(B10=\"\",\"\",V10)";   // Shows blank, as in the real books
+                newest.Cell(10, 14).Value = "4th sat";
+                newest.Cell(10, 15).Value = 200;
+                newest.Cell(10, 16).Value = "11/29/03";
+                // A game shares the carry-forward row: its cash cell is the older page's total.
+                WriteGameRow(newest, 46, splitDate, 220, 221, 222, 223, finPPHG: "");
+                newest.Cell(46, 15).Value = 800;
+                newest.Cell(47, 15).FormulaA1 = "=SUM(O3:O46)";
+
+                IXLWorksheet oldest = workbook.AddWorksheet("Sheet old");
+                WriteGameRow(oldest, 3, firstDate, 180, 181, 182, 183);
+                oldest.Cell(3, 15).Value = 75;
+                // The oldest page has nothing carried forward, so row 46 is real winnings.
+                WriteGameRow(oldest, 46, splitDate, 190, 191, 192, 193, finPPHG: "2003/04");
+                oldest.Cell(46, 15).Value = 425;
+                // Career cash from before the book started, labeled with its year.
+                oldest.Cell(45, 14).Value = "2003";
+                oldest.Cell(45, 15).Value = 300;
+                oldest.Cell(47, 15).FormulaA1 = "=SUM(O3:O46)";
+
+                workbook.SaveAs(Path.Combine(folder, "member903.xlsx"));
+            }
+
+            try
+            {
+                memberRepository.AddOrUpdateMember(new Member
+                {
+                    Number = 903,
+                    IsActive = true,
+                    FirstName = "Pat",
+                    LastName = "Pages",
+                    MiddleInitial = "",
+                    Gender = MemberGenders.Female,
+                    Street = "4 Import St",
+                    City = "Testville",
+                    State = "WA",
+                    PostalCode = "98000",
+                    PrimaryPhone = "555-0903",
+                    Average = 150,
+                });
+
+                ImportResult first = service.ImportFolder(folder, new ListProgress());
+                Assert.AreEqual(4, first.Added);
+                Assert.AreEqual(0, first.Warnings.Count);
+
+                int memberId;
+                int carryRowParticipantId;
+                using (NineTapDb db = TestDatabase.DbFactory.CreateDbContext())
+                {
+                    memberId = db.Members.Single(m => m.Number == 903).Id;
+                    List<Participant> entries = db.Participants
+                        .Include(p => p.Game)
+                        .Include(p => p.Tournament)
+                        .Where(p => p.Member.Id == memberId)
+                        .ToList();
+
+                    Assert.AreEqual(4, entries.Count);
+                    Assert.AreEqual(600m, entries.Sum(p => p.Game.MoneyWon ?? 0),
+                        "entry cash is 100 + 75 + 425; the 800 carried forward is not winnings");
+
+                    List<OtherEarning> others = db.OtherEarnings
+                        .Where(o => o.Member.Id == memberId)
+                        .OrderBy(o => o.Amount)
+                        .ToList();
+                    Assert.HasCount(2, others);
+                    Assert.AreEqual(1100m, entries.Sum(p => p.Game.MoneyWon ?? 0) + others.Sum(o => o.Amount),
+                        "entries plus other earnings equal the book's career total (100 + 200 + 800)");
+                    Assert.AreEqual(200m, others[0].Amount);
+                    Assert.AreEqual("4th sat - 11/29/03", others[0].Description);
+                    Assert.AreEqual(new DateTime(2003, 11, 29), others[0].Date);
+                    Assert.AreEqual("member903.xlsx, Sheet1, row 10", others[0].Source);
+                    Assert.IsTrue(others[0].IsImported);
+                    Assert.AreEqual(300m, others[1].Amount);
+                    Assert.AreEqual("2003", others[1].Description);
+                    Assert.IsNull(others[1].Date, "a year label is not a date");
+
+                    Participant carryRow = entries.Single(p => p.Game.Game1 == 220);
+                    Assert.AreEqual(0m, carryRow.Game.MoneyWon ?? 0, "the carried-forward total is not winnings");
+                    Assert.AreEqual(886, carryRow.Game.ScratchTotal, "the game on the carry-forward row still imports");
+                    carryRowParticipantId = carryRow.Id;
+
+                    Participant oldestRow46 = entries.Single(p => p.Game.Game1 == 190);
+                    Assert.AreEqual(425m, oldestRow46.Game.MoneyWon, "row 46 of the oldest page is real winnings");
+                    Assert.IsNull(oldestRow46.Game.PlaceStanding, "a year label is not a place");
+
+                    CollectionAssert.AreEquivalent(new List<int> { 1, 2 },
+                        entries.Where(p => p.Tournament.Date == splitDate).Select(p => p.Squad).ToList(),
+                        "entries on the same date on two pages get different squads");
+
+                    // Put the carry-forward entry back the way older imports left it:
+                    // the running total counted as cash and a squad that collides with
+                    // the other entry on that date.
+                    Game inflated = db.Games.Single(g => g.Id == carryRow.Game.Id);
+                    inflated.MoneyWon = 500m;
+                    db.Participants.Single(p => p.Id == carryRow.Id).Squad =
+                        entries.Single(p => p.Game.Game1 == 190).Squad;
+                    db.SaveChanges();
+                }
+
+                // A row entered by hand must survive re-running the import.
+                new OtherEarningRepository(TestDatabase.DbFactory).SaveForMember(903,
+                [
+                    .. new OtherEarningRepository(TestDatabase.DbFactory).GetForMember(903),
+                    new OtherEarning { Amount = 50m, Description = "Hawaii" },
+                ]);
+
+                ImportResult second = service.ImportFolder(folder, new ListProgress());
+                Assert.AreEqual(4, second.Added, "rows are still parsed and reported on a re-run");
+
+                ReportsRepository reportsRepository = new(TestDatabase.DbFactory);
+                Assert.AreEqual(550m, reportsRepository.GetOtherEarnings(null, null, 903).Sum(o => o.Amount),
+                    "the re-run replaces the book's rows instead of adding them again, and keeps the hand-entered row");
+                Assert.AreEqual(200m, reportsRepository.GetOtherEarnings(2003, 2003, 903).Single().Amount,
+                    "a year filter only includes dated rows");
+                Assert.AreEqual(50m, reportsRepository.GetOtherEarnings(null, null, 903, includeImported: false).Single().Amount);
+
+                using (NineTapDb db = TestDatabase.DbFactory.CreateDbContext())
+                {
+                    List<Participant> entries = db.Participants
+                        .Include(p => p.Game)
+                        .Where(p => p.Member.Id == memberId)
+                        .ToList();
+
+                    Assert.AreEqual(4, entries.Count, "re-run must not insert duplicate participants");
+                    Assert.AreEqual(600m, entries.Sum(p => p.Game.MoneyWon ?? 0), "re-run removes the inflated cash");
+
+                    Participant carryRow = entries.Single(p => p.Id == carryRowParticipantId);
+                    Assert.AreEqual(220, carryRow.Game.Game1, "colliding squads do not swap scores between entries");
+                    Assert.AreEqual(0m, carryRow.Game.MoneyWon ?? 0);
+                    Assert.AreEqual(190, entries.Single(p => p.Game.MoneyWon == 425m).Game.Game1);
+                }
+            }
+            finally
+            {
+                using (NineTapDb db = TestDatabase.DbFactory.CreateDbContext())
+                {
+                    db.Participants.Where(p => p.Id > maxParticipantId).ExecuteDelete();
+                    db.Games.Where(g => g.Id > maxGameId).ExecuteDelete();
+                    db.Tournaments.Where(t => t.Id > maxTournamentId).ExecuteDelete();
+                    db.Members.Where(m => m.Id > maxMemberId).ExecuteDelete();
+                }
+                Directory.Delete(folder, recursive: true);
+            }
+        }
+
         [TestMethod]
         public void ImportFolder_UnknownMember_ReportsWarningAndImportsNothing()
         {

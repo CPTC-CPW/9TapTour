@@ -3,6 +3,7 @@ using ClosedXML.Excel;
 using NineTapTour.Core.Calculations;
 using NineTapTour.Core.Models;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace NineTapTour.Core.Import;
 
@@ -232,5 +233,127 @@ public static class ExcelWorkbookReader
         temp.Notes = ws.Cell(row, 16).GetString();
 
         return temp;
+    }
+
+    /// <summary>
+    /// Reads cash recorded on a row that is not a tournament entry: the games-played
+    /// cell (column 1) is blank but the CASH cell holds a typed amount. These are
+    /// career totals from before the book started ("2003") and payouts from outside
+    /// events ("10th Yak", "2nd sat", "HAWAII earnings"). Returns null for rows
+    /// with a games-played value, no cash, or a computed (formula) cash cell.
+    /// The caller must skip the page's carry-forward row.
+    /// </summary>
+    public static OtherEarningRow ReadOtherEarningRow(IXLWorksheet ws, int row)
+    {
+        const int CashColumn = 15;
+        const int DescriptionMaxLength = 200;
+
+        // The books fill games played with =IF(B4="","",V4), so a row with no entry
+        // shows a blank value there rather than an empty cell.
+        IXLCell cashCell = ws.Cell(row, CashColumn);
+        bool hasGamesPlayed = ws.Cell(row, 1).GetString().Trim().Length > 0;
+        if (hasGamesPlayed || cashCell.IsEmpty() || cashCell.HasFormula)
+        {
+            return null;
+        }
+
+        decimal amount;
+        if (cashCell.Value.IsNumber)
+        {
+            amount = (decimal)cashCell.Value.GetNumber();
+        }
+        else if (!decimal.TryParse(cashCell.GetString(), NumberStyles.Currency, CultureInfo.CurrentCulture, out amount))
+        {
+            return null;
+        }
+        if (amount == 0)
+        {
+            return null;
+        }
+
+        string place = ws.Cell(row, 14).GetString().Trim();
+        string notes = ws.Cell(row, 16).GetString().Trim();
+        string description = string.Join(" - ", new[] { place, notes }.Where(s => s.Length > 0));
+        if (description.Length > DescriptionMaxLength)
+        {
+            description = description[..DescriptionMaxLength];
+        }
+
+        DateTime? date = null;
+        IXLCell dateCell = ws.Cell(row, 2);
+        if (dateCell.Value.IsDateTime)
+        {
+            date = dateCell.GetDateTime().Date;
+        }
+        else
+        {
+            date = ParseNotesDate(notes);
+        }
+
+        return new OtherEarningRow(amount, description, date);
+    }
+
+    /// <summary>
+    /// Returns the first month/day/year date written in a book's notes
+    /// ("House Shot 10/4/14" is 10/4/2014), or null when there is none.
+    /// Two-digit years are 2000-based; the books start in the 2000s.
+    /// </summary>
+    internal static DateTime? ParseNotesDate(string notes)
+    {
+        if (string.IsNullOrWhiteSpace(notes))
+        {
+            return null;
+        }
+
+        Match match = RegexHelpers.NotesDate().Match(notes);
+        if (!match.Success)
+        {
+            return null;
+        }
+
+        int month = int.Parse(match.Groups[1].Value);
+        int day = int.Parse(match.Groups[2].Value);
+        int year = int.Parse(match.Groups[3].Value);
+        if (year < 100)
+        {
+            year += 2000;
+        }
+
+        if (month < 1 || month > 12 || day < 1 || day > DateTime.DaysInMonth(year, month))
+        {
+            return null;
+        }
+        return new DateTime(year, month, day);
+    }
+
+    /// <summary>
+    /// Legacy books are paged: each worksheet totals its CASH column with a
+    /// formula such as =SUM(O3:O46), and the last row of that range holds the
+    /// career total carried forward from the previous (older) page. That cell
+    /// is a running balance, not winnings, even when a game shares the row.
+    /// Returns the carry-forward row, or null when the page has no total formula.
+    /// </summary>
+    public static int? FindCashCarryForwardRow(IXLWorksheet ws)
+    {
+        const int CashColumn = 15;
+        const int FirstDataRow = 3;
+
+        int lastRow = ws.LastRowUsed()?.RowNumber() ?? 0;
+        for (int row = FirstDataRow; row <= lastRow; row++)
+        {
+            IXLCell cell = ws.Cell(row, CashColumn);
+            if (!cell.HasFormula)
+            {
+                continue;
+            }
+
+            string formula = cell.FormulaA1.Replace(" ", "").Replace("$", "");
+            Match match = RegexHelpers.CashTotalFormula().Match(formula);
+            if (match.Success)
+            {
+                return int.Parse(match.Groups[1].Value);
+            }
+        }
+        return null;
     }
 }

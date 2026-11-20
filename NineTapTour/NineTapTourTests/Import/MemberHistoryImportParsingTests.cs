@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Import;
 using System;
+using System.Collections.Generic;
 
 namespace NineTapTourTests.Import
 {
@@ -20,6 +21,7 @@ namespace NineTapTourTests.Import
         [DataRow("9thHM", 9)]
         [DataRow("22nd", 22)]
         [DataRow(" 3rd ", 3)]
+        [DataRow("999th", 999)]
         public void ParseLegacyPlaceStanding_TakesLeadingDigits(string cell, int expected)
         {
             Assert.AreEqual(expected, MemberHistoryImportService.ParseLegacyPlaceStanding(cell));
@@ -32,6 +34,9 @@ namespace NineTapTourTests.Import
         [DataRow("HM")]
         [DataRow("tie 4th")]
         [DataRow("0")]
+        [DataRow("2005")]       // Year labels written next to carried-forward totals
+        [DataRow("2005/06")]
+        [DataRow("1000")]
         public void ParseLegacyPlaceStanding_NonPlacingValues_ReturnNull(string cell)
         {
             Assert.IsNull(MemberHistoryImportService.ParseLegacyPlaceStanding(cell));
@@ -137,6 +142,44 @@ namespace NineTapTourTests.Import
             Assert.IsTrue(game.UseGame2 ?? false);
             Assert.IsTrue(game.UseGame3 ?? false);
             Assert.IsTrue(game.UseGame4 ?? false);
+        }
+        static Participant Entry(int id, int squad, int? g1, int? g2, int? g3, int? g4)
+        {
+            return new Participant { Id = id, Squad = squad, Game = new Game { Game1 = g1, Game2 = g2, Game3 = g3, Game4 = g4 } };
+        }
+
+        [TestMethod]
+        public void FindMatchingImportedEntry_MatchesOnScoresNotSquad()
+        {
+            // Older imports gave two entries on the same date squad 1 when they sat on different pages.
+            List<Participant> existing = [Entry(10, 1, 200, 201, 202, 203), Entry(11, 1, 150, 160, 170, 180)];
+            Game row = new() { Game1 = 150, Game2 = 160, Game3 = 170, Game4 = 180 };
+
+            Participant match = MemberHistoryImportService.FindMatchingImportedEntry(existing, row, new HashSet<int>());
+
+            Assert.AreEqual(11, match.Id);
+        }
+
+        [TestMethod]
+        public void FindMatchingImportedEntry_SkipsEntriesClaimedByEarlierRows()
+        {
+            // Two all-blank entries (scores voided) on the same date: each row takes its own entry.
+            List<Participant> existing = [Entry(20, 1, null, null, null, null), Entry(21, 2, null, null, null, null)];
+            Game row = new();
+            HashSet<int> claimed = [20];
+
+            Assert.AreEqual(21, MemberHistoryImportService.FindMatchingImportedEntry(existing, row, claimed).Id);
+            claimed.Add(21);
+            Assert.IsNull(MemberHistoryImportService.FindMatchingImportedEntry(existing, row, claimed));
+        }
+
+        [TestMethod]
+        public void FindMatchingImportedEntry_NoScoreMatch_ReturnsNull()
+        {
+            List<Participant> existing = [Entry(30, 1, 200, 201, 202, 203)];
+            Game row = new() { Game1 = 200, Game2 = 201, Game3 = 202, Game4 = null };
+
+            Assert.IsNull(MemberHistoryImportService.FindMatchingImportedEntry(existing, row, new HashSet<int>()));
         }
     }
 }
